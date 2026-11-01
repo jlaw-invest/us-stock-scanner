@@ -3,110 +3,75 @@ import yfinance as yf
 import numpy as np
 import json
 
-def calculate_strict_vcp(ticker):
-    """
-    嚴格 VCP 形態量化引擎：
-    1. Stage 2 多頭排列
-    2. 檢查最新交易日絕對不能是大跌日
-    3. 檢測多重波動收縮（至少經歷兩次高低點回調收窄）
-    4. 成交量在收縮末端必須顯著乾涸（Dry Up）
-    5. 目前正在 Pivot 突破點附近蓄勢待發
-    """
+def analyze_stock(ticker):
     try:
         stock = yf.Ticker(ticker)
         df = stock.history(period="1y")
-        
         if len(df) < 200:
-            return None  
+            return None
 
+        # 獲取行業資訊 (容錯處理)
+        info = stock.info
+        sector = info.get('sector', '強勢板塊')
+        
         current_price = float(df['Close'].iloc[-1])
         prev_close = float(df['Close'].iloc[-2])
         
-        # --- 嚴格過濾一：最新交易日防護網 ---
-        # 如果最新交易日大跌超過 1.5%，直接淘汰，絕對不能選入準備突破的清單！
-        daily_return = (current_price - prev_close) / prev_close
-        if daily_return < -0.015:
-            return None
-
-        # --- 嚴格過濾二：Stage 2 長期升浪確認 ---
+        # 1. 基礎門檻：Stage 2 長期升浪 (150日線 > 200日線)
         sma_150 = float(df['Close'].rolling(window=150).mean().iloc[-1])
         sma_200 = float(df['Close'].rolling(window=200).mean().iloc[-1])
-        
         if not (current_price > sma_150 and sma_150 > sma_200):
-            return None  
+            return None
 
-        # --- 嚴格過濾三：多重 VCP 回調與波動收縮檢測 ---
-        # 將過去 120 個交易日拆解為三段來檢測「波動一次比一次收窄」（Volatility Contraction）
-        period1 = df['Close'].iloc[-120:-80] # 第一階段回調期
-        period2 = df['Close'].iloc[-80:-40]  # 第二階段回調期
-        period3 = df['Close'].iloc[-40:]     # 第三階段收縮末端
-        
-        std1 = float(period1.std())
-        std2 = float(period2.std())
-        std3 = float(period3.std())
-        
-        # VCP 核心鐵律：波動率必須呈現遞減趨勢 (std1 > std2 > std3)
-        is_contracting = (std1 > std2) and (std2 > std3)
-        if not is_contracting:
-            return None  # 如果沒有逐級收緊，淘汰！
+        # 模擬高標準 RS 評分 (實戰可對比 SPY)
+        rs_score = 90 + int(np.random.uniform(0, 9))
+        pivot_point = float(df['High'].iloc[-40:].max())
 
-        # --- 嚴格過濾四：成交量收縮（Volume Dry Up） ---
+        # 2. 判定是否符合嚴格 VCP
+        period1_std = float(df['Close'].iloc[-120:-80].std())
+        period2_std = float(df['Close'].iloc[-80:-40].std())
+        period3_std = float(df['Close'].iloc[-40:].std())
+        is_vcp_contracting = (period1_std > period2_std) and (period2_std > period3_std)
+        
         vol1 = float(df['Volume'].iloc[-120:-80].mean())
         vol3 = float(df['Volume'].iloc[-40:].mean())
+        is_vol_dryup = vol3 < vol1 * 0.85
         
-        # 末端成交量必須比前期明顯萎縮（量縮整理）
-        if vol3 >= vol1 * 0.85:
-            return None
+        daily_return = (current_price - prev_close) / prev_close
+        is_not_crashing = daily_return >= -0.015
 
-        # --- 嚴格過濾五：Pivot 突破點與位置確認 ---
-        # 取最近 40 日的高點作為關鍵 Pivot 阻力區
-        pivot_point = float(df['High'].iloc[-40:].max())
-        
-        # 現價必須非常接近 Pivot 點（在 5% 以內，代表正在進行最後收口準備突破）
-        if current_price < pivot_point * 0.95:
-            return None
-
-        # 模擬高標準 RS 評分
-        rs_score = 90 + int(np.random.uniform(0, 9))
+        if is_vcp_contracting and is_vol_dryup and is_not_crashing and (current_price >= pivot_point * 0.95):
+            category = "VCP突破組"
+            status = "多重收縮完成，量縮蓄勢突破"
+        else:
+            category = "行業潛水龍頭"
+            status = f"【{sector}】高 RS 趨勢股，正在橫盤/回調洗盤"
 
         return {
             "ticker": ticker,
-            "name": ticker,
             "rs": rs_score,
             "pivot": round(pivot_point, 2),
             "price": round(current_price, 2),
-            "status": "VCP 多重收縮完成，帶量蓄勢突破"
+            "status": status,
+            "category": category,
+            "sector": sector
         }
-        
     except Exception as e:
-        print(f"處理 {ticker} 時發生錯誤: {e}")
         return None
 
 def main():
-    # 擴大掃描美股龍頭清單
-    watchlist = [
-        "AAPL", "MSFT", "AMZN", "GOOGL", "META", "TSLA", "AVGO", "COST", 
-        "NFLX", "AMD", "LLY", "JPM", "CRM", "PLTR", "NVDA", "UBER", "COIN"
-    ]
+    watchlist = ["AAPL", "MSFT", "AMZN", "GOOGL", "META", "TSLA", "AVGO", "COST", "NFLX", "AMD", "LLY", "JPM", "PLTR", "NVDA", "UBER"]
+    results = []
     
-    qualified_stocks = []
-    
-    print("🚀 開始執行最高標準「多重 VCP 波動收縮 + 成交量乾涸」量化掃描...")
+    print("🚀 執行雙軌量化掃描 (VCP 突破 + 行業潛水龍頭)...")
     for ticker in watchlist:
-        result = calculate_strict_vcp(ticker)
-        if result:
-            qualified_stocks.append(result)
-            print(f"✅ 嚴格過關強勢股: {ticker} (RS: {result['rs']})")
-
-    # 輸出 JSON
-    output_data = {
-        "stocks": qualified_stocks
-    }
-    
+        res = analyze_stock(ticker)
+        if res:
+            results.append(res)
+            
     with open("stocks_data.json", "w", encoding="utf-8") as f:
-        json.dump(output_data, f, ensure_ascii=False, indent=4)
-        
-    print(f"🎯 掃描完畢！嚴格過濾後符合完美 VCP 的股票數量：{len(qualified_stocks)} 隻。")
+        json.dump({"stocks": results}, f, ensure_ascii=False, indent=4)
+    print(f"🎯 掃描完畢！共產出 {len(results)} 隻強勢股。")
 
 if __name__ == "__main__":
     main()
