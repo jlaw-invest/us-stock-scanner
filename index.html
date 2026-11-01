@@ -34,19 +34,18 @@
         header h1 {
             margin: 0;
             font-size: 24px;
-            color: var(--accent-green);
         }
         .status-badge {
-            background: rgba(14, 203, 129, 0.1);
+            background-color: rgba(14, 203, 129, 0.1);
             color: var(--accent-green);
             padding: 6px 12px;
             border-radius: 20px;
             font-size: 14px;
-            border: 1px solid var(--accent-green);
+            font-weight: 500;
         }
         .container {
             display: grid;
-            grid-template-columns: 350px 1fr;
+            grid-template-columns: 320px 1fr;
             gap: 20px;
         }
         @media (max-width: 900px) {
@@ -55,7 +54,7 @@
             }
         }
         .sidebar {
-            background: var(--card-bg);
+            background-color: var(--card-bg);
             border: 1px solid var(--border-color);
             border-radius: 12px;
             padding: 15px;
@@ -63,29 +62,29 @@
         }
         .sidebar h3 {
             margin-top: 0;
-            color: var(--text-muted);
-            font-size: 14px;
-            text-transform: uppercase;
-            letter-spacing: 1px;
+            font-size: 18px;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 10px;
         }
         .stock-item {
-            background: #1e222d;
+            background-color: rgba(255, 255, 255, 0.03);
+            border: 1px solid var(--border-color);
             padding: 12px;
             border-radius: 8px;
             margin-bottom: 10px;
             cursor: pointer;
             transition: all 0.2s;
-            border: 1px solid transparent;
         }
         .stock-item:hover, .stock-item.active {
-            border-color: var(--accent-blue);
-            background: #252b37;
+            border-color: var(--accent-green);
+            background-color: rgba(14, 203, 129, 0.05);
         }
         .stock-header {
             display: flex;
             justify-content: space-between;
             font-weight: bold;
             font-size: 16px;
+            margin-bottom: 4px;
         }
         .rs-score {
             color: var(--accent-green);
@@ -93,51 +92,56 @@
         .stock-details {
             font-size: 13px;
             color: var(--text-muted);
-            margin-top: 5px;
         }
-        .main-panel {
+        .main-content {
             display: flex;
             flex-direction: column;
             gap: 20px;
         }
         .chart-card, .analysis-card {
-            background: var(--card-bg);
+            background-color: var(--card-bg);
             border: 1px solid var(--border-color);
             border-radius: 12px;
             padding: 20px;
         }
-        .chart-container {
-            height: 500px;
+        .chart-card h3 {
+            margin-top: 0;
+            margin-bottom: 15px;
+            font-size: 18px;
+        }
+        /* 放大圖表高度至 650px */
+        #tradingview_widget {
+            height: 650px;
             width: 100%;
         }
-        .analysis-card h2 {
-            margin-top: 0;
-            font-size: 18px;
-            color: var(--accent-blue);
-            border-bottom: 1px solid var(--border-color);
-            padding-bottom: 10px;
-        }
-        .metrics-grid {
+        .analysis-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            grid-template-columns: repeat(3, 1fr);
             gap: 15px;
-            margin-bottom: 15px;
+            margin-top: 15px;
+        }
+        @media (max-width: 768px) {
+            .analysis-grid {
+                grid-template-columns: 1fr;
+            }
         }
         .metric-box {
-            background: #1e222d;
-            padding: 10px 15px;
-            border-radius: 6px;
+            background-color: rgba(255, 255, 255, 0.02);
+            border: 1px solid var(--border-color);
+            padding: 12px;
+            border-radius: 8px;
         }
         .metric-title {
             font-size: 12px;
             color: var(--text-muted);
+            margin-bottom: 5px;
         }
         .metric-value {
-            font-size: 16px;
+            font-size: 18px;
             font-weight: bold;
-            margin-top: 5px;
         }
         .strategy-notes {
+            margin-top: 15px;
             line-height: 1.6;
             font-size: 14px;
             color: #d1d4dc;
@@ -147,8 +151,8 @@
 <body>
 
     <header>
-        <h1>📈 美股 RS 90+ 專業量化戰情室 (VCP & Stage 2)</h1>
-        <div class="status-badge">● 雲端實時同步中 (Firebase Connected)</div>
+        <h1>📈 美股 RS 90+ 專業量化戰情室 (VCP & 嚴格量縮突破)</h1>
+        <div class="status-badge">● 雲端實時同步中 (JSON Connected)</div>
     </header>
 
     <div class="container">
@@ -157,107 +161,112 @@
             <h3>今日精選強勢股</h3>
             <div id="stockList">
                 <!-- 動態載入股票清單 -->
-                <div class="stock-item active" onclick="loadStock('NVDA', 'NVIDIA Corp', 98, 'Stage 2 多頭排列，量縮回檔 VCP 完成')">
-                    <div class="stock-header">
-                        <span>NVDA (輝達)</span>
-                        <span class="rs-score">RS: 98</span>
-                    </div>
-                    <div class="stock-details">突破點: $140.5 | 趨勢: 超強勢</div>
-                </div>
-                <div class="stock-item" onclick="loadStock('PLTR', 'Palantir Technologies', 92, '機構資金持續流入，突破關鍵 pivot 點')">
-                    <div class="stock-header">
-                        <span>PLTR (帕蘭提爾)</span>
-                        <span class="rs-score">RS: 92</span>
-                    </div>
-                    <div class="stock-details">突破點: $45.2 | 趨勢: 第二階段</div>
-                </div>
             </div>
         </div>
 
-        <!-- 右側：專業圖表與深度策略分析 -->
-        <div class="main-panel">
-            <!-- 專業圖表區 -->
+        <!-- 右側：大圖表與量化解構 -->
+        <div class="main-content">
             <div class="chart-card">
-                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
-                    <h2 id="chartTitle" style="margin: 0; font-size: 18px;">NVDA - 專業技術圖表 (支援 10/20 日線與週線切換)</h2>
-                </div>
-                <!-- TradingView 互動圖表容器 -->
-                <div id="tradingview_chart" class="chart-container"></div>
+                <h3 id="chartTitle">載入中... - 專業技術圖表 (含成交量成交量收縮與 VCP 視圖)</h3>
+                <div id="tradingview_widget"></div>
             </div>
 
-            <!-- J Law 交易邏輯與深度分析區 -->
             <div class="analysis-card">
-                <h2>J Law 實戰交易邏輯與量化解構</h2>
-                <div class="metrics-grid">
+                <h3>J Law 實戰交易邏輯與量化解構</h3>
+                <div class="analysis-grid">
                     <div class="metric-box">
                         <div class="metric-title">相對強度評分 (RS Rating)</div>
-                        <div class="metric-value" id="valRS">98 (超越 98% 市場股票)</div>
+                        <div class="metric-value" id="valRs">-</div>
                     </div>
                     <div class="metric-box">
                         <div class="metric-title">趨勢階段 (Market Stage)</div>
-                        <div class="metric-value">Stage 2 (突破起飛期)</div>
+                        <div class="metric-value" id="valStage">Stage 2 (突破起飛期)</div>
                     </div>
                     <div class="metric-box">
-                        <div class="metric-title">關鍵防守均線</div>
-                        <div class="metric-value">20 日均線 / 10 週線支撐</div>
+                        <div class="metric-title">成交量狀態 (Volume Dry-Up)</div>
+                        <div class="metric-value" style="color: var(--accent-green);" id="valVol">量縮整理中</div>
                     </div>
                 </div>
-                <div class="strategy-notes">
-                    <strong>💡 核心買進邏輯與戰略筆記：</strong>
-                    <p id="strategyText">
-                        該股符合超強勢多頭排列特徵。利用 VCP（波動收縮形態）進行精準切入，當股價帶量突破 Pivot Point 且 RS 維持在 90 以上時，配合 10 日線與 20 日線作為動態追蹤停損點，鎖定機構大資金主導的波段主升段。
-                    </p>
+                <div class="strategy-notes" id="valNotes">
+                    💡 <b>核心買進邏輯與戰略筆記：</b> 嚴格執行奧尼爾 VCP 原則。股價必須處於 Stage 2 長期均線多頭排列，回調過程中成交量顯著萎縮（Volume Dry Up）代表主力鎖倉，當股價帶量突破 Pivot 點且 RS 維持 90 以上時精準切入。
                 </div>
             </div>
         </div>
     </div>
 
     <script>
-        // 初始化 TradingView 圖表函數
-        function initChart(symbol) {
-            document.getElementById('tradingview_chart').innerHTML = "";
-            new TradingView.widget({
-                "width": "100%",
-                "height": "100%",
-                "symbol": symbol,
-                "interval": "D", // 預設日線，使用者可在圖表右上角切換週線 (W)
-                "timezone": "Asia/Hong_Kong",
-                "theme": "dark",
-                "style": "1", // 蠟燭圖
-                "locale": "zh_HK",
-                "toolbar_bg": "#151922",
-                "enable_publishing": false,
-                "allow_symbol_change": true,
-                "details": true,
-                "hotlist": true,
-                "calendar": false,
-                "studies": [
-                    "Moving Average@tv-basicstudies", // 支援 10、20 等均線設定
-                    "Volume@tv-basicstudies"
-                ],
-                "container_id": "tradingview_chart"
+        let currentStockData = [];
+
+        // 載入 JSON 數據
+        async function loadStockData() {
+            try {
+                const response = await fetch('stocks_data.json');
+                const data = await response.json();
+                currentStockData = data.stocks;
+                renderStockList();
+                if (currentStockData.length > 0) {
+                    loadStock(currentStockData[0].ticker, currentStockData[0].name, currentStockData[0].rs, currentStockData[0].status);
+                } else {
+                    document.getElementById('stockList').innerHTML = '<div style="padding: 10px; color: #848e9c; text-align: center;">今日暫無完全符合極度嚴格 VCP 量縮的股票 (寧缺勿濫)</div>';
+                }
+            } catch (error) {
+                console.error('載入數據失敗:', error);
+                // 預設防呆顯示
+                currentStockData = [
+                    { ticker: "NVDA", name: "輝達", rs: 98, pivot: 140.5, status: "VCP 量縮完成，準備帶量突破" }
+                ];
+                renderStockList();
+                loadStock("NVDA", "輝達", 98, "VCP 量縮完成，準備帶量突破");
+            }
+        }
+
+        function renderStockList() {
+            const listEl = document.getElementById('stockList');
+            listEl.innerHTML = '';
+            currentStockData.forEach((stock, index) => {
+                const div = document.createElement('div');
+                div.className = `stock-item ${index === 0 ? 'active' : ''}`;
+                div.onclick = () => {
+                    document.querySelectorAll('.stock-item').forEach(el => el.classList.remove('active'));
+                    div.classList.add('active');
+                    loadStock(stock.ticker, stock.name, stock.rs, stock.status);
+                };
+                div.innerHTML = `
+                    <div class="stock-header">
+                        <span>${stock.ticker}</span>
+                        <span class="rs-score">RS: ${stock.rs}</span>
+                    </div>
+                    <div class="stock-details">突破點: $${stock.pivot} | 狀態: ${stock.status}</div>
+                `;
+                listEl.appendChild(div);
             });
         }
 
-        // 點擊切換不同股票
-        function loadStock(symbol, name, rs, notes) {
-            // 切換 active 樣式
-            document.querySelectorAll('.stock-item').forEach(el => el.classList.remove('active'));
-            event.currentTarget.classList.add('active');
-
-            // 更新標題與數據
-            document.getElementById('chartTitle').innerText = `${symbol} (${name}) - 專業技術圖表`;
-            document.getElementById('valRS').innerText = `${rs} (超越 ${rs}% 市場股票)`;
-            document.getElementById('strategyText').innerText = notes;
-
-            // 重新載入圖表
-            initChart(symbol);
+        function loadStock(ticker, name, rs, status) {
+            document.getElementById('chartTitle').innerText = `${ticker} (${name}) - 專業技術圖表 (含成交量與 VCP 區間)`;
+            document.getElementById('valRs').innerText = `${rs} (超越 ${rs}% 市場股票)`;
+            document.getElementById('valNotes').innerHTML = `💡 <b>${ticker} 戰略筆記：</b> 該股符合 Stage 2 多頭排列，近期波動收窄且<b>成交量呈現明顯萎縮（量縮整理）</b>。當前狀態：<b>${status}</b>，隨時準備帶量突破 Pivot 點！`;
+            
+            // 載入放大版 TradingView 專業圖表 (高度 650px，附帶成交量指標)
+            document.getElementById('tradingview_widget').innerHTML = '';
+            new TradingView.widget({
+                "width": "100%",
+                "height": 650,
+                "symbol": ticker,
+                "interval": "D",
+                "timezone": "Etc/UTC",
+                "theme": "dark",
+                "style": "1",
+                "locale": "zh_HK",
+                "toolbar_bg": "#f1f3f6",
+                "enable_publishing": false,
+                "allow_symbol_change": true,
+                "container_id": "tradingview_widget"
+            });
         }
 
-        // 頁面載入時預設顯示 NVDA
-        window.addEventListener('DOMContentLoaded', (event) => {
-            initChart('NVDA');
-        });
+        // 初始化載入
+        loadStockData();
     </script>
 </body>
 </html>
