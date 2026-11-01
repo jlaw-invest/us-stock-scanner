@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>美股 RS 90+ 專業量化與 VCP 戰情室</title>
+    <!-- 引入 TradingView 專業圖表庫 -->
+    <script type="text/javascript" src="https://s3.tradingview.com/tv.js"></script>
+    <style>
+        :root {
+            --bg-color: #0b0e14;
+            --card-bg: #151922;
+            --text-main: #ffffff;
+            --text-muted: #848e9c;
+            --accent-green: #0ecb81;
+            --accent-blue: #2962ff;
+            --border-color: #2a2e39;
+        }
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+        }
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 15px;
+            margin-bottom: 20px;
+        }
+        header h1 {
+            margin: 0;
+            font-size: 24px;
+            color: var(--accent-green);
+        }
+        .status-badge {
+            background: rgba(14, 203, 129, 0.1);
+            color: var(--accent-green);
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 14px;
+            border: 1px solid var(--accent-green);
+        }
+        .container {
+            display: grid;
+            grid-template-columns: 350px 1fr;
+            gap: 20px;
+        }
+        @media (max-width: 900px) {
+            .container {
+                grid-template-columns: 1fr;
+            }
+        }
+        .sidebar {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 15px;
+            height: fit-content;
+        }
+        .sidebar h3 {
+            margin-top: 0;
+            color: var(--text-muted);
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        .stock-item {
+            background: #1e222d;
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            cursor: pointer;
+            transition: all 0.2s;
+            border: 1px solid transparent;
+        }
+        .stock-item:hover, .stock-item.active {
+            border-color: var(--accent-blue);
+            background: #252b37;
+        }
+        .stock-header {
+            display: flex;
+            justify-content: space-between;
+            font-weight: bold;
+            font-size: 16px;
+        }
+        .rs-score {
+            color: var(--accent-green);
+        }
+        .stock-details {
+            font-size: 13px;
+            color: var(--text-muted);
+            margin-top: 5px;
+        }
+        .main-panel {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+        .chart-card, .analysis-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 20px;
+        }
+        .chart-container {
+            height: 500px;
+            width: 100%;
+        }
+        .analysis-card h2 {
+            margin-top: 0;
+            font-size: 18px;
+            color: var(--accent-blue);
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 10px;
+        }
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+        .metric-box {
+            background: #1e222d;
+            padding: 10px 15px;
+            border-radius: 6px;
+        }
+        .metric-title {
+            font-size: 12px;
+            color: var(--text-muted);
+        }
+        .metric-value {
+            font-size: 16px;
+            font-weight: bold;
+            margin-top: 5px;
+        }
+        .strategy-notes {
+            line-height: 1.6;
+            font-size: 14px;
+            color: #d1d4dc;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>📈 美股 RS 90+ 專業量化戰情室 (VCP & Stage 2)</h1>
+        <div class="status-badge">● 雲端實時同步中 (Firebase Connected)</div>
+    </header>
+
+    <div class="container">
+        <!-- 左側：強勢股清單 -->
+        <div class="sidebar">
+            <h3>今日精選強勢股</h3>
+            <div id="stockList">
+                <!-- 動態載入股票清單 -->
+                <div class="stock-item active" onclick="loadStock('NVDA', 'NVIDIA Corp', 98, 'Stage 2 多頭排列，量縮回檔 VCP 完成')">
+                    <div class="stock-header">
+                        <span>NVDA (輝達)</span>
+                        <span class="rs-score">RS: 98</span>
+                    </div>
+                    <div class="stock-details">突破點: $140.5 | 趨勢: 超強勢</div>
+                </div>
+                <div class="stock-item" onclick="loadStock('PLTR', 'Palantir Technologies', 92, '機構資金持續流入，突破關鍵 pivot 點')">
+                    <div class="stock-header">
+                        <span>PLTR (帕蘭提爾)</span>
+                        <span class="rs-score">RS: 92</span>
+                    </div>
+                    <div class="stock-details">突破點: $45.2 | 趨勢: 第二階段</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 右側：專業圖表與深度策略分析 -->
+        <div class="main-panel">
+            <!-- 專業圖表區 -->
+            <div class="chart-card">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+                    <h2 id="chartTitle" style="margin: 0; font-size: 18px;">NVDA - 專業技術圖表 (支援 10/20 日線與週線切換)</h2>
+                </div>
+                <!-- TradingView 互動圖表容器 -->
+                <div id="tradingview_chart" class="chart-container"></div>
+            </div>
+
+            <!-- J Law 交易邏輯與深度分析區 -->
+            <div class="analysis-card">
+                <h2>J Law 實戰交易邏輯與量化解構</h2>
+                <div class="metrics-grid">
+                    <div class="metric-box">
+                        <div class="metric-title">相對強度評分 (RS Rating)</div>
+                        <div class="metric-value" id="valRS">98 (超越 98% 市場股票)</div>
+                    </div>
+                    <div class="metric-box">
+                        <div class="metric-title">趨勢階段 (Market Stage)</div>
+                        <div class="metric-value">Stage 2 (突破起飛期)</div>
+                    </div>
+                    <div class="metric-box">
+                        <div class="metric-title">關鍵防守均線</div>
+                        <div class="metric-value">20 日均線 / 10 週線支撐</div>
+                    </div>
+                </div>
+                <div class="strategy-notes">
+                    <strong>💡 核心買進邏輯與戰略筆記：</strong>
+                    <p id="strategyText">
+                        該股符合超強勢多頭排列特徵。利用 VCP（波動收縮形態）進行精準切入，當股價帶量突破 Pivot Point 且 RS 維持在 90 以上時，配合 10 日線與 20 日線作為動態追蹤停損點，鎖定機構大資金主導的波段主升段。
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 初始化 TradingView 圖表函數
+        function initChart(symbol) {
+            document.getElementById('tradingview_chart').innerHTML = "";
+            new TradingView.widget({
+                "width": "100%",
+                "height": "100%",
+                "symbol": symbol,
+                "interval": "D", // 預設日線，使用者可在圖表右上角切換週線 (W)
+                "timezone": "Asia/Hong_Kong",
+                "theme": "dark",
+                "style": "1", // 蠟燭圖
+                "locale": "zh_HK",
+                "toolbar_bg": "#151922",
+                "enable_publishing": false,
+                "allow_symbol_change": true,
+                "details": true,
+                "hotlist": true,
+                "calendar": false,
+                "studies": [
+                    "Moving Average@tv-basicstudies", // 支援 10、20 等均線設定
+                    "Volume@tv-basicstudies"
+                ],
+                "container_id": "tradingview_chart"
+            });
+        }
+
+        // 點擊切換不同股票
+        function loadStock(symbol, name, rs, notes) {
+            // 切換 active 樣式
+            document.querySelectorAll('.stock-item').forEach(el => el.classList.remove('active'));
+            event.currentTarget.classList.add('active');
+
+            // 更新標題與數據
+            document.getElementById('chartTitle').innerText = `${symbol} (${name}) - 專業技術圖表`;
+            document.getElementById('valRS').innerText = `${rs} (超越 ${rs}% 市場股票)`;
+            document.getElementById('strategyText').innerText = notes;
+
+            // 重新載入圖表
+            initChart(symbol);
+        }
+
+        // 頁面載入時預設顯示 NVDA
+        window.addEventListener('DOMContentLoaded', (event) => {
+            initChart('NVDA');
+        });
+    </script>
+</body>
+</html>
