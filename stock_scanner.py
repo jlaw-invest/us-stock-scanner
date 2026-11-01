@@ -10,49 +10,48 @@ def analyze_stock(ticker):
         if len(df) < 200:
             return None
 
-        # 獲取行業資訊
         info = stock.info
         sector = info.get('sector', '強勢板塊')
         
         current_price = float(df['Close'].iloc[-1])
         prev_close = float(df['Close'].iloc[-2])
         
-        # 均線計算 (50日線約等於10週線，是龍頭股回調的黃金買點)
+        # 均線計算 (50日線 = 10週線)
         sma_50 = float(df['Close'].rolling(window=50).mean().iloc[-1])
         sma_150 = float(df['Close'].rolling(window=150).mean().iloc[-1])
         sma_200 = float(df['Close'].rolling(window=200).mean().iloc[-1])
         
+        # Stage 2 長期升浪基礎門檻
         if not (current_price > sma_150 and sma_150 > sma_200):
             return None
 
         pivot_point = float(df['High'].iloc[-40:].max())
         
-        # 計算買點距離百分比
         dist_sma50 = round(((current_price - sma_50) / sma_50) * 100, 2)
         dist_pivot = round(((current_price - pivot_point) / pivot_point) * 100, 2)
 
         rs_score = 90 + int(np.random.uniform(0, 9))
 
-        # 嚴格 VCP 判定
-        period1_std = float(df['Close'].iloc[-120:-80].std())
-        period2_std = float(df['Close'].iloc[-80:-40].std())
-        period3_std = float(df['Close'].iloc[-40:].std())
-        is_vcp_contracting = (period1_std > period2_std) and (period2_std > period3_std)
-        
-        vol1 = float(df['Volume'].iloc[-120:-80].mean())
-        vol3 = float(df['Volume'].iloc[-40:].mean())
-        is_vol_dryup = vol3 < vol1 * 0.85
+        # 優化判定：放寬 VCP 條件，只要股價距離 Pivot 突破點在 8% 以內，且近期有整理收縮跡象，即歸入突破組
+        recent_std = float(df['Close'].iloc[-30:].std())
+        prev_std = float(df['Close'].iloc[-60:-30].std())
+        is_contracting = recent_std <= prev_std * 1.15
         
         daily_return = (current_price - prev_close) / prev_close
-        is_not_crashing = daily_return >= -0.015
+        is_not_crashing = daily_return >= -0.02
 
-        # 分類與標籤狀態
-        if is_vcp_contracting and is_vol_dryup and is_not_crashing and (current_price >= pivot_point * 0.95):
+        # 策略分類：
+        # 1. 突破組：距離 Pivot 點 8% 以內，且正在橫盤或收縮，隨時準備突破
+        if is_contracting and is_not_crashing and (current_price >= pivot_point * 0.92):
             category = "VCP突破組"
-            status = "量縮蓄勢"
+            status = "蓄勢待發，準備突破"
         else:
+            # 2. 潛水龍頭：回調洗盤，正接近 10週線黃金支撐
             category = "行業潛水龍頭"
-            status = "回調洗盤"
+            if abs(dist_sma50) <= 4.0:
+                status = "回踩 10週線黃金支撐"
+            else:
+                status = "回調洗盤中"
 
         return {
             "ticker": ticker,
@@ -73,7 +72,7 @@ def main():
     watchlist = ["AAPL", "MSFT", "AMZN", "GOOGL", "META", "TSLA", "AVGO", "COST", "NFLX", "AMD", "LLY", "JPM", "PLTR", "NVDA", "UBER", "CRWD", "PALO"]
     results = []
     
-    print("🚀 執行雙軌量化掃描 (加入 10週線與突破距離計算)...")
+    print("🚀 執行升級版量化選股掃描...")
     for ticker in watchlist:
         res = analyze_stock(ticker)
         if res:
