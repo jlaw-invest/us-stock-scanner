@@ -31,3 +31,11 @@ jobs:
     - name: 執行選股與雲端同步引擎
       run: |
         python stock_scanner.py
+
+      - name: 儲存並推送 JSON 數據到網頁
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          git add stocks_data.json
+          git commit -m "Auto-update stocks_data.json" || echo "No changes to commit"
+          git push
