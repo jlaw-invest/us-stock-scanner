@@ -3,269 +3,102 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>美股 RS 90+ 專業量化與 VCP 戰情室</title>
-    <!-- 引入 TradingView 專業圖表庫 -->
+    <title>美股 RS 90+ 專業量化戰情室</title>
     <script type="text/javascript" src="https://s3.tradingview.com/tv.js"></script>
     <style>
-        :root {
-            --bg-color: #0b0e14;
-            --card-bg: #151922;
-            --text-main: #ffffff;
-            --text-muted: #848e9c;
-            --accent-green: #0ecb81;
-            --accent-blue: #2962ff;
-            --border-color: #2a2e39;
-        }
-        body {
-            background-color: var(--bg-color);
-            color: var(--text-main);
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-            margin: 0;
-            padding: 20px;
-        }
-        header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            border-bottom: 1px solid var(--border-color);
-            padding-bottom: 15px;
-            margin-bottom: 20px;
-        }
-        header h1 {
-            margin: 0;
-            font-size: 24px;
-        }
-        .status-badge {
-            background-color: rgba(14, 203, 129, 0.1);
-            color: var(--accent-green);
-            padding: 6px 12px;
-            border-radius: 20px;
-            font-size: 14px;
-            font-weight: 500;
-        }
-        .container {
-            display: grid;
-            grid-template-columns: 320px 1fr;
-            gap: 20px;
-        }
-        @media (max-width: 900px) {
-            .container {
-                grid-template-columns: 1fr;
-            }
-        }
-        .sidebar {
-            background-color: var(--card-bg);
-            border: 1px solid var(--border-color);
-            border-radius: 12px;
-            padding: 15px;
-            height: fit-content;
-        }
-        .sidebar h3 {
-            margin-top: 0;
-            font-size: 18px;
-            border-bottom: 1px solid var(--border-color);
-            padding-bottom: 10px;
-        }
-        .stock-item {
-            background-color: rgba(255, 255, 255, 0.03);
-            border: 1px solid var(--border-color);
-            padding: 12px;
-            border-radius: 8px;
-            margin-bottom: 10px;
-            cursor: pointer;
-            transition: all 0.2s;
-        }
-        .stock-item:hover, .stock-item.active {
-            border-color: var(--accent-green);
-            background-color: rgba(14, 203, 129, 0.05);
-        }
-        .stock-header {
-            display: flex;
-            justify-content: space-between;
-            font-weight: bold;
-            font-size: 16px;
-            margin-bottom: 4px;
-        }
-        .rs-score {
-            color: var(--accent-green);
-        }
-        .stock-details {
-            font-size: 13px;
-            color: var(--text-muted);
-        }
-        .main-content {
-            display: flex;
-            flex-direction: column;
-            gap: 20px;
-        }
-        .chart-card, .analysis-card {
-            background-color: var(--card-bg);
-            border: 1px solid var(--border-color);
-            border-radius: 12px;
-            padding: 20px;
-        }
-        .chart-card h3 {
-            margin-top: 0;
-            margin-bottom: 15px;
-            font-size: 18px;
-        }
-        /* 放大圖表高度至 650px */
-        #tradingview_widget {
-            height: 650px;
-            width: 100%;
-        }
-        .analysis-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 15px;
-            margin-top: 15px;
-        }
-        @media (max-width: 768px) {
-            .analysis-grid {
-                grid-template-columns: 1fr;
-            }
-        }
-        .metric-box {
-            background-color: rgba(255, 255, 255, 0.02);
-            border: 1px solid var(--border-color);
-            padding: 12px;
-            border-radius: 8px;
-        }
-        .metric-title {
-            font-size: 12px;
-            color: var(--text-muted);
-            margin-bottom: 5px;
-        }
-        .metric-value {
-            font-size: 18px;
-            font-weight: bold;
-        }
-        .strategy-notes {
-            margin-top: 15px;
-            line-height: 1.6;
-            font-size: 14px;
-            color: #d1d4dc;
-        }
+        :root { --bg-color: #0b0e14; --card-bg: #151922; --text-main: #ffffff; --text-muted: #848e9c; --accent-green: #0ecb81; --accent-blue: #2962ff; --border-color: #2a2e39; }
+        body { background-color: var(--bg-color); color: var(--text-main); font-family: sans-serif; margin: 0; padding: 20px; }
+        header { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border-color); padding-bottom: 15px; margin-bottom: 20px; }
+        .container { display: grid; grid-template-columns: 350px 1fr; gap: 20px; }
+        @media (max-width: 900px) { .container { grid-template-columns: 1fr; } }
+        .sidebar { background-color: var(--card-bg); border: 1px solid var(--border-color); border-radius: 12px; padding: 15px; height: 800px; overflow-y: auto; }
+        .category-title { font-size: 16px; color: var(--accent-blue); border-bottom: 1px solid var(--border-color); padding-bottom: 8px; margin-top: 20px; }
+        .stock-item { background-color: rgba(255, 255, 255, 0.03); border: 1px solid var(--border-color); padding: 12px; border-radius: 8px; margin-bottom: 10px; cursor: pointer; margin-top:10px; }
+        .stock-item:hover, .stock-item.active { border-color: var(--accent-green); background-color: rgba(14, 203, 129, 0.05); }
+        .stock-header { display: flex; justify-content: space-between; font-weight: bold; font-size: 16px; margin-bottom: 4px; }
+        .rs-score { color: var(--accent-green); }
+        .stock-details { font-size: 13px; color: var(--text-muted); line-height: 1.4; }
+        .chart-card { background-color: var(--card-bg); border: 1px solid var(--border-color); border-radius: 12px; padding: 20px; }
+        #tradingview_widget { height: 650px; width: 100%; }
+        .error-msg { color: #ff5252; padding: 20px; text-align: center; border: 1px solid #ff5252; border-radius: 8px; background: rgba(255,82,82,0.1); }
     </style>
 </head>
 <body>
-
     <header>
-        <h1>📈 美股 RS 90+ 專業量化戰情室 (VCP & 嚴格量縮突破)</h1>
-        <div class="status-badge">● 雲端實時同步中 (JSON Connected)</div>
+        <h1>📉 RS 90+ 戰情室 (週線趨勢/日線 VCP)</h1>
     </header>
-
     <div class="container">
-        <!-- 左側：強勢股清單 -->
         <div class="sidebar">
-            <h3>今日精選強勢股</h3>
-            <div id="stockList">
-                <!-- 動態載入股票清單 -->
-            </div>
+            <h3 style="margin-top:0;">今日掃描結果</h3>
+            <div id="stockList">載入中...</div>
         </div>
-
-        <!-- 右側：大圖表與量化解構 -->
         <div class="main-content">
             <div class="chart-card">
-                <h3 id="chartTitle">載入中... - 專業技術圖表 (含成交量成交量收縮與 VCP 視圖)</h3>
+                <h3 id="chartTitle">請選擇左側股票</h3>
                 <div id="tradingview_widget"></div>
-            </div>
-
-            <div class="analysis-card">
-                <h3>J Law 實戰交易邏輯與量化解構</h3>
-                <div class="analysis-grid">
-                    <div class="metric-box">
-                        <div class="metric-title">相對強度評分 (RS Rating)</div>
-                        <div class="metric-value" id="valRs">-</div>
-                    </div>
-                    <div class="metric-box">
-                        <div class="metric-title">趨勢階段 (Market Stage)</div>
-                        <div class="metric-value" id="valStage">Stage 2 (突破起飛期)</div>
-                    </div>
-                    <div class="metric-box">
-                        <div class="metric-title">成交量狀態 (Volume Dry-Up)</div>
-                        <div class="metric-value" style="color: var(--accent-green);" id="valVol">量縮整理中</div>
-                    </div>
-                </div>
-                <div class="strategy-notes" id="valNotes">
-                    💡 <b>核心買進邏輯與戰略筆記：</b> 嚴格執行奧尼爾 VCP 原則。股價必須處於 Stage 2 長期均線多頭排列，回調過程中成交量顯著萎縮（Volume Dry Up）代表主力鎖倉，當股價帶量突破 Pivot 點且 RS 維持 90 以上時精準切入。
-                </div>
+                <p id="valNotes" style="margin-top: 15px; font-size: 14px; color: #d1d4dc;"></p>
             </div>
         </div>
     </div>
 
     <script>
-        let currentStockData = [];
-
-        // 載入 JSON 數據
         async function loadStockData() {
             try {
-                const response = await fetch('stocks_data.json');
+                // 加入時間戳防止手機瀏覽器快取舊資料
+                const response = await fetch('stocks_data.json?t=' + new Date().getTime());
+                if (!response.ok) throw new Error('Network response was not ok');
                 const data = await response.json();
-                currentStockData = data.stocks;
-                renderStockList();
-                if (currentStockData.length > 0) {
-                    loadStock(currentStockData[0].ticker, currentStockData[0].name, currentStockData[0].rs, currentStockData[0].status);
-                } else {
-                    document.getElementById('stockList').innerHTML = '<div style="padding: 10px; color: #848e9c; text-align: center;">今日暫無完全符合極度嚴格 VCP 量縮的股票 (寧缺勿濫)</div>';
-                }
+                renderStockList(data.stocks);
             } catch (error) {
-                console.error('載入數據失敗:', error);
-                // 預設防呆顯示
-                currentStockData = [
-                    { ticker: "NVDA", name: "輝達", rs: 98, pivot: 140.5, status: "VCP 量縮完成，準備帶量突破" }
-                ];
-                renderStockList();
-                loadStock("NVDA", "輝達", 98, "VCP 量縮完成，準備帶量突破");
+                console.error('載入失敗:', error);
+                // 絕對不再放假數據！直接顯示錯誤，強迫我們檢查 GitHub Actions
+                document.getElementById('stockList').innerHTML = '<div class="error-msg">⚠️ 讀取不到真實數據檔案。<br>這代表 GitHub Actions 跑完後沒有把 stocks_data.json 儲存到網頁空間。請執行第三步的 YAML 修改！</div>';
             }
         }
 
-        function renderStockList() {
+        function renderStockList(stocks) {
             const listEl = document.getElementById('stockList');
             listEl.innerHTML = '';
-            currentStockData.forEach((stock, index) => {
-                const div = document.createElement('div');
-                div.className = `stock-item ${index === 0 ? 'active' : ''}`;
-                div.onclick = () => {
-                    document.querySelectorAll('.stock-item').forEach(el => el.classList.remove('active'));
-                    div.classList.add('active');
-                    loadStock(stock.ticker, stock.name, stock.rs, stock.status);
-                };
-                div.innerHTML = `
-                    <div class="stock-header">
-                        <span>${stock.ticker}</span>
-                        <span class="rs-score">RS: ${stock.rs}</span>
-                    </div>
-                    <div class="stock-details">突破點: $${stock.pivot} | 狀態: ${stock.status}</div>
-                `;
-                listEl.appendChild(div);
-            });
+            
+            const vcpStocks = stocks.filter(s => s.category === "VCP突破組");
+            const leaderStocks = stocks.filter(s => s.category === "行業潛水龍頭");
+
+            let html = '';
+            if (vcpStocks.length > 0) {
+                html += `<div class="category-title">🎯 嚴格 VCP 突破組 (${vcpStocks.length})</div>`;
+                vcpStocks.forEach(s => html += createStockCard(s));
+            } else {
+                html += `<div class="category-title">🎯 嚴格 VCP 突破組 (0)</div><p style="color:#848e9c; font-size:13px;">今日無股票符合完美收縮，寧缺勿濫。</p>`;
+            }
+
+            if (leaderStocks.length > 0) {
+                html += `<div class="category-title">🌊 各行業潛水龍頭 (${leaderStocks.length})</div>`;
+                leaderStocks.forEach(s => html += createStockCard(s));
+            }
+            
+            listEl.innerHTML = html;
+            if (stocks.length > 0) selectStock(stocks[0]);
         }
 
-        function loadStock(ticker, name, rs, status) {
-            document.getElementById('chartTitle').innerText = `${ticker} (${name}) - 專業技術圖表 (含成交量與 VCP 區間)`;
-            document.getElementById('valRs').innerText = `${rs} (超越 ${rs}% 市場股票)`;
-            document.getElementById('valNotes').innerHTML = `💡 <b>${ticker} 戰略筆記：</b> 該股符合 Stage 2 多頭排列，近期波動收窄且<b>成交量呈現明顯萎縮（量縮整理）</b>。當前狀態：<b>${status}</b>，隨時準備帶量突破 Pivot 點！`;
-            
-            // 載入放大版 TradingView 專業圖表 (高度 650px，附帶成交量指標)
+        function createStockCard(stock) {
+            return `
+                <div class="stock-item" onclick='selectStock(${JSON.stringify(stock)})'>
+                    <div class="stock-header"><span>${stock.ticker}</span><span class="rs-score">RS: ${stock.rs}</span></div>
+                    <div class="stock-details">板塊: ${stock.sector}<br>狀態: ${stock.status}</div>
+                </div>`;
+        }
+
+        function selectStock(stock) {
+            document.getElementById('chartTitle').innerText = `${stock.ticker} - 專業技術圖表`;
+            document.getElementById('valNotes').innerHTML = `💡 <b>戰略筆記：</b> ${stock.status}。`;
             document.getElementById('tradingview_widget').innerHTML = '';
             new TradingView.widget({
-                "width": "100%",
-                "height": 650,
-                "symbol": ticker,
-                "interval": "D",
-                "timezone": "Etc/UTC",
-                "theme": "dark",
-                "style": "1",
-                "locale": "zh_HK",
-                "toolbar_bg": "#f1f3f6",
-                "enable_publishing": false,
-                "allow_symbol_change": true,
-                "container_id": "tradingview_widget"
+                "width": "100%", "height": 650, "symbol": stock.ticker, "interval": "W", // 預設顯示週線看大趨勢
+                "timezone": "Etc/UTC", "theme": "dark", "style": "1", "locale": "zh_HK", "toolbar_bg": "#f1f3f6",
+                "enable_publishing": false, "allow_symbol_change": true, "container_id": "tradingview_widget"
             });
         }
 
-        // 初始化載入
         loadStockData();
     </script>
 </body>
