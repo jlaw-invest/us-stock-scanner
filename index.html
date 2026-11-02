@@ -3,41 +3,33 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>美股 RS 90+ 專家操盤系統</title>
+    <title>美股 RS 90+ 量化系統與模擬基金</title>
     <script type="text/javascript" src="https://s3.tradingview.com/tv.js"></script>
     <style>
         :root { --bg-color: #0b0e14; --card-bg: #151922; --text-main: #ffffff; --text-muted: #848e9c; --accent-green: #0ecb81; --accent-blue: #2962ff; --accent-orange: #f6465d; --border-color: #2a2e39; }
-        body { background-color: var(--bg-color); color: var(--text-main); font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; margin: 0; padding: 15px; }
-        header { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border-color); padding-bottom: 15px; margin-bottom: 20px; }
-        header h1 { margin: 0; font-size: 20px; }
+        body { background-color: var(--bg-color); color: var(--text-main); font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; margin: 0; padding: 15px; }
+        
+        /* 導航與分頁設計 */
+        .nav-tabs { display: flex; gap: 15px; border-bottom: 1px solid var(--border-color); padding-bottom: 10px; margin-bottom: 20px; }
+        .tab-btn { background: transparent; border: none; color: var(--text-muted); font-size: 18px; font-weight: bold; cursor: pointer; padding: 5px 10px; }
+        .tab-btn.active { color: var(--text-main); border-bottom: 3px solid var(--accent-blue); }
+        .view-section { display: none; }
+        .view-section.active { display: block; }
+
+        /* 戰情室排版 */
         .container { display: grid; grid-template-columns: 380px 1fr; gap: 20px; }
         @media (max-width: 900px) { .container { grid-template-columns: 1fr; } }
         .sidebar { background-color: var(--card-bg); border: 1px solid var(--border-color); border-radius: 12px; padding: 15px; height: 850px; overflow-y: auto; }
-        .category-title { font-size: 15px; color: var(--accent-blue); border-bottom: 1px solid var(--border-color); padding-bottom: 8px; margin-top: 15px; font-weight: bold;}
-        
-        .stock-item { background-color: rgba(255, 255, 255, 0.02); border: 1px solid var(--border-color); padding: 14px; border-radius: 10px; margin-bottom: 12px; cursor: pointer; transition: all 0.2s ease; margin-top: 10px;}
-        .stock-item:hover, .stock-item.active { border-color: var(--accent-green); background-color: rgba(14, 203, 129, 0.05); }
-        .stock-header { display: flex; justify-content: space-between; align-items: center; font-weight: bold; font-size: 18px; margin-bottom: 8px; }
-        .rs-score { color: var(--accent-green); font-size: 16px; font-weight: 800;}
-        
-        .badges-container { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 10px; }
-        .badge { padding: 3px 7px; border-radius: 5px; font-size: 11px; font-weight: 600; }
-        .badge-sector { background: rgba(41, 98, 255, 0.15); color: #64b5f6; border: 1px solid rgba(41, 98, 255, 0.3); }
-        .badge-dist-pivot { background: rgba(14, 203, 129, 0.15); color: var(--accent-green); border: 1px solid rgba(14, 203, 129, 0.3); }
-        .badge-dist-sma { background: rgba(246, 70, 93, 0.15); color: var(--accent-orange); border: 1px solid rgba(246, 70, 93, 0.3); }
-        .badge-status { background: rgba(255, 255, 255, 0.1); color: #d1d4dc; }
-
-        .fund-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; border-top: 1px solid var(--border-color); padding-top: 10px; margin-top: 10px;}
-        .fund-item { display: flex; flex-direction: column; background: rgba(0,0,0,0.2); padding: 6px 8px; border-radius: 6px; border: 1px solid rgba(255,255,255,0.05); }
-        .fund-label { font-size: 10px; color: #848e9c; margin-bottom: 2px; }
-        .fund-val { font-size: 13px; font-weight: 700; color: #eaeaeb; }
-
         .chart-card { background-color: var(--card-bg); border: 1px solid var(--border-color); border-radius: 12px; padding: 20px; }
-        #tradingview_widget { height: 450px; width: 100%; border-radius: 8px; overflow: hidden;}
+        #tradingview_widget { height: 450px; width: 100%; border-radius: 8px; overflow: hidden; margin-top: 15px;}
         
+        .stock-item { background-color: rgba(255, 255, 255, 0.02); border: 1px solid var(--border-color); padding: 14px; border-radius: 10px; margin-bottom: 12px; cursor: pointer; }
+        .stock-item.active { border-color: var(--accent-green); background-color: rgba(14, 203, 129, 0.05); }
+        .stock-header { display: flex; justify-content: space-between; font-weight: bold; font-size: 18px; margin-bottom: 8px; }
+        
+        /* 專家策略面板 UI */
         .strategy-panel { background: rgba(41, 98, 255, 0.05); border: 1px solid rgba(41, 98, 255, 0.2); border-radius: 10px; padding: 20px; margin-top: 20px; }
         .strategy-title { font-size: 16px; font-weight: bold; color: #64b5f6; margin-bottom: 15px; border-bottom: 1px dashed rgba(41, 98, 255, 0.3); padding-bottom: 8px;}
-        
         .trade-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px; margin-bottom: 15px;}
         @media (max-width: 768px) { .trade-grid { grid-template-columns: repeat(3, 1fr); } }
         @media (max-width: 480px) { .trade-grid { grid-template-columns: repeat(2, 1fr); } }
@@ -46,149 +38,10 @@
         .trade-val.entry { color: #0ecb81; font-size: 18px; font-weight: bold; }
         .trade-val.stop { color: #f6465d; font-size: 18px; font-weight: bold; }
         .trade-val.target { color: #f5b041; font-size: 18px; font-weight: bold; }
-        
         .strategy-text { display: grid; grid-template-columns: 1fr; gap: 12px; font-size: 13px; color: #d1d4dc; line-height: 1.6; }
         .plan-box { background: rgba(0,0,0,0.2); padding: 12px; border-radius: 8px; border-left: 4px solid var(--accent-blue);}
         .plan-box.warning { border-left-color: var(--accent-orange); }
         .plan-box h4 { margin: 0 0 6px 0; color: #fff; font-size: 14px;}
         .plan-box p { margin: 0; white-space: pre-line;}
-    </style>
-</head>
-<body>
-    <header>
-        <h1>🤖 專家操盤系統 (Swing Trade MAX 回報策略)</h1>
-    </header>
-    <div class="container">
-        <div class="sidebar">
-            <h3 style="margin-top:0; color: #fff;">今日精選掃描</h3>
-            <div id="stockList">載入中...</div>
-        </div>
-        <div class="main-content">
-            <div class="chart-card">
-                <h3 id="chartTitle" style="margin-top: 0;">請選擇左側股票</h3>
-                <div id="tradingview_widget"></div>
-                
-                <div class="strategy-panel" id="strategyPanel" style="display: none;">
-                    <div class="strategy-title">🎯 自動化交易計畫 (Swing Trade)</div>
-                    <div class="trade-grid">
-                        <div class="trade-box">
-                            <div class="trade-label" id="valOrderType" style="color:#f5b041; font-weight:bold;">訂單類型</div>
-                            <div class="trade-val entry" id="valEntry">--</div>
-                        </div>
-                        <div class="trade-box">
-                            <div class="trade-label">嚴格止蝕</div>
-                            <div class="trade-val stop" id="valStop">--</div>
-                        </div>
-                        <div class="trade-box">
-                            <div class="trade-label">第一目標 (3R)</div>
-                            <div class="trade-val target" id="val3R">--</div>
-                        </div>
-                        <div class="trade-box">
-                            <div class="trade-label">次要目標 (4R)</div>
-                            <div class="trade-val target" id="val4R">--</div>
-                        </div>
-                        <div class="trade-box">
-                            <div class="trade-label">終極目標 (5R)</div>
-                            <div class="trade-val target" id="val5R">--</div>
-                        </div>
-                    </div>
-                    <div class="strategy-text">
-                        <div class="plan-box">
-                            <h4>📈 買入邏輯分析：</h4>
-                            <p id="valReason">等待策略模組更新中...</p>
-                        </div>
-                        <div class="plan-box warning">
-                            <h4>🛡️ 自動化執行指令：</h4>
-                            <p id="valPlan">等待策略模組更新中...</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <script>
-        async function loadStockData() {
-            try {
-                const response = await fetch('stocks_data.json?t=' + new Date().getTime());
-                if (!response.ok) throw new Error('Network response was not ok');
-                const data = await response.json();
-                renderStockList(data.stocks);
-            } catch (error) {
-                document.getElementById('stockList').innerHTML = '<div class="error-msg">⚠️ 讀取不到真實數據。請檢查 GitHub Actions。</div>';
-            }
-        }
-
-        function renderStockList(stocks) {
-            const listEl = document.getElementById('stockList');
-            listEl.innerHTML = '';
-            
-            const vcpStocks = stocks.filter(s => s.category === "VCP突破組");
-            const leaderStocks = stocks.filter(s => s.category === "行業潛水龍頭");
-
-            let html = '';
-            if (vcpStocks.length > 0) {
-                html += `<div class="category-title">🎯 VCP 量縮蓄勢組 (${vcpStocks.length})</div>`;
-                vcpStocks.forEach(s => html += createStockCard(s));
-            }
-            if (leaderStocks.length > 0) {
-                html += `<div class="category-title">🌊 行業潛水龍頭 (${leaderStocks.length})</div>`;
-                leaderStocks.forEach(s => html += createStockCard(s));
-            }
-            
-            listEl.innerHTML = html;
-            if (stocks.length > 0) selectStock(stocks[0]);
-        }
-
-        function createStockCard(stock) {
-            let metricBadge = stock.category === "VCP突破組" ? 
-                `<span class="badge badge-dist-pivot">距突破 ${stock.dist_pivot}%</span>` : 
-                `<span class="badge badge-dist-sma">距10週線 ${stock.dist_sma50 > 0 ? '+' : ''}${stock.dist_sma50}%</span>`;
-
-            return `
-                <div class="stock-item" onclick='selectStock(${JSON.stringify(stock)})'>
-                    <div class="stock-header">
-                        <span>${stock.ticker}</span>
-                        <span class="rs-score">RS: ${stock.rs}</span>
-                    </div>
-                    <div class="badges-container">
-                        <span class="badge badge-sector">${stock.sector}</span>
-                        ${metricBadge}
-                    </div>
-                    <div class="fund-grid">
-                        <div class="fund-item"><span class="fund-label">營收增長</span><span class="fund-val">${stock.rev_growth || 'N/A'}</span></div>
-                        <div class="fund-item"><span class="fund-label">ROE</span><span class="fund-val">${stock.roe || 'N/A'}</span></div>
-                    </div>
-                </div>`;
-        }
-
-        function selectStock(stock) {
-            document.querySelectorAll('.stock-item').forEach(el => {
-                el.classList.toggle('active', el.innerText.includes(stock.ticker));
-            });
-
-            document.getElementById('chartTitle').innerText = `${stock.ticker} - 日線趨勢圖表 (Daily)`;
-            
-            document.getElementById('strategyPanel').style.display = 'block';
-            document.getElementById('valOrderType').innerText = stock.order_type || "進場買入";
-            document.getElementById('valEntry').innerText = stock.entry ? `$${stock.entry}` : "等待...";
-            document.getElementById('valStop').innerText = stock.stop ? `$${stock.stop}` : "等待...";
-            document.getElementById('val3R').innerText = stock.target_3r ? `$${stock.target_3r}` : "等待...";
-            document.getElementById('val4R').innerText = stock.target_4r ? `$${stock.target_4r}` : "等待...";
-            document.getElementById('val5R').innerText = stock.target_5r ? `$${stock.target_5r}` : "等待...";
-            document.getElementById('valReason').innerText = stock.reason || "等待策略模組更新中...";
-            document.getElementById('valPlan').innerText = stock.action_plan || "等待策略模組更新中...";
-            
-            document.getElementById('tradingview_widget').innerHTML = '';
-            new TradingView.widget({
-                "width": "100%", "height": 450, "symbol": stock.ticker, 
-                "interval": "D", 
-                "timezone": "Etc/UTC", "theme": "dark", "style": "1", "locale": "zh_HK", "toolbar_bg": "#f1f3f6",
-                "enable_publishing": false, "allow_symbol_change": true, "container_id": "tradingview_widget"
-            });
-        }
-
-        loadStockData();
-    </script>
-</body>
-</html>
+        .badges-container { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 10px; }
+        .badge { padding: 3px 7px; border-radius
