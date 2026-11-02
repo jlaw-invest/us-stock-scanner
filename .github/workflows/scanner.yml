@@ -7,29 +7,29 @@ on:
 
 jobs:
   run-scanner:
-  runs-on: ubuntu-latest
-  steps:
-    - name: Checkout repository
-      uses: actions/checkout@v3
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
 
-    - name: 設定 Python 環境
-      uses: actions/setup-python@v4
-      with:
-        python-version: '3.10'
+      - name: 設定 Python 環境
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
 
-    - name: 安裝必要套件
-      run: |
-        pip install pandas yfinance numpy
+      - name: 安裝必要套件
+        run: |
+          pip install pandas yfinance numpy
 
-    - name: 執行量化選股引擎與模擬交易
-      run: |
-        python stock_scanner.py
-        python paper_trader.py
+      - name: 執行量化選股引擎與模擬交易
+        run: |
+          python stock_scanner.py
+          python paper_trader.py
 
-    - name: 儲存並推送 JSON 數據到網頁
-      run: |
-        git config --local user.email "action@github.com"
-        git config --local user.name "GitHub Action"
-        git add stocks_data.json portfolio.json
-        git commit -m "Auto-update scanner and portfolio" || echo "No changes to commit"
-        git push
+      - name: 儲存並推送 JSON 數據到網頁
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          git add stocks_data.json portfolio.json
+          git commit -m "Auto-update scanner and portfolio" || echo "No changes to commit"
+          git push
