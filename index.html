@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>美股 RS 90+ 專業量化戰情室</title>
+    <title>美股 RS 90+ 專家操盤系統</title>
     <script type="text/javascript" src="https://s3.tradingview.com/tv.js"></script>
     <style>
         :root { --bg-color: #0b0e14; --card-bg: #151922; --text-main: #ffffff; --text-muted: #848e9c; --accent-green: #0ecb81; --accent-blue: #2962ff; --accent-orange: #f6465d; --border-color: #2a2e39; }
@@ -12,7 +12,7 @@
         header h1 { margin: 0; font-size: 20px; }
         .container { display: grid; grid-template-columns: 380px 1fr; gap: 20px; }
         @media (max-width: 900px) { .container { grid-template-columns: 1fr; } }
-        .sidebar { background-color: var(--card-bg); border: 1px solid var(--border-color); border-radius: 12px; padding: 15px; height: 800px; overflow-y: auto; }
+        .sidebar { background-color: var(--card-bg); border: 1px solid var(--border-color); border-radius: 12px; padding: 15px; height: 850px; overflow-y: auto; }
         .category-title { font-size: 15px; color: var(--accent-blue); border-bottom: 1px solid var(--border-color); padding-bottom: 8px; margin-top: 15px; font-weight: bold;}
         
         .stock-item { background-color: rgba(255, 255, 255, 0.02); border: 1px solid var(--border-color); padding: 14px; border-radius: 10px; margin-bottom: 12px; cursor: pointer; transition: all 0.2s ease; margin-top: 10px;}
@@ -27,21 +27,33 @@
         .badge-dist-sma { background: rgba(246, 70, 93, 0.15); color: var(--accent-orange); border: 1px solid rgba(246, 70, 93, 0.3); }
         .badge-status { background: rgba(255, 255, 255, 0.1); color: #d1d4dc; }
 
-        /* 彭博終端機風格數據網格 */
-        .stock-summary { font-size: 11px; color: var(--text-muted); line-height: 1.4; margin-bottom: 10px; }
-        .fund-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; border-top: 1px solid var(--border-color); padding-top: 10px; }
+        .fund-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; border-top: 1px solid var(--border-color); padding-top: 10px; margin-top: 10px;}
         .fund-item { display: flex; flex-direction: column; background: rgba(0,0,0,0.2); padding: 6px 8px; border-radius: 6px; border: 1px solid rgba(255,255,255,0.05); }
-        .fund-label { font-size: 10px; color: #848e9c; margin-bottom: 2px; text-transform: uppercase; }
+        .fund-label { font-size: 10px; color: #848e9c; margin-bottom: 2px; }
         .fund-val { font-size: 13px; font-weight: 700; color: #eaeaeb; }
-        .val-highlight { color: #0ecb81; }
 
         .chart-card { background-color: var(--card-bg); border: 1px solid var(--border-color); border-radius: 12px; padding: 20px; }
-        #tradingview_widget { height: 650px; width: 100%; }
+        #tradingview_widget { height: 500px; width: 100%; border-radius: 8px; overflow: hidden;}
+        
+        /* 專家策略面板 UI */
+        .strategy-panel { background: rgba(41, 98, 255, 0.05); border: 1px solid rgba(41, 98, 255, 0.2); border-radius: 10px; padding: 20px; margin-top: 20px; }
+        .strategy-title { font-size: 16px; font-weight: bold; color: #64b5f6; margin-bottom: 15px; border-bottom: 1px dashed rgba(41, 98, 255, 0.3); padding-bottom: 8px;}
+        .trade-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 15px;}
+        @media (max-width: 600px) { .trade-grid { grid-template-columns: repeat(2, 1fr); } }
+        .trade-box { background: rgba(0,0,0,0.3); padding: 12px; border-radius: 8px; text-align: center; border: 1px solid rgba(255,255,255,0.05); }
+        .trade-label { font-size: 12px; color: #848e9c; margin-bottom: 5px; }
+        .trade-val.entry { color: #0ecb81; font-size: 20px; font-weight: bold; }
+        .trade-val.stop { color: #f6465d; font-size: 20px; font-weight: bold; }
+        .trade-val.target { color: #f5b041; font-size: 20px; font-weight: bold; }
+        
+        .strategy-text { font-size: 14px; color: #d1d4dc; line-height: 1.6; background: rgba(0,0,0,0.2); padding: 15px; border-radius: 8px; border-left: 4px solid var(--accent-blue);}
+        .strategy-text h4 { margin: 0 0 8px 0; color: #fff; font-size: 14px;}
+        .warning-text { color: #f6465d; font-weight: bold; }
     </style>
 </head>
 <body>
     <header>
-        <h1>📉 RS 90+ 戰情室 (技術與基本面雙驅動)</h1>
+        <h1>🤖 專家操盤系統 (日線分析與 Swing Trade 策略)</h1>
     </header>
     <div class="container">
         <div class="sidebar">
@@ -52,7 +64,35 @@
             <div class="chart-card">
                 <h3 id="chartTitle" style="margin-top: 0;">請選擇左側股票</h3>
                 <div id="tradingview_widget"></div>
-                <p id="valNotes" style="margin-top: 15px; font-size: 14px; color: #d1d4dc; line-height: 1.6;"></p>
+                
+                <!-- 專家策略面板 -->
+                <div class="strategy-panel" id="strategyPanel" style="display: none;">
+                    <div class="strategy-title">🎯 專家操盤策略 (Swing Trade)</div>
+                    <div class="trade-grid">
+                        <div class="trade-box">
+                            <div class="trade-label">機會買入點</div>
+                            <div class="trade-val entry" id="valEntry">--</div>
+                        </div>
+                        <div class="trade-box">
+                            <div class="trade-label">止蝕位 (前日低位下方)</div>
+                            <div class="trade-val stop" id="valStop">--</div>
+                        </div>
+                        <div class="trade-box">
+                            <div class="trade-label">第一目標 (3R)</div>
+                            <div class="trade-val target" id="val3R">--</div>
+                        </div>
+                        <div class="trade-box">
+                            <div class="trade-label">終極目標 (4R)</div>
+                            <div class="trade-val target" id="val4R">--</div>
+                        </div>
+                    </div>
+                    <div class="strategy-text">
+                        <h4>📈 買入邏輯分析：</h4>
+                        <p id="valReason" style="margin-top:0; margin-bottom: 12px;"></p>
+                        <h4>🛡️ 執行策略與紀律：</h4>
+                        <p style="margin:0;">本策略主做 <b>Swing Trade (波段交易)</b>，不作長線死守。買入後若到達 <b>3R 第一目標價</b>，建議先獲利了結 50% 倉位，剩餘倉位將止蝕點上移至「買入價」作保護。若股價跌穿 <span class="warning-text">止蝕位</span>，必須無條件嚴格離場，保住本金。</p>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -65,7 +105,7 @@
                 const data = await response.json();
                 renderStockList(data.stocks);
             } catch (error) {
-                document.getElementById('stockList').innerHTML = '<div class="error-msg">⚠️ 讀取不到真實數據。請檢查 GitHub Actions 是否執行成功。</div>';
+                document.getElementById('stockList').innerHTML = '<div class="error-msg">⚠️ 讀取不到真實數據。請檢查 GitHub Actions。</div>';
             }
         }
 
@@ -80,10 +120,7 @@
             if (vcpStocks.length > 0) {
                 html += `<div class="category-title">🎯 VCP 量縮蓄勢組 (${vcpStocks.length})</div>`;
                 vcpStocks.forEach(s => html += createStockCard(s));
-            } else {
-                html += `<div class="category-title">🎯 VCP 量縮蓄勢組 (0)</div><p style="color:#848e9c; font-size:13px;">今日無股票符合價格與成交量雙收縮條件。</p>`;
             }
-
             if (leaderStocks.length > 0) {
                 html += `<div class="category-title">🌊 行業潛水龍頭 (${leaderStocks.length})</div>`;
                 leaderStocks.forEach(s => html += createStockCard(s));
@@ -94,13 +131,9 @@
         }
 
         function createStockCard(stock) {
-            let metricBadge = '';
-            if (stock.category === "VCP突破組") {
-                metricBadge = `<span class="badge badge-dist-pivot">距突破 ${stock.dist_pivot}%</span>`;
-            } else {
-                let sign = stock.dist_sma50 > 0 ? '+' : '';
-                metricBadge = `<span class="badge badge-dist-sma">距10週線 ${sign}${stock.dist_sma50}%</span>`;
-            }
+            let metricBadge = stock.category === "VCP突破組" ? 
+                `<span class="badge badge-dist-pivot">距突破 ${stock.dist_pivot}%</span>` : 
+                `<span class="badge badge-dist-sma">距10週線 ${stock.dist_sma50 > 0 ? '+' : ''}${stock.dist_sma50}%</span>`;
 
             return `
                 <div class="stock-item" onclick='selectStock(${JSON.stringify(stock)})'>
@@ -111,43 +144,33 @@
                     <div class="badges-container">
                         <span class="badge badge-sector">${stock.sector}</span>
                         ${metricBadge}
-                        <span class="badge badge-status">${stock.status}</span>
                     </div>
-                    <div class="stock-summary">📖 ${stock.summary}</div>
                     <div class="fund-grid">
-                        <div class="fund-item"><span class="fund-label">營收增長</span><span class="fund-val val-highlight">${stock.rev_growth}</span></div>
-                        <div class="fund-item"><span class="fund-label">股本回報 (ROE)</span><span class="fund-val val-highlight">${stock.roe}</span></div>
-                        <div class="fund-item"><span class="fund-label">淨利潤</span><span class="fund-val">${stock.net_income}</span></div>
-                        <div class="fund-item"><span class="fund-label">自由現金流</span><span class="fund-val">${stock.cashflow}</span></div>
+                        <div class="fund-item"><span class="fund-label">營收增長</span><span class="fund-val">${stock.rev_growth}</span></div>
+                        <div class="fund-item"><span class="fund-label">ROE</span><span class="fund-val">${stock.roe}</span></div>
                     </div>
                 </div>`;
         }
 
         function selectStock(stock) {
             document.querySelectorAll('.stock-item').forEach(el => {
-                if(el.innerText.includes(stock.ticker)) {
-                    el.classList.add('active');
-                } else {
-                    el.classList.remove('active');
-                }
+                el.classList.toggle('active', el.innerText.includes(stock.ticker));
             });
 
-            document.getElementById('chartTitle').innerText = `${stock.ticker} - 專業技術圖表`;
+            document.getElementById('chartTitle').innerText = `${stock.ticker} - 日線趨勢圖表 (Daily)`;
             
-            let noteContent = `💡 <b>戰略與基本面診斷：</b><br>
-            • <b>CAN SLIM 護城河：</b> 該公司營收增長達 <b>${stock.rev_growth}</b>，ROE 高達 <b>${stock.roe}</b>，具備極強的盈利用戶轉化能力。<br>`;
-            
-            if (stock.category === "VCP突破組") {
-                noteContent += `• <b>技術狀態：</b> 距離 Pivot 突破點 <b>${stock.dist_pivot}%</b>，${stock.status}。近期成交量已呈現萎縮，籌碼乾淨，隨時準備帶量向上突破！`;
-            } else {
-                noteContent += `• <b>技術狀態：</b> 距離 10週均線 (50日線) <b>${stock.dist_sma50}%</b>，處於${stock.status}階段。在強勁基本面支撐下，這是機構大戶溫和洗盤的絕佳低吸位置。`;
-            }
-            document.getElementById('valNotes').innerHTML = noteContent;
+            // 填入專家策略面板數據
+            document.getElementById('strategyPanel').style.display = 'block';
+            document.getElementById('valEntry').innerText = `$${stock.entry}`;
+            document.getElementById('valStop').innerText = `$${stock.stop}`;
+            document.getElementById('val3R').innerText = `$${stock.target_3r}`;
+            document.getElementById('val4R').innerText = `$${stock.target_4r}`;
+            document.getElementById('valReason').innerText = stock.reason;
             
             document.getElementById('tradingview_widget').innerHTML = '';
             new TradingView.widget({
-                "width": "100%", "height": 650, "symbol": stock.ticker, 
-                "interval": "1W", 
+                "width": "100%", "height": 500, "symbol": stock.ticker, 
+                "interval": "D",  // 強制鎖定為日線圖 (D)
                 "timezone": "Etc/UTC", "theme": "dark", "style": "1", "locale": "zh_HK", "toolbar_bg": "#f1f3f6",
                 "enable_publishing": false, "allow_symbol_change": true, "container_id": "tradingview_widget"
             });
