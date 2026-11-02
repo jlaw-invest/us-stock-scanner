@@ -38,7 +38,6 @@
         .strategy-panel { background: rgba(41, 98, 255, 0.05); border: 1px solid rgba(41, 98, 255, 0.2); border-radius: 10px; padding: 20px; margin-top: 20px; }
         .strategy-title { font-size: 16px; font-weight: bold; color: #64b5f6; margin-bottom: 15px; border-bottom: 1px dashed rgba(41, 98, 255, 0.3); padding-bottom: 8px;}
         
-        /* 5格版面設計 */
         .trade-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px; margin-bottom: 15px;}
         @media (max-width: 768px) { .trade-grid { grid-template-columns: repeat(3, 1fr); } }
         @media (max-width: 480px) { .trade-grid { grid-template-columns: repeat(2, 1fr); } }
@@ -73,7 +72,7 @@
                     <div class="strategy-title">🎯 自動化交易計畫 (Swing Trade)</div>
                     <div class="trade-grid">
                         <div class="trade-box">
-                            <div class="trade-label">進場買入</div>
+                            <div class="trade-label" id="valOrderType" style="color:#f5b041; font-weight:bold;">訂單類型</div>
                             <div class="trade-val entry" id="valEntry">--</div>
                         </div>
                         <div class="trade-box">
@@ -171,13 +170,14 @@
             document.getElementById('chartTitle').innerText = `${stock.ticker} - 日線趨勢圖表 (Daily)`;
             
             document.getElementById('strategyPanel').style.display = 'block';
+            document.getElementById('valOrderType').innerText = stock.order_type || "進場買入";
             document.getElementById('valEntry').innerText = stock.entry ? `$${stock.entry}` : "等待...";
             document.getElementById('valStop').innerText = stock.stop ? `$${stock.stop}` : "等待...";
             document.getElementById('val3R').innerText = stock.target_3r ? `$${stock.target_3r}` : "等待...";
             document.getElementById('val4R').innerText = stock.target_4r ? `$${stock.target_4r}` : "等待...";
             document.getElementById('val5R').innerText = stock.target_5r ? `$${stock.target_5r}` : "等待...";
             document.getElementById('valReason').innerText = stock.reason || "等待策略模組更新中...";
-            document.getElementById('valPlan').innerText = stock.action_plan || "本策略主做 Swing Trade，買入後分批止盈，嚴格止損保本。";
+            document.getElementById('valPlan').innerText = stock.action_plan || "等待策略模組更新中...";
             
             document.getElementById('tradingview_widget').innerHTML = '';
             new TradingView.widget({
