@@ -1,9 +1,9 @@
-name: Daily US Stock Scanner
+name: Hourly Stock Scanner and Alert
 
 on:
   workflow_dispatch:
   schedule:
-    - cron: '0 22 * * 1-5'
+    - cron: '0 14-21 * * 1-5' # 星期一至五，每小時運行一次
 
 jobs:
   run-scanner:
@@ -21,7 +21,11 @@ jobs:
         run: |
           pip install pandas yfinance numpy
 
-      - name: 執行量化選股引擎與模擬交易
+      - name: 執行量化選股與實時模擬交易
+        env:
+          MAIL_USER: ${{ secrets.MAIL_USER }}
+          MAIL_PASSWORD: ${{ secrets.MAIL_PASSWORD }}
+          ALERT_TO: ${{ secrets.ALERT_TO }}
         run: |
           python stock_scanner.py
           python paper_trader.py
@@ -31,5 +35,5 @@ jobs:
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Action"
           git add stocks_data.json portfolio.json
-          git commit -m "Auto-update scanner and portfolio" || echo "No changes to commit"
+          git commit -m "Hourly auto-update scanner and portfolio" || echo "No changes to commit"
           git push
