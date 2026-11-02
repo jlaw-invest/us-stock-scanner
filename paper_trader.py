@@ -11,8 +11,11 @@ MARKET_INDEX = "^GSPC" # S&P 500 大市指標
 
 def load_portfolio():
     if os.path.exists(PORTFOLIO_FILE):
-        with open(PORTFOLIO_FILE, 'r', encoding='utf-8') as f:
-            return json.load(f)
+        try:
+            with open(PORTFOLIO_FILE, 'r', encoding='utf-8') as f:
+                return json.load(f)
+        except:
+            pass
     return {"cash": INITIAL_CASH, "total_equity": INITIAL_CASH, "positions": [], "history": [], "pending_orders": []}
 
 def save_portfolio(pf):
@@ -20,7 +23,6 @@ def save_portfolio(pf):
         json.dump(pf, f, ensure_ascii=False, indent=4)
 
 def check_market_trend():
-    # 檢查 S&P 500 是否高於 20日線，大市偏弱時暫停建倉
     try:
         hist = yf.Ticker(MARKET_INDEX).history(period="30d")
         if hist.empty: return True
@@ -42,16 +44,26 @@ def main():
     market_data = {}
     
     if all_tickers:
-        data = yf.download(all_tickers, period="2d", group_by="ticker", threads=True)
-        for ticker in all_tickers:
-            hist = data if len(all_tickers) == 1 else data[ticker]
-            if not hist.empty:
-                market_data[ticker] = {
-                    "open": float(hist['Open'].iloc[-1]),
-                    "high": float(hist['High'].iloc[-1]),
-                    "low": float(hist['Low'].iloc[-1]),
-                    "close": float(hist['Close'].iloc[-1])
-                }
+        try:
+            data = yf.download(all_tickers, period="2d", group_by="ticker", threads=True)
+            for ticker in all_tickers:
+                if len(all_tickers) == 1:
+                    hist = data
+                else:
+                    try:
+                        hist = data[ticker]
+                    except:
+                        hist = pd.DataFrame()
+                
+                if not hist.empty and len(hist) >= 1:
+                    market_data[ticker] = {
+                        "open": float(hist['Open'].iloc[-1]),
+                        "high": float(hist['High'].iloc[-1]),
+                        "low": float(hist['Low'].iloc[-1]),
+                        "close": float(hist['Close'].iloc[-1])
+                    }
+        except Exception as e:
+            print(f"⚠️ 獲取市場數據時發生錯誤: {e}")
 
     # 1. 處理持倉平倉 (止蝕/止盈)
     new_positions = []
@@ -142,8 +154,11 @@ def main():
 
     # 3. 大市健康時，為今日選出的新股設置掛單
     if is_market_good and os.path.exists(STOCKS_FILE):
-        with open(STOCKS_FILE, 'r', encoding='utf-8') as f:
-            stocks_data = json.load(f).get("stocks", [])
+        try:
+            with open(STOCKS_FILE, 'r', encoding='utf-8') as f:
+                stocks_data = json.load(f).get("stocks", [])
+        except:
+            stocks_data = []
             
         held_and_pending_tickers = [p["ticker"] for p in pf["positions"]] + [o["ticker"] for o in pf["pending_orders"]]
         pf["pending_orders"] = [] 
@@ -180,4 +195,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-  
