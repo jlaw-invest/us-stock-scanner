@@ -9,14 +9,12 @@
         :root { --bg-color: #0b0e14; --card-bg: #151922; --text-main: #ffffff; --text-muted: #848e9c; --accent-green: #0ecb81; --accent-blue: #2962ff; --accent-orange: #f6465d; --border-color: #2a2e39; }
         body { background-color: var(--bg-color); color: var(--text-main); font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; margin: 0; padding: 15px; }
         
-        /* 導航與分頁設計 */
         .nav-tabs { display: flex; gap: 15px; border-bottom: 1px solid var(--border-color); padding-bottom: 10px; margin-bottom: 20px; }
         .tab-btn { background: transparent; border: none; color: var(--text-muted); font-size: 18px; font-weight: bold; cursor: pointer; padding: 5px 10px; }
         .tab-btn.active { color: var(--text-main); border-bottom: 3px solid var(--accent-blue); }
         .view-section { display: none; }
         .view-section.active { display: block; }
 
-        /* 戰情室排版 */
         .container { display: grid; grid-template-columns: 380px 1fr; gap: 20px; }
         @media (max-width: 900px) { .container { grid-template-columns: 1fr; } }
         .sidebar { background-color: var(--card-bg); border: 1px solid var(--border-color); border-radius: 12px; padding: 15px; height: 850px; overflow-y: auto; }
@@ -27,7 +25,6 @@
         .stock-item.active { border-color: var(--accent-green); background-color: rgba(14, 203, 129, 0.05); }
         .stock-header { display: flex; justify-content: space-between; font-weight: bold; font-size: 18px; margin-bottom: 8px; }
         
-        /* 專家策略面板 UI */
         .strategy-panel { background: rgba(41, 98, 255, 0.05); border: 1px solid rgba(41, 98, 255, 0.2); border-radius: 10px; padding: 20px; margin-top: 20px; }
         .strategy-title { font-size: 16px; font-weight: bold; color: #64b5f6; margin-bottom: 15px; border-bottom: 1px dashed rgba(41, 98, 255, 0.3); padding-bottom: 8px;}
         .trade-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px; margin-bottom: 15px;}
@@ -44,4 +41,258 @@
         .plan-box h4 { margin: 0 0 6px 0; color: #fff; font-size: 14px;}
         .plan-box p { margin: 0; white-space: pre-line;}
         .badges-container { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 10px; }
-        .badge { padding: 3px 7px; border-radius
+        .badge { padding: 3px 7px; border-radius: 5px; font-size: 11px; font-weight: 600; }
+        .badge-sector { background: rgba(41, 98, 255, 0.15); color: #64b5f6; border: 1px solid rgba(41, 98, 255, 0.3); }
+        .badge-dist-pivot { background: rgba(14, 203, 129, 0.15); color: var(--accent-green); border: 1px solid rgba(14, 203, 129, 0.3); }
+        .badge-dist-sma { background: rgba(246, 70, 93, 0.15); color: var(--accent-orange); border: 1px solid rgba(246, 70, 93, 0.3); }
+        .error-msg { background: rgba(246, 70, 93, 0.1); border: 1px solid var(--accent-orange); color: #fff; padding: 15px; border-radius: 8px; text-align: center;}
+
+        .portfolio-dashboard { background-color: var(--card-bg); border: 1px solid var(--border-color); border-radius: 12px; padding: 20px; }
+        .metric-cards { display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; margin-bottom: 25px; }
+        .metric-card { background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.05); padding: 20px; border-radius: 10px; text-align: center; }
+        .metric-title { color: var(--text-muted); font-size: 14px; margin-bottom: 5px; }
+        .metric-value { font-size: 28px; font-weight: bold; color: #fff; }
+        
+        table { width: 100%; border-collapse: collapse; margin-top: 10px; font-size: 14px;}
+        th { text-align: left; padding: 12px; border-bottom: 1px solid var(--border-color); color: var(--text-muted); }
+        td { padding: 12px; border-bottom: 1px solid rgba(255,255,255,0.05); }
+        .profit { color: var(--accent-green); font-weight: bold;}
+        .loss { color: var(--accent-orange); font-weight: bold;}
+    </style>
+</head>
+<body>
+    <div class="nav-tabs">
+        <button id="btn-scanner" class="tab-btn active" onclick="switchTab('scanner')">🤖 專家戰情室</button>
+        <button id="btn-portfolio" class="tab-btn" onclick="switchTab('portfolio')">💼 AI 模擬基金 ($10k)</button>
+    </div>
+
+    <!-- 戰情室視圖 -->
+    <div id="view-scanner" class="view-section active">
+        <div class="container">
+            <div class="sidebar">
+                <h3 style="margin-top:0; color: #fff;">今日精選掃描</h3>
+                <div id="stockList">載入中...</div>
+            </div>
+            <div class="main-content">
+                <div class="chart-card">
+                    <h3 id="chartTitle" style="margin-top: 0;">請選擇股票</h3>
+                    <div id="tradingview_widget"></div>
+                    
+                    <div class="strategy-panel" id="strategyPanel" style="display: none;">
+                        <div class="strategy-title">🎯 自動化交易計畫 (Swing Trade)</div>
+                        <div class="trade-grid">
+                            <div class="trade-box">
+                                <div class="trade-label" id="valOrderType" style="color:#f5b041; font-weight:bold;">訂單類型</div>
+                                <div class="trade-val entry" id="valEntry">--</div>
+                            </div>
+                            <div class="trade-box">
+                                <div class="trade-label">嚴格止蝕</div>
+                                <div class="trade-val stop" id="valStop">--</div>
+                            </div>
+                            <div class="trade-box">
+                                <div class="trade-label">第一目標 (3R)</div>
+                                <div class="trade-val target" id="val3R">--</div>
+                            </div>
+                            <div class="trade-box">
+                                <div class="trade-label">次要目標 (4R)</div>
+                                <div class="trade-val target" id="val4R">--</div>
+                            </div>
+                            <div class="trade-box">
+                                <div class="trade-label">終極目標 (5R)</div>
+                                <div class="trade-val target" id="val5R">--</div>
+                            </div>
+                        </div>
+                        <div class="strategy-text">
+                            <div class="plan-box">
+                                <h4>📈 買入邏輯分析：</h4>
+                                <p id="valReason">等待策略模組更新中...</p>
+                            </div>
+                            <div class="plan-box warning">
+                                <h4>🛡️ 自動化執行指令：</h4>
+                                <p id="valPlan">等待策略模組更新中...</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 模擬基金視圖 -->
+    <div id="view-portfolio" class="view-section">
+        <div class="portfolio-dashboard">
+            <div class="metric-cards">
+                <div class="metric-card">
+                    <div class="metric-title">帳戶總淨值 (Total Equity)</div>
+                    <div class="metric-value" id="pf-equity">--</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-title">可用現金 (Cash)</div>
+                    <div class="metric-value" id="pf-cash">--</div>
+                </div>
+            </div>
+
+            <h3 style="border-bottom: 1px dashed #2a2e39; padding-bottom: 10px;">📈 當前持有倉位 (Open Positions)</h3>
+            <div style="overflow-x: auto;">
+                <table>
+                    <thead><tr><th>股票</th><th>買入日期</th><th>股數</th><th>買入價</th><th>現價</th><th>止蝕價</th><th>未實現盈虧</th></tr></thead>
+                    <tbody id="pf-positions"></tbody>
+                </table>
+            </div>
+
+            <h3 style="border-bottom: 1px dashed #2a2e39; padding-bottom: 10px; margin-top: 40px;">📜 歷史交易紀錄 (Trade History)</h3>
+            <div style="overflow-x: auto;">
+                <table>
+                    <thead><tr><th>股票</th><th>買入日期</th><th>賣出日期</th><th>買入價</th><th>賣出價</th><th>賣出原因</th><th>已實現利潤</th></tr></thead>
+                    <tbody id="pf-history"></tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let globalStocks = [];
+
+        function switchTab(tabId) {
+            document.getElementById('btn-scanner').classList.remove('active');
+            document.getElementById('btn-portfolio').classList.remove('active');
+            document.getElementById('view-scanner').classList.remove('active');
+            document.getElementById('view-portfolio').classList.remove('active');
+            
+            document.getElementById('btn-' + tabId).classList.add('active');
+            document.getElementById('view-' + tabId).classList.add('active');
+        }
+
+        async function loadScanner() {
+            try {
+                const response = await fetch('stocks_data.json?t=' + new Date().getTime());
+                if (!response.ok) throw new Error('無法讀取 JSON');
+                const text = await response.text();
+                if (!text) throw new Error('檔案是空的');
+                const data = JSON.parse(text);
+                
+                globalStocks = data.stocks || [];
+                const listEl = document.getElementById('stockList');
+                listEl.innerHTML = '';
+                
+                if (globalStocks.length === 0) {
+                    listEl.innerHTML = '<div class="error-msg">⚠️ 今日無股票符合強勢條件，或系統尚未完成更新。</div>';
+                    return;
+                }
+
+                const vcpStocks = globalStocks.filter(s => s.category && s.category.includes("VCP"));
+                const leaderStocks = globalStocks.filter(s => s.category && s.category.includes("龍頭"));
+
+                let html = '';
+                if (vcpStocks.length > 0) {
+                    html += `<div class="category-title">🎯 VCP 量縮蓄勢組 (${vcpStocks.length})</div>`;
+                    vcpStocks.forEach(s => html += createStockCard(s));
+                }
+                if (leaderStocks.length > 0) {
+                    html += `<div class="category-title">🌊 行業潛水龍頭 (${leaderStocks.length})</div>`;
+                    leaderStocks.forEach(s => html += createStockCard(s));
+                }
+                
+                listEl.innerHTML = html;
+                selectStockByTicker(globalStocks[0].ticker);
+            } catch (error) {
+                document.getElementById('stockList').innerHTML = `<div class="error-msg">⚠️ 系統正準備數據中，請稍後再試。(${error.message})</div>`;
+            }
+        }
+
+        function createStockCard(stock) {
+            let cat = stock.category || "";
+            let metricBadge = cat.includes("VCP") ? 
+                `<span class="badge badge-dist-pivot">距突破 ${stock.dist_pivot}%</span>` : 
+                `<span class="badge badge-dist-sma">距10週線 ${stock.dist_sma50 > 0 ? '+' : ''}${stock.dist_sma50}%</span>`;
+
+            return `
+                <div class="stock-item" onclick="selectStockByTicker('${stock.ticker}')">
+                    <div class="stock-header">
+                        <span>${stock.ticker}</span>
+                        <span class="rs-score">RS: ${stock.rs}</span>
+                    </div>
+                    <div class="badges-container">
+                        <span class="badge badge-sector">${stock.sector}</span>
+                        ${metricBadge}
+                    </div>
+                </div>`;
+        }
+
+        function selectStockByTicker(ticker) {
+            const stock = globalStocks.find(s => s.ticker === ticker);
+            if(!stock) return;
+
+            document.querySelectorAll('.stock-item').forEach(el => {
+                el.classList.toggle('active', el.innerText.includes(stock.ticker));
+            });
+
+            document.getElementById('chartTitle').innerText = `${stock.ticker} - 日線趨勢圖表 (Daily)`;
+            document.getElementById('strategyPanel').style.display = 'block';
+            
+            document.getElementById('valOrderType').innerText = stock.order_type || "進場買入";
+            document.getElementById('valEntry').innerText = stock.entry ? `$${stock.entry}` : "等待...";
+            document.getElementById('valStop').innerText = stock.stop ? `$${stock.stop}` : "等待...";
+            document.getElementById('val3R').innerText = stock.target_3r ? `$${stock.target_3r}` : "等待...";
+            document.getElementById('val4R').innerText = stock.target_4r ? `$${stock.target_4r}` : "等待...";
+            document.getElementById('val5R').innerText = stock.target_5r ? `$${stock.target_5r}` : "等待...";
+            document.getElementById('valReason').innerText = stock.reason || "等待策略更新...";
+            document.getElementById('valPlan').innerText = stock.action_plan || "等待策略更新...";
+            
+            document.getElementById('tradingview_widget').innerHTML = '';
+            if (typeof TradingView !== 'undefined') {
+                new TradingView.widget({
+                    "width": "100%", "height": 450, "symbol": stock.ticker, 
+                    "interval": "D", 
+                    "timezone": "Etc/UTC", "theme": "dark", "style": "1", "locale": "zh_HK", "toolbar_bg": "#f1f3f6",
+                    "enable_publishing": false, "allow_symbol_change": true, "container_id": "tradingview_widget"
+                });
+            } else {
+                document.getElementById('tradingview_widget').innerHTML = '<div class="error-msg">⚠️ 無法載入圖表，請檢查是否開啟了阻擋廣告插件。</div>';
+            }
+        }
+
+        async function loadPortfolio() {
+            try {
+                const res = await fetch('portfolio.json?t=' + Date.now());
+                if (!res.ok) throw new Error('Data not found');
+                const pf = await res.json();
+                
+                const equity = pf.total_equity || 10000;
+                const cash = pf.cash || 10000;
+                
+                document.getElementById('pf-equity').innerText = `$${equity.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}`;
+                document.getElementById('pf-cash').innerText = `$${cash.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}`;
+                
+                let posHtml = '';
+                if(!pf.positions || pf.positions.length === 0) posHtml = '<tr><td colspan="7" style="text-align:center;">目前空倉，等待交易機會...</td></tr>';
+                else {
+                    pf.positions.forEach(p => {
+                        const pnlClass = p.unrealized_pnl >= 0 ? 'profit' : 'loss';
+                        const sign = p.unrealized_pnl >= 0 ? '+' : '';
+                        posHtml += `<tr><td><b>${p.ticker}</b></td><td>${p.buy_date}</td><td>${p.shares}</td><td>$${p.buy_price.toFixed(2)}</td><td>$${p.current_price.toFixed(2)}</td><td>$${p.stop.toFixed(2)}</td><td class="${pnlClass}">${sign}$${p.unrealized_pnl.toFixed(2)} (${sign}${p.unrealized_pnl_percent.toFixed(2)}%)</td></tr>`;
+                    });
+                }
+                document.getElementById('pf-positions').innerHTML = posHtml;
+
+                let histHtml = '';
+                if(!pf.history || pf.history.length === 0) histHtml = '<tr><td colspan="7" style="text-align:center;">尚無交易紀錄</td></tr>';
+                else {
+                    pf.history.slice().reverse().forEach(h => {
+                        const pnlClass = h.pnl >= 0 ? 'profit' : 'loss';
+                        const sign = h.pnl >= 0 ? '+' : '';
+                        histHtml += `<tr><td><b>${h.ticker}</b></td><td>${h.buy_date}</td><td>${h.sell_date}</td><td>$${h.buy_price.toFixed(2)}</td><td>$${h.sell_price.toFixed(2)}</td><td style="font-size:12px;">${h.reason}</td><td class="${pnlClass}">${sign}$${h.pnl.toFixed(2)} (${sign}${h.pnl_percent.toFixed(2)}%)</td></tr>`;
+                    });
+                }
+                document.getElementById('pf-history').innerHTML = histHtml;
+            } catch (e) {
+                document.getElementById('pf-positions').innerHTML = '<tr><td colspan="7" style="text-align:center;">等待系統首次結算...</td></tr>';
+                document.getElementById('pf-history').innerHTML = '<tr><td colspan="7" style="text-align:center;">等待系統首次結算...</td></tr>';
+            }
+        }
+
+        loadScanner();
+        loadPortfolio();
+    </script>
+</body>
+</html>
