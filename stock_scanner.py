@@ -30,7 +30,6 @@ def analyze_stock(ticker):
 
         current_price = float(df['Close'].iloc[-1])
         prev_close = float(df['Close'].iloc[-2])
-        # 獲取前一日最低價 (用於止蝕)
         prev_low = float(df['Low'].iloc[-2])
         
         sma_50 = float(df['Close'].rolling(window=50).mean().iloc[-1])
@@ -55,30 +54,36 @@ def analyze_stock(ticker):
         daily_return = (current_price - prev_close) / prev_close
         is_not_crashing = daily_return >= -0.02
 
-        # 專家操盤策略計算邏輯
+        # 策略邏輯與價位計算
         if is_contracting and is_not_crashing and is_vol_dryup and (current_price >= pivot_point * 0.92):
             category = "VCP突破組"
             status = "量縮蓄勢，準備突破"
             entry_price = round(pivot_point, 2)
-            expert_reason = f"股價經過波動收縮，浮籌洗淨。當日線放量突破前高樞軸點 (${entry_price})，代表主力正式發動新一輪攻勢，是絕佳的順勢買入點。"
+            expert_reason = f"股價經過波動收縮，浮籌洗淨。若日線帶量突破前高樞軸點 (${entry_price})，即觸發買入訊號。"
         else:
             category = "行業潛水龍頭"
-            status = "回調洗盤中" if abs(dist_sma50) > 4.0 else "回踩 10週線黃金支撐"
+            status = "回踩 10週線黃金支撐" if abs(dist_sma50) <= 4.0 else "回調洗盤中"
             entry_price = round(current_price, 2)
-            expert_reason = f"強勢股回踩 50日線/10週線 (約 ${round(sma_50, 2)}) 強支撐區。配合強勁基本面，這是大戶洗盤結束、準備重新建倉的黃金低吸位置。"
+            expert_reason = f"強勢股回踩 50日線/10週線 (約 ${round(sma_50, 2)}) 強支撐區，這是大戶洗盤結束準備重新建倉的絕佳位置。"
 
-        # 止蝕與目標價計算 (Swing Trade: 3R / 4R)
-        # 止蝕設在前一日最低價下方 0.5% (預留假跌破空間)
+        # 止蝕設在前一日最低價下方 0.5%
         stop_loss = round(prev_low * 0.995, 2)
         risk = entry_price - stop_loss
         
-        # 防呆機制：若風險值異常小或小於零，預設 5% 止損
         if risk <= 0 or (risk / entry_price) < 0.01:
             risk = entry_price * 0.05
             stop_loss = round(entry_price * 0.95, 2)
             
         target_3r = round(entry_price + (risk * 3), 2)
         target_4r = round(entry_price + (risk * 4), 2)
+        target_5r = round(entry_price + (risk * 5), 2) # 新增 5R 目標
+
+        # 自動化執行指南
+        action_plan = f"1. 當價格觸及 ${entry_price} 時買入。\n" \
+                      f"2. 立即設置硬止蝕於 ${stop_loss}，若跌穿無條件離場。\n" \
+                      f"3. 股價到達 3R (${target_3r}) 時，賣出 50% 倉位獲利，並將剩餘倉位止蝕推至買入價（保本）。\n" \
+                      f"4. 股價到達 4R (${target_4r}) 時，再賣出 25% 倉位。\n" \
+                      f"5. 最後 25% 倉位留至 5R (${target_5r}) 或跌破 10日線時全數結平。"
 
         return {
             "ticker": ticker,
@@ -100,7 +105,9 @@ def analyze_stock(ticker):
             "stop": stop_loss,
             "target_3r": target_3r,
             "target_4r": target_4r,
-            "reason": expert_reason
+            "target_5r": target_5r,
+            "reason": expert_reason,
+            "action_plan": action_plan
         }
     except Exception as e:
         return None
@@ -108,12 +115,10 @@ def analyze_stock(ticker):
 def main():
     watchlist = ["AAPL", "MSFT", "AMZN", "GOOGL", "META", "TSLA", "AVGO", "COST", "NFLX", "AMD", "LLY", "JPM", "PLTR", "NVDA", "UBER", "CRWD", "PALO"]
     results = []
-    
-    print("🚀 執行專家級操盤策略掃描...")
+    print("🚀 執行專家級操盤策略掃描 (支援 5R 最大化回報)...")
     for ticker in watchlist:
         res = analyze_stock(ticker)
         if res: results.append(res)
-            
     with open("stocks_data.json", "w", encoding="utf-8") as f:
         json.dump({"stocks": results}, f, ensure_ascii=False, indent=4)
     print(f"🎯 掃描完畢！產出 {len(results)} 隻強勢股。")
