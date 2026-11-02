@@ -33,27 +33,31 @@
         .fund-val { font-size: 13px; font-weight: 700; color: #eaeaeb; }
 
         .chart-card { background-color: var(--card-bg); border: 1px solid var(--border-color); border-radius: 12px; padding: 20px; }
-        #tradingview_widget { height: 500px; width: 100%; border-radius: 8px; overflow: hidden;}
+        #tradingview_widget { height: 450px; width: 100%; border-radius: 8px; overflow: hidden;}
         
-        /* 專家策略面板 UI */
         .strategy-panel { background: rgba(41, 98, 255, 0.05); border: 1px solid rgba(41, 98, 255, 0.2); border-radius: 10px; padding: 20px; margin-top: 20px; }
         .strategy-title { font-size: 16px; font-weight: bold; color: #64b5f6; margin-bottom: 15px; border-bottom: 1px dashed rgba(41, 98, 255, 0.3); padding-bottom: 8px;}
-        .trade-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 15px;}
-        @media (max-width: 600px) { .trade-grid { grid-template-columns: repeat(2, 1fr); } }
-        .trade-box { background: rgba(0,0,0,0.3); padding: 12px; border-radius: 8px; text-align: center; border: 1px solid rgba(255,255,255,0.05); }
-        .trade-label { font-size: 12px; color: #848e9c; margin-bottom: 5px; }
-        .trade-val.entry { color: #0ecb81; font-size: 20px; font-weight: bold; }
-        .trade-val.stop { color: #f6465d; font-size: 20px; font-weight: bold; }
-        .trade-val.target { color: #f5b041; font-size: 20px; font-weight: bold; }
         
-        .strategy-text { font-size: 14px; color: #d1d4dc; line-height: 1.6; background: rgba(0,0,0,0.2); padding: 15px; border-radius: 8px; border-left: 4px solid var(--accent-blue);}
-        .strategy-text h4 { margin: 0 0 8px 0; color: #fff; font-size: 14px;}
-        .warning-text { color: #f6465d; font-weight: bold; }
+        /* 5格版面設計 */
+        .trade-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px; margin-bottom: 15px;}
+        @media (max-width: 768px) { .trade-grid { grid-template-columns: repeat(3, 1fr); } }
+        @media (max-width: 480px) { .trade-grid { grid-template-columns: repeat(2, 1fr); } }
+        .trade-box { background: rgba(0,0,0,0.4); padding: 12px; border-radius: 8px; text-align: center; border: 1px solid rgba(255,255,255,0.08); }
+        .trade-label { font-size: 11px; color: #848e9c; margin-bottom: 5px; white-space: nowrap;}
+        .trade-val.entry { color: #0ecb81; font-size: 18px; font-weight: bold; }
+        .trade-val.stop { color: #f6465d; font-size: 18px; font-weight: bold; }
+        .trade-val.target { color: #f5b041; font-size: 18px; font-weight: bold; }
+        
+        .strategy-text { display: grid; grid-template-columns: 1fr; gap: 12px; font-size: 13px; color: #d1d4dc; line-height: 1.6; }
+        .plan-box { background: rgba(0,0,0,0.2); padding: 12px; border-radius: 8px; border-left: 4px solid var(--accent-blue);}
+        .plan-box.warning { border-left-color: var(--accent-orange); }
+        .plan-box h4 { margin: 0 0 6px 0; color: #fff; font-size: 14px;}
+        .plan-box p { margin: 0; white-space: pre-line;}
     </style>
 </head>
 <body>
     <header>
-        <h1>🤖 專家操盤系統 (日線分析與 Swing Trade 策略)</h1>
+        <h1>🤖 專家操盤系統 (Swing Trade MAX 回報策略)</h1>
     </header>
     <div class="container">
         <div class="sidebar">
@@ -65,16 +69,15 @@
                 <h3 id="chartTitle" style="margin-top: 0;">請選擇左側股票</h3>
                 <div id="tradingview_widget"></div>
                 
-                <!-- 專家策略面板 -->
                 <div class="strategy-panel" id="strategyPanel" style="display: none;">
-                    <div class="strategy-title">🎯 專家操盤策略 (Swing Trade)</div>
+                    <div class="strategy-title">🎯 自動化交易計畫 (Swing Trade)</div>
                     <div class="trade-grid">
                         <div class="trade-box">
-                            <div class="trade-label">機會買入點</div>
+                            <div class="trade-label">進場買入</div>
                             <div class="trade-val entry" id="valEntry">--</div>
                         </div>
                         <div class="trade-box">
-                            <div class="trade-label">止蝕位 (前日低位下方)</div>
+                            <div class="trade-label">嚴格止蝕</div>
                             <div class="trade-val stop" id="valStop">--</div>
                         </div>
                         <div class="trade-box">
@@ -82,15 +85,23 @@
                             <div class="trade-val target" id="val3R">--</div>
                         </div>
                         <div class="trade-box">
-                            <div class="trade-label">終極目標 (4R)</div>
+                            <div class="trade-label">次要目標 (4R)</div>
                             <div class="trade-val target" id="val4R">--</div>
+                        </div>
+                        <div class="trade-box">
+                            <div class="trade-label">終極目標 (5R)</div>
+                            <div class="trade-val target" id="val5R">--</div>
                         </div>
                     </div>
                     <div class="strategy-text">
-                        <h4>📈 買入邏輯分析：</h4>
-                        <p id="valReason" style="margin-top:0; margin-bottom: 12px;"></p>
-                        <h4>🛡️ 執行策略與紀律：</h4>
-                        <p style="margin:0;">本策略主做 <b>Swing Trade (波段交易)</b>，不作長線死守。買入後若到達 <b>3R 第一目標價</b>，建議先獲利了結 50% 倉位，剩餘倉位將止蝕點上移至「買入價」作保護。若股價跌穿 <span class="warning-text">止蝕位</span>，必須無條件嚴格離場，保住本金。</p>
+                        <div class="plan-box">
+                            <h4>📈 買入邏輯分析：</h4>
+                            <p id="valReason">等待策略模組更新中...</p>
+                        </div>
+                        <div class="plan-box warning">
+                            <h4>🛡️ 自動化執行指令：</h4>
+                            <p id="valPlan">等待策略模組更新中...</p>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -146,8 +157,8 @@
                         ${metricBadge}
                     </div>
                     <div class="fund-grid">
-                        <div class="fund-item"><span class="fund-label">營收增長</span><span class="fund-val">${stock.rev_growth}</span></div>
-                        <div class="fund-item"><span class="fund-label">ROE</span><span class="fund-val">${stock.roe}</span></div>
+                        <div class="fund-item"><span class="fund-label">營收增長</span><span class="fund-val">${stock.rev_growth || 'N/A'}</span></div>
+                        <div class="fund-item"><span class="fund-label">ROE</span><span class="fund-val">${stock.roe || 'N/A'}</span></div>
                     </div>
                 </div>`;
         }
@@ -159,18 +170,19 @@
 
             document.getElementById('chartTitle').innerText = `${stock.ticker} - 日線趨勢圖表 (Daily)`;
             
-            // 填入專家策略面板數據
             document.getElementById('strategyPanel').style.display = 'block';
-            document.getElementById('valEntry').innerText = `$${stock.entry}`;
-            document.getElementById('valStop').innerText = `$${stock.stop}`;
-            document.getElementById('val3R').innerText = `$${stock.target_3r}`;
-            document.getElementById('val4R').innerText = `$${stock.target_4r}`;
-            document.getElementById('valReason').innerText = stock.reason;
+            document.getElementById('valEntry').innerText = stock.entry ? `$${stock.entry}` : "等待...";
+            document.getElementById('valStop').innerText = stock.stop ? `$${stock.stop}` : "等待...";
+            document.getElementById('val3R').innerText = stock.target_3r ? `$${stock.target_3r}` : "等待...";
+            document.getElementById('val4R').innerText = stock.target_4r ? `$${stock.target_4r}` : "等待...";
+            document.getElementById('val5R').innerText = stock.target_5r ? `$${stock.target_5r}` : "等待...";
+            document.getElementById('valReason').innerText = stock.reason || "等待策略模組更新中...";
+            document.getElementById('valPlan').innerText = stock.action_plan || "本策略主做 Swing Trade，買入後分批止盈，嚴格止損保本。";
             
             document.getElementById('tradingview_widget').innerHTML = '';
             new TradingView.widget({
-                "width": "100%", "height": 500, "symbol": stock.ticker, 
-                "interval": "D",  // 強制鎖定為日線圖 (D)
+                "width": "100%", "height": 450, "symbol": stock.ticker, 
+                "interval": "D", 
                 "timezone": "Etc/UTC", "theme": "dark", "style": "1", "locale": "zh_HK", "toolbar_bg": "#f1f3f6",
                 "enable_publishing": false, "allow_symbol_change": true, "container_id": "tradingview_widget"
             });
