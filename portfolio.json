@@ -3,5 +3,69 @@
     "total_equity": 10000.0,
     "positions": [],
     "history": [],
-    "pending_orders": []
+    "pending_orders": [
+        {
+            "ticker": "AAPL",
+            "order_type": "✅ 現價低吸單",
+            "entry": 331.75,
+            "stop": 318.48,
+            "target_3r": 371.56,
+            "shares": 6,
+            "date_created": "2026-11-03 14:55"
+        },
+        {
+            "ticker": "MSFT",
+            "order_type": "✅ 現價低吸單",
+            "entry": 511.58,
+            "stop": 497.39,
+            "target_3r": 554.15,
+            "shares": 3,
+            "date_created": "2026-11-03 14:55"
+        },
+        {
+            "ticker": "AMD",
+            "order_type": "✅ 現價低吸單",
+            "entry": 486.5,
+            "stop": 459.08,
+            "target_3r": 568.76,
+            "shares": 4,
+            "date_created": "2026-11-03 14:55"
+        },
+        {
+            "ticker": "LLY",
+            "order_type": "⏳ 等待回調單 (Pullback Buy)",
+            "entry": 1285.75,
+            "stop": 1179.83,
+            "target_3r": 1603.51,
+            "shares": 1,
+            "date_created": "2026-11-03 14:55"
+        },
+        {
+            "ticker": "JPM",
+            "order_type": "⚠️ 條件突破單 (勿現價買)",
+            "entry": 358.26,
+            "stop": 343.93,
+            "target_3r": 401.25,
+            "shares": 5,
+            "date_created": "2026-11-03 14:55"
+        },
+        {
+            "ticker": "PLTR",
+            "order_type": "✅ 現價低吸單",
+            "entry": 169.46,
+            "stop": 162.68,
+            "target_3r": 189.8,
+            "shares": 11,
+            "date_created": "2026-11-03 14:55"
+        },
+        {
+            "ticker": "CRWD",
+            "order_type": "✅ 現價低吸單",
+            "entry": 247.59,
+            "stop": 236.57,
+            "target_3r": 280.65,
+            "shares": 8,
+            "date_created": "2026-11-03 14:55"
+        }
+    ]
 }
