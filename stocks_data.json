@@ -2,12 +2,12 @@
     "stocks": [
         {
             "ticker": "AAPL",
-            "rs": 93,
-            "price": 330.75,
+            "rs": 97,
+            "price": 331.41,
             "pivot": 351.73,
-            "sma_50": 334.03,
-            "dist_sma50": -0.98,
-            "dist_pivot": -5.96,
+            "sma_50": 334.04,
+            "dist_sma50": -0.79,
+            "dist_pivot": -5.78,
             "status": "等待 F.T. 確認",
             "category": "行業潛水龍頭 (回踩 10週線黃金支撐)",
             "sector": "Technology",
