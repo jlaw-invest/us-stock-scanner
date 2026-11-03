@@ -18,22 +18,16 @@
         .view-section.active { display: block; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
 
-        /* 版面網格 */
-        .container { display: grid; grid-template-columns: 350px 1fr; gap: 20px; }
-        @media (max-width: 900px) { 
-            .container { grid-template-columns: 1fr; } 
-            /* 手機版：將左側選股清單高度縮短，方便快速查看，並將右側內容提上來 */
-            .sidebar { height: auto; max-height: 250px; margin-bottom: 15px; }
-        }
+        /* 主體網格佈局：左側放清單與操盤計畫，右側放圖表 */
+        .container { display: grid; grid-template-columns: 380px 1fr; gap: 20px; }
+        @media (max-width: 950px) { .container { grid-template-columns: 1fr; } }
         
-        .sidebar { background-color: var(--card-bg); border: 1px solid var(--border-color); border-radius: 12px; padding: 15px; height: 880px; overflow-y: auto; }
+        .left-column { display: flex; flex-direction: column; gap: 20px; }
+        .sidebar { background-color: var(--card-bg); border: 1px solid var(--border-color); border-radius: 12px; padding: 15px; max-height: 450px; overflow-y: auto; }
         .chart-card { background-color: var(--card-bg); border: 1px solid var(--border-color); border-radius: 12px; padding: 15px; }
         
-        /* 手機版圖表優化：降低高度，讓下方數據能露出來 */
-        #tradingview_widget { height: 400px; width: 100%; border-radius: 8px; overflow: hidden; margin-top: 10px; border: 1px solid var(--border-color); }
-        @media (max-width: 600px) {
-            #tradingview_widget { height: 250px; } 
-        }
+        /* 修正 TradingView 圖表高度，避免過長與異常變形 */
+        #tradingview_widget { height: 420px; width: 100%; border-radius: 8px; overflow: hidden; margin-top: 10px; border: 1px solid var(--border-color); }
         
         /* 股票清單卡片 */
         .category-title { font-size: 13px; color: var(--accent-gold); font-weight: bold; margin: 15px 0 8px 0; border-bottom: 1px dashed rgba(245, 176, 65, 0.3); padding-bottom: 5px; }
@@ -44,48 +38,43 @@
         .ticker { font-size: 18px; font-weight: 800; letter-spacing: 1px; }
         .rs-score { background: rgba(41, 98, 255, 0.2); color: #82b1ff; padding: 2px 6px; border-radius: 4px; font-size: 11px; font-weight: bold; border: 1px solid rgba(41, 98, 255, 0.4); }
         
-        /* J Law 終極策略面板 */
-        .strategy-panel { background: rgba(0, 0, 0, 0.3); border: 1px solid var(--border-color); border-radius: 12px; padding: 15px; margin-top: 20px; }
+        /* J Law 終極策略面板 (移到左側下方) */
+        .strategy-panel { background: rgba(0, 0, 0, 0.3); border: 1px solid var(--border-color); border-radius: 12px; padding: 15px; }
         .strategy-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 15px; border-bottom: 1px solid var(--border-color); padding-bottom: 10px; flex-wrap: wrap; gap: 10px; }
-        .strategy-title { font-size: 16px; font-weight: bold; color: var(--accent-gold); display: flex; align-items: center; gap: 8px;}
+        .strategy-title { font-size: 15px; font-weight: bold; color: var(--accent-gold); display: flex; align-items: center; gap: 6px;}
         .status-badge { background: rgba(245, 176, 65, 0.15); color: var(--accent-gold); padding: 4px 10px; border-radius: 20px; font-size: 11px; font-weight: bold; border: 1px solid rgba(245, 176, 65, 0.3); animation: pulse 2s infinite; }
         @keyframes pulse { 0% { box-shadow: 0 0 0 0 rgba(245, 176, 65, 0.4); } 70% { box-shadow: 0 0 0 6px rgba(245, 176, 65, 0); } 100% { box-shadow: 0 0 0 0 rgba(245, 176, 65, 0); } }
 
         /* 精準數據網格 */
         .trade-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-bottom: 15px;}
-        @media (min-width: 768px) { .trade-grid { grid-template-columns: repeat(4, 1fr); } }
-        .trade-box { background: #1a1f2c; padding: 12px; border-radius: 8px; text-align: center; border: 1px solid #2a3143; position: relative; overflow: hidden; }
+        .trade-box { background: #1a1f2c; padding: 10px; border-radius: 8px; text-align: center; border: 1px solid #2a3143; position: relative; overflow: hidden; }
         .trade-box::before { content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 3px; }
         .box-trigger::before { background: var(--accent-green); }
         .box-stop::before { background: var(--accent-red); }
         .box-target::before { background: var(--accent-blue); }
         .box-risk::before { background: var(--text-muted); }
         
-        .trade-label { font-size: 11px; color: var(--text-muted); margin-bottom: 5px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px;}
-        .trade-val { font-size: 18px; font-weight: 900; font-family: monospace; }
+        .trade-label { font-size: 10px; color: var(--text-muted); margin-bottom: 5px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px;}
+        .trade-val { font-size: 16px; font-weight: 900; font-family: monospace; }
         .val-trigger { color: var(--accent-green); }
         .val-stop { color: var(--accent-red); }
         .val-target { color: var(--accent-blue); }
 
         /* 邏輯與計畫區塊 */
-        .logic-container { display: grid; grid-template-columns: 1fr; gap: 15px; }
-        @media (min-width: 800px) { .logic-container { grid-template-columns: 1fr 1fr; } }
-        .plan-box { background: rgba(255,255,255,0.02); padding: 15px; border-radius: 10px; border: 1px solid rgba(255,255,255,0.05); }
-        .plan-box h4 { margin: 0 0 10px 0; color: #fff; font-size: 14px; display: flex; align-items: center; gap: 6px; }
-        .plan-box p { margin: 0; font-size: 13px; color: #a9b4c2; line-height: 1.6; white-space: pre-line; }
+        .logic-container { display: flex; flex-direction: column; gap: 12px; }
+        .plan-box { background: rgba(255,255,255,0.02); padding: 12px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.05); }
+        .plan-box h4 { margin: 0 0 8px 0; color: #fff; font-size: 13px; display: flex; align-items: center; gap: 6px; }
+        .plan-box p { margin: 0; font-size: 12px; color: #a9b4c2; line-height: 1.5; white-space: pre-line; }
         .highlight-text { color: var(--accent-gold); font-weight: bold; }
 
         /* 模擬基金表格 */
         .portfolio-dashboard { background-color: var(--card-bg); border: 1px solid var(--border-color); border-radius: 12px; padding: 15px; }
-        
-        /* 修正手機版可用現金走位問題 */
         .metric-cards { display: flex; flex-direction: column; gap: 15px; margin-bottom: 25px; }
         @media (min-width: 600px) { .metric-cards { flex-direction: row; } }
         .metric-card { background: rgba(0,0,0,0.4); border: 1px solid #2a3143; padding: 20px; border-radius: 12px; text-align: center; flex: 1;}
         .metric-title { color: var(--text-muted); font-size: 13px; margin-bottom: 8px; font-weight: 600; text-transform: uppercase;}
         .metric-value { font-size: 28px; font-weight: 900; color: #fff; font-family: monospace; word-break: break-all;}
         
-        /* 響應式表格 */
         .table-responsive { overflow-x: auto; margin-bottom: 30px; -webkit-overflow-scrolling: touch; }
         table { width: 100%; border-collapse: collapse; min-width: 500px; font-size: 13px;}
         th { text-align: left; padding: 12px 10px; border-bottom: 1px solid var(--border-color); color: var(--text-muted); font-weight: 600; background: rgba(255,255,255,0.01); white-space: nowrap;}
@@ -104,58 +93,61 @@
     <!-- 戰情室視圖 -->
     <div id="view-scanner" class="view-section active">
         <div class="container">
-            <div class="sidebar">
-                <div style="display:flex; justify-content:space-between; align-items:flex-end; margin-bottom:10px;">
-                    <h3 style="margin:0; color: #fff; font-size: 16px;">已過濾確認信號</h3>
-                    <span style="font-size:10px; color:var(--accent-green);">● 實時監控中</span>
+            <!-- 左側欄位：上方是選股清單，下方直接緊接狙擊手操盤計畫 -->
+            <div class="left-column">
+                <div class="sidebar">
+                    <div style="display:flex; justify-content:space-between; align-items:flex-end; margin-bottom:10px;">
+                        <h3 style="margin:0; color: #fff; font-size: 15px;">已過濾確認信號</h3>
+                        <span style="font-size:10px; color:var(--accent-green);">● 實時監控中</span>
+                    </div>
+                    <div id="stockList"><div class="empty-msg">讀取市場數據中...</div></div>
                 </div>
-                <div id="stockList"><div class="empty-msg">讀取市場數據中...</div></div>
-            </div>
-            
-            <div class="main-content">
-                <div class="chart-card">
-                    <h2 id="chartTitle" style="margin: 0 0 5px 0; font-size: 20px;">等待選擇目標</h2>
-                    <p id="chartSubtitle" style="margin: 0; color: var(--text-muted); font-size: 12px;">右側交易・不見信號不撒網</p>
-                    <div id="tradingview_widget"></div>
+
+                <!-- 操盤計畫移到左側下方，免去長途滾動 -->
+                <div class="strategy-panel" id="strategyPanel" style="display: none;">
+                    <div class="strategy-header">
+                        <div class="strategy-title">⚔️ 狙擊手操盤計畫</div>
+                        <div class="status-badge" id="valOrderType">等待 F.T. 確認</div>
+                    </div>
                     
-                    <div class="strategy-panel" id="strategyPanel" style="display: none;">
-                        <div class="strategy-header">
-                            <div class="strategy-title">
-                                ⚔️ 狙擊手操盤計畫 (Dynamic Trigger)
-                            </div>
-                            <div class="status-badge" id="valOrderType">等待 F.T. 確認</div>
+                    <div class="trade-grid">
+                        <div class="trade-box box-trigger">
+                            <div class="trade-label">F.T. 突破買入價</div>
+                            <div class="trade-val val-trigger" id="valEntry">--</div>
                         </div>
-                        
-                        <div class="trade-grid">
-                            <div class="trade-box box-trigger">
-                                <div class="trade-label">F.T. 突破買入價 (Trigger)</div>
-                                <div class="trade-val val-trigger" id="valEntry">--</div>
-                            </div>
-                            <div class="trade-box box-stop">
-                                <div class="trade-label">信號低位止蝕 (Stop)</div>
-                                <div class="trade-val val-stop" id="valStop">--</div>
-                            </div>
-                            <div class="trade-box box-target">
-                                <div class="trade-label">3R 初始目標 (Target)</div>
-                                <div class="trade-val val-target" id="val3R">--</div>
-                            </div>
-                            <div class="trade-box box-risk">
-                                <div class="trade-label">每股風險承擔 (1R)</div>
-                                <div class="trade-val" style="color:#fff;" id="valRisk">--</div>
-                            </div>
+                        <div class="trade-box box-stop">
+                            <div class="trade-label">信號低位止蝕</div>
+                            <div class="trade-val val-stop" id="valStop">--</div>
                         </div>
-                        
-                        <div class="logic-container">
-                            <div class="plan-box">
-                                <h4>🧠 9大優勢・邏輯檢驗</h4>
-                                <p id="valReason">等待數據載入...</p>
-                            </div>
-                            <div class="plan-box" style="border-color: rgba(0, 210, 106, 0.2); background: rgba(0, 210, 106, 0.02);">
-                                <h4 style="color: var(--accent-green);">⚡ 系統自動執行指令</h4>
-                                <p id="valPlan">等待數據載入...</p>
-                            </div>
+                        <div class="trade-box box-target">
+                            <div class="trade-label">3R 初始目標</div>
+                            <div class="trade-val val-target" id="val3R">--</div>
+                        </div>
+                        <div class="trade-box box-risk">
+                            <div class="trade-label">每股風險 (1R)</div>
+                            <div class="trade-val" style="color:#fff;" id="valRisk">--</div>
                         </div>
                     </div>
+                    
+                    <div class="logic-container">
+                        <div class="plan-box">
+                            <h4>🧠 9大優勢・邏輯檢驗</h4>
+                            <p id="valReason">等待數據載入...</p>
+                        </div>
+                        <div class="plan-box" style="border-color: rgba(0, 210, 106, 0.2); background: rgba(0, 210, 106, 0.02);">
+                            <h4 style="color: var(--accent-green);">⚡ 系統自動執行指令</h4>
+                            <p id="valPlan">等待數據載入...</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 右側欄位：圖表專區 -->
+            <div class="main-content">
+                <div class="chart-card">
+                    <h2 id="chartTitle" style="margin: 0 0 5px 0; font-size: 18px;">等待選擇目標</h2>
+                    <p id="chartSubtitle" style="margin: 0; color: var(--text-muted); font-size: 11px;">右側交易・不見信號不撒網</p>
+                    <div id="tradingview_widget"></div>
                 </div>
             </div>
         </div>
@@ -284,7 +276,7 @@
             document.getElementById('tradingview_widget').innerHTML = '';
             if (typeof TradingView !== 'undefined') {
                 new TradingView.widget({
-                    "width": "100%", "height": "100%", "symbol": stock.ticker, 
+                    "width": "100%", "height": 420, "symbol": stock.ticker, 
                     "interval": "D", "timezone": "Etc/UTC", "theme": "dark", "style": "1", 
                     "locale": "zh_HK", "toolbar_bg": "#121620",
                     "enable_publishing": false, "allow_symbol_change": true, "container_id": "tradingview_widget",
