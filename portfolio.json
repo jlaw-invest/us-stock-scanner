@@ -3,5 +3,24 @@
     "total_equity": 10000.0,
     "positions": [],
     "history": [],
-    "pending_orders": []
+    "pending_orders": [
+        {
+            "ticker": "AAPL",
+            "order_type": "✅ F.T. 條件單",
+            "entry": 334.55,
+            "stop": 315.57,
+            "target_3r": 391.49,
+            "shares": 5,
+            "date_created": "2026-11-04 08:22"
+        },
+        {
+            "ticker": "MSFT",
+            "order_type": "✅ F.T. 條件單",
+            "entry": 523.49,
+            "stop": 492.59,
+            "target_3r": 616.19,
+            "shares": 3,
+            "date_created": "2026-11-04 08:22"
+        }
+    ]
 }

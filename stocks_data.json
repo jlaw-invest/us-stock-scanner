@@ -2,7 +2,7 @@
     "database": [
         {
             "ticker": "LLY",
-            "rs": 97,
+            "rs": 96,
             "price": 1409.38,
             "sector": "Healthcare",
             "summary": "Eli Lilly and Company discovers, develops, manufactures, and markets human pharmaceutical products in the United States, Europe, China, Japan, and ...",
@@ -17,7 +17,7 @@
     "stocks": [
         {
             "ticker": "AAPL",
-            "rs": 97,
+            "rs": 90,
             "price": 331.9,
             "sector": "Technology",
             "summary": "Apple Inc. designs, manufactures, and markets smartphones, personal computers, tablets, wearables, and accessories worldwide. The company offers iP...",
@@ -37,7 +37,7 @@
         },
         {
             "ticker": "MSFT",
-            "rs": 98,
+            "rs": 92,
             "price": 520.99,
             "sector": "Technology",
             "summary": "Microsoft Corporation, a technology company, develops and supports a portfolio of technology solutions for individuals and businesses worldwide. It...",
@@ -50,9 +50,9 @@
             "category": "行業潛水龍頭 (回踩 50MA)",
             "order_type": "✅ F.T. 條件單",
             "entry": 523.49,
-            "stop": 492.61,
+            "stop": 492.59,
             "reason": "回踩 50MA 獲支持，等待突破信號燭高位。",
-            "target_3r": 616.13,
+            "target_3r": 616.19,
             "action_plan": "1. 設置 Stop Order。\n2. 跌穿止蝕即走。"
         }
     ]
