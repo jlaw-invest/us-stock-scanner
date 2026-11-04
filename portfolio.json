@@ -1,6 +1,6 @@
 {
-    "cash": 6756.78,
-    "total_equity": 9979.25,
+    "cash": 3028.02,
+    "total_equity": 9935.71,
     "positions": [
         {
             "ticker": "AAPL",
@@ -23,27 +23,30 @@
             "current_price": 520.99,
             "unrealized_pnl": 0.0,
             "unrealized_pnl_percent": 0.0
-        }
-    ],
-    "history": [],
-    "pending_orders": [
+        },
         {
             "ticker": "JPM",
-            "order_type": "✅ F.T. 條件單",
-            "entry": 348.36,
+            "buy_price": 348.36,
+            "shares": 5,
             "stop": 332.08,
             "target_3r": 397.2,
-            "shares": 5,
-            "date_created": "2026-11-04 14:55"
+            "buy_date": "2026-11-04 15:53",
+            "current_price": 349.3,
+            "unrealized_pnl": 0.0,
+            "unrealized_pnl_percent": 0.0
         },
         {
             "ticker": "CRWD",
-            "order_type": "✅ F.T. 條件單",
-            "entry": 248.37,
+            "buy_price": 248.37,
+            "shares": 8,
             "stop": 230.09,
             "target_3r": 303.21,
-            "shares": 8,
-            "date_created": "2026-11-04 14:55"
+            "buy_date": "2026-11-04 15:53",
+            "current_price": 242.34,
+            "unrealized_pnl": 0.0,
+            "unrealized_pnl_percent": 0.0
         }
-    ]
+    ],
+    "history": [],
+    "pending_orders": []
 }
