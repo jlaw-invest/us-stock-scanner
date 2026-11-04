@@ -1,39 +1,45 @@
-name: Hourly Stock Scanner and Alert
+name: Daily US Stock Scanner & Paper Trader Auto Update
 
 on:
-  workflow_dispatch:
   schedule:
-    - cron: '0 14-21 * * 1-5' # 星期一至五，每小時運行一次
+    # 涵蓋香港時間下午 4:30、4:40、4:50 (對應 UTC 08:30, 08:40, 08:50)，週一至週五
+    - cron: '30,40,50 8 * * 1-5'
+    # 涵蓋香港時間下午 5:00 至翌日清晨 5:50 (對應 UTC 09:00 至 21:50)，每 10 分鐘一次，週一至週五
+    - cron: '*/10 9-21 * * 1-5'
+  workflow_dispatch: # 保留手動執行按鈕，方便隨時測試
+
+permissions:
+  contents: write
 
 jobs:
-  run-scanner:
+  update-market-data:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
-      - name: 設定 Python 環境
-        uses: actions/setup-python@v4
+      - name: Set up Python
+        uses: actions/setup-python@v5
         with:
           python-version: '3.10'
 
-      - name: 安裝必要套件
+      - name: Install dependencies
         run: |
-          pip install pandas yfinance numpy
+          python -m pip install --upgrade pip
+          # 確保 requirements.txt 內已包含 pandas, yfinance 等所需套件
+          pip install -r requirements.txt 
 
-      - name: 執行量化選股與實時模擬交易
-        env:
-          MAIL_USER: ${{ secrets.MAIL_USER }}
-          MAIL_PASSWORD: ${{ secrets.MAIL_PASSWORD }}
-          ALERT_TO: ${{ secrets.ALERT_TO }}
-        run: |
-          python stock_scanner.py
-          python paper_trader.py
+      - name: Run Stock Scanner (實時選股器)
+        run: python stock_scanner.py
 
-      - name: 儲存並推送 JSON 數據到網頁
+      - name: Run Paper Trader (實時模擬交易員)
+        run: python paper_trader.py
+
+      - name: Commit and Push changes (自動提交與發布)
         run: |
-          git config --local user.email "action@github.com"
-          git config --local user.name "GitHub Action"
-          git add stocks_data.json portfolio.json
-          git commit -m "Hourly auto-update scanner and portfolio" || echo "No changes to commit"
-          git push
+          git config --local user.email "github-actions[bot]@users.noreply.github.com"
+          git config --local user.name "github-actions[bot]"
+          git add .
+          
+          # 【關鍵防護】檢查是否有新資料。如果股市無變動（例如盤前未有新跳動），則不執行 Commit 與 Push，防止帳號因過度部署被停權
+          git diff --quiet && git diff --staged --quiet || (git commit -m "Auto-update market data: Scanner & Paper Trader" && git push)
