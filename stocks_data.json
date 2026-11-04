@@ -2,7 +2,7 @@
     "database": [
         {
             "ticker": "LLY",
-            "rs": 96,
+            "rs": 94,
             "price": 1409.38,
             "sector": "Healthcare",
             "summary": "Eli Lilly and Company discovers, develops, manufactures, and markets human pharmaceutical products in the United States, Europe, China, Japan, and ...",
@@ -37,7 +37,7 @@
         },
         {
             "ticker": "MSFT",
-            "rs": 92,
+            "rs": 93,
             "price": 520.99,
             "sector": "Technology",
             "summary": "Microsoft Corporation, a technology company, develops and supports a portfolio of technology solutions for individuals and businesses worldwide. It...",

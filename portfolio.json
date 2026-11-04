@@ -1,26 +1,30 @@
 {
-    "cash": 10000.0,
-    "total_equity": 10000.0,
-    "positions": [],
-    "history": [],
-    "pending_orders": [
+    "cash": 6756.78,
+    "total_equity": 9979.25,
+    "positions": [
         {
             "ticker": "AAPL",
-            "order_type": "✅ F.T. 條件單",
-            "entry": 334.55,
+            "buy_price": 334.55,
+            "shares": 5,
             "stop": 315.57,
             "target_3r": 391.49,
-            "shares": 5,
-            "date_created": "2026-11-04 08:22"
+            "buy_date": "2026-11-04 08:27",
+            "current_price": 331.9,
+            "unrealized_pnl": 0.0,
+            "unrealized_pnl_percent": 0.0
         },
         {
             "ticker": "MSFT",
-            "order_type": "✅ F.T. 條件單",
-            "entry": 523.49,
+            "buy_price": 523.49,
+            "shares": 3,
             "stop": 492.59,
             "target_3r": 616.19,
-            "shares": 3,
-            "date_created": "2026-11-04 08:22"
+            "buy_date": "2026-11-04 08:27",
+            "current_price": 520.99,
+            "unrealized_pnl": 0.0,
+            "unrealized_pnl_percent": 0.0
         }
-    ]
+    ],
+    "history": [],
+    "pending_orders": []
 }
