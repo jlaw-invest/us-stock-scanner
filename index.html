@@ -11,132 +11,104 @@
         
         /* 導航分頁 */
         .nav-tabs { display: flex; gap: 10px; border-bottom: 2px solid var(--border-color); padding-bottom: 10px; margin-bottom: 15px; overflow-x: auto; white-space: nowrap; }
-        .tab-btn { background: transparent; border: none; color: var(--text-muted); font-size: 16px; font-weight: bold; cursor: pointer; padding: 8px 12px; transition: 0.3s; }
+        .tab-btn { background: transparent; border: none; color: var(--text-muted); font-size: 15px; font-weight: bold; cursor: pointer; padding: 8px 12px; transition: 0.3s; }
         .tab-btn:hover { color: #fff; }
         .tab-btn.active { color: var(--accent-gold); border-bottom: 3px solid var(--accent-gold); }
         .view-section { display: none; animation: fadeIn 0.3s ease-in-out; }
         .view-section.active { display: block; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
 
-        /* 主體網格佈局 (狙擊戰情室用) */
-        .container { display: grid; grid-template-columns: 380px 1fr; gap: 20px; }
+        /* 主體網格佈局 */
+        .container { display: grid; grid-template-columns: 400px 1fr; gap: 20px; }
         @media (max-width: 950px) { .container { grid-template-columns: 1fr; } }
-        .left-column { display: flex; flex-direction: column; gap: 20px; }
-        .sidebar { background-color: var(--card-bg); border: 1px solid var(--border-color); border-radius: 12px; padding: 15px; max-height: 450px; overflow-y: auto; }
+        .left-column { display: flex; flex-direction: column; gap: 15px; }
+        .list-container { background-color: var(--card-bg); border: 1px solid var(--border-color); border-radius: 12px; padding: 15px; max-height: 400px; overflow-y: auto; }
         .chart-card { background-color: var(--card-bg); border: 1px solid var(--border-color); border-radius: 12px; padding: 15px; }
-        #tradingview_widget { height: 420px; width: 100%; border-radius: 8px; overflow: hidden; margin-top: 10px; border: 1px solid var(--border-color); }
+        #tradingview_widget { height: 400px; width: 100%; border-radius: 8px; overflow: hidden; margin-top: 10px; border: 1px solid var(--border-color); }
         
-        /* 股票清單與狙擊面板樣式 */
-        .category-title { font-size: 13px; color: var(--accent-gold); font-weight: bold; margin: 15px 0 8px 0; border-bottom: 1px dashed rgba(245, 176, 65, 0.3); padding-bottom: 5px; }
-        .stock-item { background-color: rgba(255, 255, 255, 0.02); border: 1px solid var(--border-color); padding: 12px; border-radius: 8px; margin-bottom: 10px; cursor: pointer; transition: 0.2s; }
+        /* 股票卡片通用樣式 */
+        .stock-item { background-color: rgba(255, 255, 255, 0.02); border: 1px solid var(--border-color); padding: 12px; border-radius: 8px; margin-bottom: 10px; cursor: pointer; transition: 0.2s; position: relative; }
         .stock-item.active { border-color: var(--accent-gold); background-color: rgba(245, 176, 65, 0.05); }
         .stock-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
-        .ticker { font-size: 18px; font-weight: 800; letter-spacing: 1px; }
+        .ticker { font-size: 20px; font-weight: 900; }
         .rs-score { background: rgba(41, 98, 255, 0.2); color: #82b1ff; padding: 2px 6px; border-radius: 4px; font-size: 11px; font-weight: bold; border: 1px solid rgba(41, 98, 255, 0.4); }
         
-        .strategy-panel { background: rgba(0, 0, 0, 0.3); border: 1px solid var(--border-color); border-radius: 12px; padding: 15px; }
+        /* 策略面板 (狙擊手計畫) */
+        .strategy-panel { background: rgba(0, 0, 0, 0.4); border: 1px solid var(--border-color); border-radius: 12px; padding: 15px; }
         .trade-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-bottom: 15px;}
         .trade-box { background: #1a1f2c; padding: 10px; border-radius: 8px; text-align: center; border: 1px solid #2a3143; border-top: 3px solid var(--text-muted); }
         .box-trigger { border-top-color: var(--accent-green); }
         .box-stop { border-top-color: var(--accent-red); }
-        .trade-val { font-size: 16px; font-weight: 900; font-family: monospace; }
-        .logic-container { display: flex; flex-direction: column; gap: 12px; }
-        .plan-box { background: rgba(255,255,255,0.02); padding: 12px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.05); font-size: 12px; color: #a9b4c2;}
+        .trade-label { font-size: 11px; color: var(--text-muted); margin-bottom: 5px; }
+        .trade-val { font-size: 18px; font-weight: 900; font-family: monospace; }
+        .logic-container { display: flex; flex-direction: column; gap: 10px; }
+        .plan-box { background: rgba(255,255,255,0.02); padding: 12px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.05); font-size: 12px; color: #a9b4c2; line-height: 1.5;}
         .plan-box h4 { margin: 0 0 8px 0; color: #fff; font-size: 13px; }
-
-        /* RS 90+ 強勢庫樣式 */
-        .db-container { max-width: 1200px; margin: 0 auto; }
-        .db-header-stats { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; background: rgba(41, 98, 255, 0.05); border: 1px solid rgba(41, 98, 255, 0.2); padding: 15px; border-radius: 12px;}
-        .db-card { background: var(--card-bg); border: 1px solid var(--border-color); border-radius: 12px; padding: 20px; margin-bottom: 15px; display: flex; gap: 20px; align-items: center; transition: 0.3s; }
-        .db-card:hover { border-color: rgba(255,255,255,0.2); transform: translateX(5px); }
-        @media (max-width: 768px) { .db-card { flex-direction: column; align-items: flex-start; gap: 15px; } }
         
-        .db-main-info { flex: 1; border-right: 1px dashed var(--border-color); padding-right: 20px; }
-        @media (max-width: 768px) { .db-main-info { border-right: none; border-bottom: 1px dashed var(--border-color); padding-right: 0; padding-bottom: 15px; width: 100%;} }
-        
-        .db-top-row { display: flex; align-items: center; gap: 15px; margin-bottom: 10px; }
-        .db-sector-badge { background: rgba(255,255,255,0.1); padding: 4px 10px; border-radius: 20px; font-size: 12px; color: #ccc; }
-        .db-summary { font-size: 13px; color: var(--text-muted); line-height: 1.5; }
-        
-        .db-metrics-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; min-width: 300px; }
-        @media (max-width: 500px) { .db-metrics-grid { grid-template-columns: repeat(2, 1fr); } }
-        .db-metric { display: flex; flex-direction: column; gap: 4px; }
-        .db-metric-label { font-size: 11px; color: var(--text-muted); text-transform: uppercase; }
-        .db-metric-val { font-size: 16px; font-weight: bold; color: #fff; font-family: monospace; }
-        .val-positive { color: var(--accent-green); }
+        /* 強勢庫專屬 Metrics */
+        .db-metrics { display: flex; gap: 10px; font-size: 11px; margin-top: 8px; color: var(--text-muted); flex-wrap: wrap;}
+        .db-metrics span { background: rgba(255,255,255,0.05); padding: 3px 6px; border-radius: 4px; }
+        .val-positive { color: var(--accent-green); font-weight: bold; }
 
         /* 模擬基金表格 & 頂部現金面板 */
         .portfolio-dashboard { background-color: var(--card-bg); border: 1px solid var(--border-color); border-radius: 12px; padding: 15px; }
-        .metric-cards { display: flex; flex-direction: column; gap: 15px; margin-bottom: 25px; }
+        .metric-cards { display: flex; flex-direction: column; gap: 15px; margin-bottom: 20px; }
         @media (min-width: 600px) { .metric-cards { flex-direction: row; } }
-        .metric-card { background: rgba(0,0,0,0.4); border: 1px solid #2a3143; padding: 20px; border-radius: 12px; text-align: center; flex: 1;}
-        .metric-title { color: var(--text-muted); font-size: 13px; margin-bottom: 8px; font-weight: 600; text-transform: uppercase;}
-        .metric-value { font-size: 28px; font-weight: 900; color: #fff; font-family: monospace; word-break: break-all;}
+        .metric-card { background: rgba(0,0,0,0.4); border: 1px solid #2a3143; padding: 15px; border-radius: 12px; text-align: center; flex: 1;}
+        .metric-title { color: var(--text-muted); font-size: 12px; margin-bottom: 5px; font-weight: 600; text-transform: uppercase;}
+        .metric-value { font-size: 24px; font-weight: 900; color: #fff; font-family: monospace; }
         
-        .table-responsive { overflow-x: auto; margin-bottom: 30px; }
-        table { width: 100%; border-collapse: collapse; min-width: 500px; font-size: 13px;}
-        th { text-align: left; padding: 12px 10px; border-bottom: 1px solid var(--border-color); color: var(--text-muted); }
-        td { padding: 12px 10px; border-bottom: 1px solid rgba(255,255,255,0.03); }
+        .table-responsive { overflow-x: auto; margin-bottom: 20px; }
+        table { width: 100%; border-collapse: collapse; min-width: 500px; font-size: 12px;}
+        th { text-align: left; padding: 10px; border-bottom: 1px solid var(--border-color); color: var(--text-muted); }
+        td { padding: 10px; border-bottom: 1px solid rgba(255,255,255,0.03); }
         .profit { color: var(--accent-green); font-weight: bold;}
-        .empty-msg { text-align: center; padding: 30px !important; color: var(--text-muted); font-style: italic; }
+        .loss { color: var(--accent-red); font-weight: bold;}
+        .empty-msg { text-align: center; padding: 20px !important; color: var(--text-muted); font-style: italic; }
     </style>
 </head>
 <body>
     <div class="nav-tabs">
-        <button id="btn-database" class="tab-btn active" onclick="switchTab('database')">📚 RS 90+ 長青強勢庫</button>
-        <button id="btn-scanner" class="tab-btn" onclick="switchTab('scanner')">🎯 狙擊手戰情室</button>
-        <button id="btn-portfolio" class="tab-btn" onclick="switchTab('portfolio')">💼 系統掛單與持倉</button>
+        <button id="btn-database" class="tab-btn active" onclick="switchTab('database')">📚 RS 90+ 強勢庫</button>
+        <button id="btn-vcp" class="tab-btn" onclick="switchTab('vcp')">📉 VCP 形態專區</button>
+        <button id="btn-scanner" class="tab-btn" onclick="switchTab('scanner')">🎯 潛水龍頭 (回調)</button>
+        <button id="btn-portfolio" class="tab-btn" onclick="switchTab('portfolio')">💼 系統掛單持倉</button>
     </div>
 
-    <!-- RS 90+ 強勢資料庫視圖 -->
-    <div id="view-database" class="view-section active">
-        <div class="db-container">
-            <div class="db-header-stats">
-                <div style="color:var(--text-muted); font-size:14px;">
-                    嚴格條件：<span style="color:#fff;">RS>90</span> | <span style="color:#fff;">股價>10MA>20MA>50MA</span> | <span style="color:var(--accent-green);">利潤為正</span>
+    <!-- 動態主體框架 (三個選股分頁共用此結構，避免代碼重複) -->
+    <div id="master-view" class="container" style="display: none;">
+        <div class="left-column">
+            <div class="list-container">
+                <div style="display:flex; justify-content:space-between; align-items:flex-end; margin-bottom:10px;">
+                    <h3 id="list-title" style="margin:0; color: #fff; font-size: 15px;">--</h3>
+                    <span style="font-size:10px; color:var(--accent-green);">● 實時監控中</span>
                 </div>
-                <div style="font-weight:bold; color:var(--accent-blue);">共掃描出 <span id="db-count" style="font-size:18px;">--</span> 隻優質強勢股</div>
+                <div id="dynamic-list"><div class="empty-msg">讀取市場數據中...</div></div>
             </div>
-            <div id="db-list">
-                <div class="empty-msg">讀取強勢股數據中...</div>
+
+            <!-- 狙擊手計畫面板 (全局共用) -->
+            <div class="strategy-panel" id="strategyPanel" style="display: none;">
+                <div style="display:flex; justify-content:space-between; margin-bottom: 10px; align-items: center;">
+                    <span style="color:var(--accent-gold); font-weight:bold; font-size:14px;">⚔️ 狙擊手操盤計畫</span>
+                    <span id="valOrderType" style="background: rgba(245,176,65,0.15); color:var(--accent-gold); padding:3px 8px; border-radius:10px; font-size:10px; border:1px solid rgba(245,176,65,0.3);">--</span>
+                </div>
+                <div class="trade-grid">
+                    <div class="trade-box box-trigger"><div class="trade-label">F.T. 買入價</div><div class="trade-val" style="color:var(--accent-green);" id="valEntry">--</div></div>
+                    <div class="trade-box box-stop"><div class="trade-label">信號止蝕</div><div class="trade-val" style="color:var(--accent-red);" id="valStop">--</div></div>
+                    <div class="trade-box"><div class="trade-label">3R 目標</div><div class="trade-val" style="color:var(--accent-blue);" id="val3R">--</div></div>
+                    <div class="trade-box"><div class="trade-label">每股風險 (1R)</div><div class="trade-val" style="color:#fff;" id="valRisk">--</div></div>
+                </div>
+                <div class="logic-container">
+                    <div class="plan-box"><h4>🧠 9大優勢 / 邏輯</h4><p id="valReason">--</p></div>
+                    <div class="plan-box"><h4>⚡ 執行指令</h4><p id="valPlan">--</p></div>
+                </div>
             </div>
         </div>
-    </div>
-
-    <!-- 戰情室視圖 -->
-    <div id="view-scanner" class="view-section">
-        <div class="container">
-            <div class="left-column">
-                <div class="sidebar">
-                    <div style="display:flex; justify-content:space-between; align-items:flex-end; margin-bottom:10px;">
-                        <h3 style="margin:0; color: #fff; font-size: 15px;">已出買入信號</h3>
-                    </div>
-                    <div id="stockList"><div class="empty-msg">讀取市場數據中...</div></div>
-                </div>
-
-                <div class="strategy-panel" id="strategyPanel" style="display: none;">
-                    <div style="display:flex; justify-content:space-between; margin-bottom: 10px;">
-                        <span style="color:var(--accent-gold); font-weight:bold;">⚔️ 狙擊手計畫</span>
-                        <span id="valOrderType" style="color:var(--accent-gold); font-size:11px;">--</span>
-                    </div>
-                    <div class="trade-grid">
-                        <div class="trade-box box-trigger"><div class="trade-label">F.T. 買入價</div><div class="trade-val val-trigger" id="valEntry">--</div></div>
-                        <div class="trade-box box-stop"><div class="trade-label">信號止蝕</div><div class="trade-val" style="color:var(--accent-red);" id="valStop">--</div></div>
-                        <div class="trade-box"><div class="trade-label">3R 目標</div><div class="trade-val" style="color:var(--accent-blue);" id="val3R">--</div></div>
-                        <div class="trade-box"><div class="trade-label">每股風險</div><div class="trade-val" style="color:#fff;" id="valRisk">--</div></div>
-                    </div>
-                    <div class="logic-container">
-                        <div class="plan-box"><h4>🧠 9大優勢</h4><p id="valReason">--</p></div>
-                        <div class="plan-box"><h4>⚡ 執行指令</h4><p id="valPlan">--</p></div>
-                    </div>
-                </div>
-            </div>
-            
-            <div class="main-content">
-                <div class="chart-card">
-                    <h2 id="chartTitle" style="margin: 0 0 5px 0; font-size: 18px;">等待選擇目標</h2>
-                    <div id="tradingview_widget"></div>
-                </div>
+        
+        <div class="main-content">
+            <div class="chart-card">
+                <h2 id="chartTitle" style="margin: 0 0 5px 0; font-size: 18px;">等待選擇目標</h2>
+                <div id="tradingview_widget"></div>
             </div>
         </div>
     </div>
@@ -144,105 +116,95 @@
     <!-- 模擬基金視圖 -->
     <div id="view-portfolio" class="view-section">
         <div class="portfolio-dashboard">
-            
-            <!-- 加入返 總淨值與可用現金 顯示面板 -->
             <div class="metric-cards">
-                <div class="metric-card">
-                    <div class="metric-title">帳戶總淨值 (Total Equity)</div>
-                    <div class="metric-value" id="pf-equity">--</div>
-                </div>
-                <div class="metric-card">
-                    <div class="metric-title">可用現金餘額 (Cash)</div>
-                    <div class="metric-value" id="pf-cash">--</div>
-                </div>
+                <div class="metric-card"><div class="metric-title">總淨值 (Total Equity)</div><div class="metric-value" id="pf-equity">--</div></div>
+                <div class="metric-card"><div class="metric-title">現金 (Cash)</div><div class="metric-value" id="pf-cash">--</div></div>
             </div>
-
-            <h3 style="color: var(--accent-gold);">⏳ 狙擊掛單中</h3>
-            <div class="table-responsive"><table><thead><tr><th>股票</th><th>建立日期</th><th>股數</th><th>觸發價</th><th>止蝕位</th></tr></thead><tbody id="pf-pending"></tbody></table></div>
-            <h3 style="color: var(--accent-blue);">📈 已確認持倉</h3>
-            <div class="table-responsive"><table><thead><tr><th>股票</th><th>進場日期</th><th>股數</th><th>均價</th><th>現價</th><th>盈虧</th></tr></thead><tbody id="pf-positions"></tbody></table></div>
+            <h3 style="color: var(--accent-gold); font-size: 14px;">⏳ 狙擊掛單中</h3>
+            <div class="table-responsive"><table><thead><tr><th>股票</th><th>日期</th><th>股數</th><th>觸發價</th><th>止蝕位</th></tr></thead><tbody id="pf-pending"></tbody></table></div>
+            <h3 style="color: var(--accent-blue); font-size: 14px;">📈 已確認持倉</h3>
+            <div class="table-responsive"><table><thead><tr><th>股票</th><th>日期</th><th>股數</th><th>均價</th><th>現價</th><th>盈虧</th></tr></thead><tbody id="pf-positions"></tbody></table></div>
         </div>
     </div>
 
     <script>
-        let globalStocks = [];
-        let globalDatabase = [];
+        let allData = { database: [], vcp: [], stocks: [] };
+        let currentTab = 'database';
+        let tvWidget = null;
 
         function switchTab(tabId) {
             document.querySelectorAll('.tab-btn, .view-section').forEach(el => el.classList.remove('active'));
             document.getElementById('btn-' + tabId).classList.add('active');
-            document.getElementById('view-' + tabId).classList.add('active');
-        }
-
-        async function loadScanner() {
-            try {
-                const response = await fetch('stocks_data.json?t=' + Date.now());
-                const data = await response.json();
-                
-                // 處理強勢資料庫
-                globalDatabase = data.database || [];
-                document.getElementById('db-count').innerText = globalDatabase.length;
-                let dbHtml = '';
-                if(globalDatabase.length === 0) dbHtml = '<div class="empty-msg">今日市場疲弱，無股票符合長青強勢條件。</div>';
-                globalDatabase.forEach(s => {
-                    dbHtml += `
-                        <div class="db-card">
-                            <div class="db-main-info">
-                                <div class="db-top-row">
-                                    <span class="ticker" style="font-size:24px;">${s.ticker}</span>
-                                    <span class="rs-score" style="font-size:14px; padding:4px 10px;">RS ${s.rs}</span>
-                                    <span class="db-sector-badge">${s.sector}</span>
-                                </div>
-                                <div class="db-summary">${s.summary}</div>
-                            </div>
-                            <div class="db-metrics-grid">
-                                <div class="db-metric"><span class="db-metric-label">現價 (>10MA)</span><span class="db-metric-val">$${s.price.toFixed(2)}</span></div>
-                                <div class="db-metric"><span class="db-metric-label">淨利潤 (Net Income)</span><span class="db-metric-val val-positive">${s.net_income}</span></div>
-                                <div class="db-metric"><span class="db-metric-label">營收成長率</span><span class="db-metric-val" style="color:#fff;">${s.rev_growth}</span></div>
-                                <div class="db-metric"><span class="db-metric-label">10MA</span><span class="db-metric-val" style="color:#a9b4c2;">$${s.sma_10}</span></div>
-                                <div class="db-metric"><span class="db-metric-label">20MA</span><span class="db-metric-val" style="color:#a9b4c2;">$${s.sma_20}</span></div>
-                                <div class="db-metric"><span class="db-metric-label">50MA</span><span class="db-metric-val" style="color:#a9b4c2;">$${s.sma_50}</span></div>
-                            </div>
-                        </div>`;
-                });
-                document.getElementById('db-list').innerHTML = dbHtml;
-
-                // 處理狙擊戰情室
-                globalStocks = data.stocks || [];
-                const listEl = document.getElementById('stockList');
-                if (globalStocks.length === 0) {
-                    listEl.innerHTML = '<div class="empty-msg">無觸發信號。</div>';
-                    return;
-                }
-                let html = '';
-                const categories = [...new Set(globalStocks.map(s => s.category))];
-                categories.forEach(cat => {
-                    const stocksInCat = globalStocks.filter(s => s.category === cat);
-                    html += `<div class="category-title">${cat} (${stocksInCat.length})</div>`;
-                    stocksInCat.forEach(stock => {
-                        html += `
-                            <div class="stock-item" onclick="selectStockByTicker('${stock.ticker}')">
-                                <div class="stock-header"><span class="ticker">${stock.ticker}</span><span class="rs-score">RS ${stock.rs}</span></div>
-                                <div style="font-size:11px; display:flex; justify-content:space-between; color:var(--text-muted);">
-                                    <span>現價: $${stock.price}</span><span style="color:var(--accent-gold);">觸發: $${stock.entry}</span>
-                                </div>
-                            </div>`;
-                    });
-                });
-                listEl.innerHTML = html;
-                if(globalStocks.length > 0) selectStockByTicker(globalStocks[0].ticker);
-                
-            } catch (error) {
-                document.getElementById('db-list').innerHTML = `<div class="empty-msg">數據載入失敗</div>`;
+            
+            if (tabId === 'portfolio') {
+                document.getElementById('master-view').style.display = 'none';
+                document.getElementById('view-portfolio').classList.add('active');
+            } else {
+                document.getElementById('view-portfolio').classList.remove('active');
+                document.getElementById('master-view').style.display = 'grid';
+                currentTab = tabId;
+                renderList();
             }
         }
 
-        function selectStockByTicker(ticker) {
-            const stock = globalStocks.find(s => s.ticker === ticker);
+        async function loadData() {
+            try {
+                const response = await fetch('stocks_data.json?t=' + Date.now());
+                allData = await response.json();
+                switchTab('database'); // 預設顯示強勢庫
+            } catch (error) {
+                document.getElementById('dynamic-list').innerHTML = `<div class="empty-msg">數據載入失敗</div>`;
+            }
+            loadPortfolio();
+        }
+
+        function renderList() {
+            const listData = allData[currentTab] || [];
+            const titles = { 'database': '長青強勢股 (>10MA)', 'vcp': 'VCP 波幅收縮形態', 'scanner': '潛水龍頭 (支撐反彈)' };
+            document.getElementById('list-title').innerText = titles[currentTab];
+            
+            const listEl = document.getElementById('dynamic-list');
+            if (listData.length === 0) {
+                listEl.innerHTML = '<div class="empty-msg">今日無符合條件之股票。</div>';
+                document.getElementById('strategyPanel').style.display = 'none';
+                return;
+            }
+
+            let html = '';
+            listData.forEach(s => {
+                html += `
+                    <div class="stock-item" onclick="selectStock('${s.ticker}')" data-ticker="${s.ticker}">
+                        <div class="stock-header">
+                            <span class="ticker">${s.ticker} <span style="font-size:10px; color:#aaa;">${s.sector}</span></span>
+                            <span class="rs-score">RS ${s.rs}</span>
+                        </div>
+                        <div style="font-size:12px; display:flex; justify-content:space-between; color:var(--text-muted);">
+                            <span>現價: $${s.price}</span>
+                            <span style="color:var(--accent-gold); font-weight:bold;">觸發: $${s.entry}</span>
+                        </div>
+                        ${currentTab === 'database' ? `
+                        <div class="db-metrics">
+                            <span>淨利 <span class="val-positive">${s.net_income}</span></span>
+                            <span>營收 ${s.rev_growth}</span>
+                        </div>` : ''}
+                    </div>`;
+            });
+            listEl.innerHTML = html;
+            selectStock(listData[0].ticker);
+        }
+
+        function selectStock(ticker) {
+            const stock = allData[currentTab].find(s => s.ticker === ticker);
             if(!stock) return;
-            document.querySelectorAll('.stock-item').forEach(el => { el.classList.toggle('active', el.querySelector('.ticker').innerText === stock.ticker); });
+            
+            document.querySelectorAll('.stock-item').forEach(el => { 
+                el.classList.toggle('active', el.getAttribute('data-ticker') === ticker); 
+            });
+            
             document.getElementById('chartTitle').innerText = `${stock.ticker} - 日線走勢 (Daily)`;
             document.getElementById('strategyPanel').style.display = 'block';
+            
+            // 填入狙擊計畫數據
             document.getElementById('valOrderType').innerText = stock.order_type;
             document.getElementById('valEntry').innerText = `$${stock.entry.toFixed(2)}`;
             document.getElementById('valStop').innerText = `$${stock.stop.toFixed(2)}`;
@@ -251,10 +213,14 @@
             document.getElementById('valReason').innerHTML = stock.reason;
             document.getElementById('valPlan').innerHTML = stock.action_plan;
             
+            // 重繪圖表
             document.getElementById('tradingview_widget').innerHTML = '';
             if (typeof TradingView !== 'undefined') {
-                new TradingView.widget({
-                    "width": "100%", "height": 420, "symbol": stock.ticker, "interval": "D", "timezone": "Etc/UTC", "theme": "dark", "style": "1", "locale": "zh_HK", "toolbar_bg": "#121620", "enable_publishing": false, "allow_symbol_change": true, "container_id": "tradingview_widget", "studies": ["STD;SMA"]
+                tvWidget = new TradingView.widget({
+                    "width": "100%", "height": 400, "symbol": stock.ticker, "interval": "D", "timezone": "Etc/UTC", 
+                    "theme": "dark", "style": "1", "locale": "zh_HK", "toolbar_bg": "#121620", 
+                    "enable_publishing": false, "allow_symbol_change": false, "container_id": "tradingview_widget", 
+                    "studies": ["STD;SMA"]
                 });
             }
         }
@@ -264,17 +230,15 @@
                 const res = await fetch('portfolio.json?t=' + Date.now());
                 const pf = await res.json();
                 
-                // 讀取並渲染總淨值與流動現金
-                const equity = pf.total_equity || 10000;
-                const cash = pf.cash || 10000;
-                document.getElementById('pf-equity').innerText = `$${equity.toLocaleString(undefined, {minimumFractionDigits: 2})}`;
-                document.getElementById('pf-cash').innerText = `$${cash.toLocaleString(undefined, {minimumFractionDigits: 2})}`;
+                document.getElementById('pf-equity').innerText = `$${(pf.total_equity || 10000).toLocaleString(undefined, {minimumFractionDigits: 2})}`;
+                document.getElementById('pf-cash').innerText = `$${(pf.cash || 10000).toLocaleString(undefined, {minimumFractionDigits: 2})}`;
 
                 let pendHtml = '';
-                pf.pending_orders.forEach(o => pendHtml += `<tr><td><b>${o.ticker}</b></td><td>${o.date_created}</td><td>${o.shares}</td><td style="color:var(--accent-gold);">$${o.entry.toFixed(2)}</td><td style="color:var(--accent-red);">$${o.stop.toFixed(2)}</td></tr>`);
+                (pf.pending_orders||[]).forEach(o => pendHtml += `<tr><td><b>${o.ticker}</b></td><td>${o.date_created||'--'}</td><td>${o.shares}</td><td style="color:var(--accent-gold);">$${o.entry.toFixed(2)}</td><td style="color:var(--accent-red);">$${o.stop.toFixed(2)}</td></tr>`);
                 document.getElementById('pf-pending').innerHTML = pendHtml || '<tr><td colspan="5" class="empty-msg">無掛單</td></tr>';
+                
                 let posHtml = '';
-                pf.positions.forEach(p => {
+                (pf.positions||[]).forEach(p => {
                     const pnlClass = p.unrealized_pnl >= 0 ? 'profit' : 'loss';
                     const sign = p.unrealized_pnl >= 0 ? '+' : '';
                     posHtml += `<tr><td><b>${p.ticker}</b></td><td>${p.buy_date}</td><td>${p.shares}</td><td>$${p.buy_price.toFixed(2)}</td><td>$${p.current_price.toFixed(2)}</td><td class="${pnlClass}">${sign}$${p.unrealized_pnl.toFixed(2)}</td></tr>`;
@@ -283,8 +247,7 @@
             } catch (e) {}
         }
 
-        loadScanner();
-        loadPortfolio();
+        loadData();
     </script>
 </body>
 </html>
