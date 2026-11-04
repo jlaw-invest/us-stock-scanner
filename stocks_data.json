@@ -2,8 +2,8 @@
     "database": [
         {
             "ticker": "AAPL",
-            "rs": 98,
-            "price": 352.79,
+            "rs": 96,
+            "price": 352.73,
             "sector": "Technology",
             "summary": "Apple Inc. designs, manufactures, and markets smartphones, personal computers, tablets, wearables, and accessories. The company offers iPhone, a li...",
             "net_income": "$132.18B",
@@ -15,31 +15,31 @@
         },
         {
             "ticker": "LLY",
-            "rs": 91,
-            "price": 1419.53,
+            "rs": 90,
+            "price": 1421.44,
             "sector": "Healthcare",
             "summary": "Eli Lilly and Company discovers, develops, manufactures, and markets human pharmaceutical products in the United States, Europe, China, Japan, and ...",
             "net_income": "$27.58B",
             "rev_growth": "38.6%",
             "roe": "86.0%",
-            "sma_10": 1346.06,
-            "sma_20": 1283.54,
-            "sma_50": 1207.22
+            "sma_10": 1346.26,
+            "sma_20": 1283.63,
+            "sma_50": 1207.26
         }
     ],
     "stocks": [
         {
             "ticker": "JPM",
-            "rs": 96,
-            "price": 350.92,
+            "rs": 93,
+            "price": 350.42,
             "sector": "Financial Services",
             "summary": "JPMorgan Chase & Co. operates as a bank and financial holding company in the United States, rest of North America, Europe, the Middle East, Africa,...",
             "net_income": "$64.53B",
             "rev_growth": "10.2%",
             "roe": "18.0%",
-            "sma_10": 338.74,
-            "sma_20": 336.6,
-            "sma_50": 341.62,
+            "sma_10": 338.68,
+            "sma_20": 336.57,
+            "sma_50": 341.61,
             "category": "行業潛水龍頭 (回踩 50MA)",
             "order_type": "✅ F.T. 條件單",
             "entry": 352.14,
