@@ -1,63 +1,7 @@
 {
-    "cash": 683.98,
-    "total_equity": 10050.63,
-    "positions": [
-        {
-            "ticker": "AAPL",
-            "buy_price": 331.75,
-            "shares": 6,
-            "stop": 318.48,
-            "target_3r": 371.56,
-            "buy_date": "2026-11-03 15:48",
-            "current_price": 329.29,
-            "unrealized_pnl": 0.0,
-            "unrealized_pnl_percent": 0.0
-        },
-        {
-            "ticker": "MSFT",
-            "buy_price": 511.58,
-            "shares": 3,
-            "stop": 497.39,
-            "target_3r": 554.15,
-            "buy_date": "2026-11-03 15:48",
-            "current_price": 514.89,
-            "unrealized_pnl": 0.0,
-            "unrealized_pnl_percent": 0.0
-        },
-        {
-            "ticker": "AMD",
-            "buy_price": 486.5,
-            "shares": 4,
-            "stop": 459.08,
-            "target_3r": 568.76,
-            "buy_date": "2026-11-03 15:48",
-            "current_price": 491.26,
-            "unrealized_pnl": 0.0,
-            "unrealized_pnl_percent": 0.0
-        },
-        {
-            "ticker": "PLTR",
-            "buy_price": 169.46,
-            "shares": 11,
-            "stop": 162.68,
-            "target_3r": 189.8,
-            "buy_date": "2026-11-03 15:48",
-            "current_price": 172.24,
-            "unrealized_pnl": 0.0,
-            "unrealized_pnl_percent": 0.0
-        },
-        {
-            "ticker": "CRWD",
-            "buy_price": 247.59,
-            "shares": 8,
-            "stop": 236.57,
-            "target_3r": 280.65,
-            "buy_date": "2026-11-03 15:48",
-            "current_price": 248.32,
-            "unrealized_pnl": 0.0,
-            "unrealized_pnl_percent": 0.0
-        }
-    ],
+    "cash": 10000.0,
+    "total_equity": 10000.0,
+    "positions": [],
     "history": [],
     "pending_orders": []
 }
