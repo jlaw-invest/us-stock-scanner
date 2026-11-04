@@ -26,5 +26,24 @@
         }
     ],
     "history": [],
-    "pending_orders": []
+    "pending_orders": [
+        {
+            "ticker": "JPM",
+            "order_type": "✅ F.T. 條件單",
+            "entry": 348.36,
+            "stop": 332.08,
+            "target_3r": 397.2,
+            "shares": 5,
+            "date_created": "2026-11-04 14:55"
+        },
+        {
+            "ticker": "CRWD",
+            "order_type": "✅ F.T. 條件單",
+            "entry": 248.37,
+            "stop": 230.09,
+            "target_3r": 303.21,
+            "shares": 8,
+            "date_created": "2026-11-04 14:55"
+        }
+    ]
 }
