@@ -1,43 +1,42 @@
 {
     "database": [
         {
-            "ticker": "LLY",
-            "rs": 92,
-            "price": 1383.19,
-            "sector": "Healthcare",
-            "summary": "Eli Lilly and Company discovers, develops, manufactures, and markets human pharmaceutical products in the United States, Europe...",
-            "net_income": "$27.58B",
-            "rev_growth": "38.6%",
-            "sma_10": 1353.56,
-            "sma_20": 1294.14,
-            "sma_50": 1211.06,
-            "order_type": "🚀 強勢延續單 (F.T.)",
-            "entry": 1453.05,
-            "stop": 1340.02,
-            "target_3r": 1792.13,
-            "reason": "【強者恆強】股價維持在 10MA 之上極度強勢，順勢而為。",
-            "action_plan": "1. 設定 Stop Order 於昨日高位 $1453.05 突破買入。\n2. 跌穿 10MA 支撐即離場保利。"
-        }
-    ],
-    "vcp": [
-        {
             "ticker": "AAPL",
-            "rs": 93,
-            "price": 343.45,
+            "rs": 90,
+            "price": 345.01,
             "sector": "Technology",
             "summary": "Apple Inc. designs, manufactures, and markets smartphones, personal computers, tablets, wearables, and accessories. The company...",
             "net_income": "$132.18B",
             "rev_growth": "11.7%",
-            "sma_10": 343.93,
-            "sma_20": 343.06,
-            "sma_50": 335.44,
-            "order_type": "📉 VCP 突破單",
+            "sma_10": 344.08,
+            "sma_20": 343.14,
+            "sma_50": 335.47,
+            "order_type": "🚀 強勢延續單 (F.T.)",
             "entry": 355.43,
-            "stop": 326.27,
-            "target_3r": 442.9,
-            "reason": "【VCP 形態確認】波幅明顯收縮，大戶洗盤接近尾聲，準備向上突破樞軸點。",
-            "action_plan": "1. 嚴格設定 Stop Order 於樞軸點 $355.43。\n2. 未突破前絕不提早潛伏 (不接飛刀)。"
+            "stop": 342.01,
+            "target_3r": 395.69,
+            "reason": "【強者恆強】股價維持在 10MA 之上極度強勢，順勢而為。",
+            "action_plan": "1. 設定 Stop Order 於昨日高位 $355.43 突破買入。\n2. 跌穿 10MA 支撐即離場保利。"
+        },
+        {
+            "ticker": "LLY",
+            "rs": 95,
+            "price": 1376.18,
+            "sector": "Healthcare",
+            "summary": "Eli Lilly and Company discovers, develops, manufactures, and markets human pharmaceutical products in the United States, Europe...",
+            "net_income": "$27.58B",
+            "rev_growth": "38.6%",
+            "sma_10": 1352.86,
+            "sma_20": 1293.79,
+            "sma_50": 1210.92,
+            "order_type": "🚀 強勢延續單 (F.T.)",
+            "entry": 1453.05,
+            "stop": 1339.33,
+            "target_3r": 1794.21,
+            "reason": "【強者恆強】股價維持在 10MA 之上極度強勢，順勢而為。",
+            "action_plan": "1. 設定 Stop Order 於昨日高位 $1453.05 突破買入。\n2. 跌穿 10MA 支撐即離場保利。"
         }
     ],
+    "vcp": [],
     "stocks": []
 }
