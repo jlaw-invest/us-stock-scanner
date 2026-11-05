@@ -2,7 +2,7 @@
     "database": [
         {
             "ticker": "AAPL",
-            "rs": 90,
+            "rs": 96,
             "price": 344.17,
             "sector": "Technology",
             "summary": "Apple Inc. designs, manufactures, and markets smartphones, personal computers, tablets, wearables, and accessories. The company...",
@@ -20,19 +20,19 @@
         },
         {
             "ticker": "LLY",
-            "rs": 96,
-            "price": 1367.37,
+            "rs": 98,
+            "price": 1364.73,
             "sector": "Healthcare",
             "summary": "Eli Lilly and Company discovers, develops, manufactures, and markets human pharmaceutical products in the United States, Europe...",
             "net_income": "$27.58B",
             "rev_growth": "38.6%",
-            "sma_10": 1351.98,
-            "sma_20": 1293.35,
-            "sma_50": 1210.75,
+            "sma_10": 1351.71,
+            "sma_20": 1293.22,
+            "sma_50": 1210.69,
             "order_type": "🚀 強勢延續單 (F.T.)",
             "entry": 1453.05,
-            "stop": 1338.46,
-            "target_3r": 1796.83,
+            "stop": 1338.2,
+            "target_3r": 1797.61,
             "reason": "【強者恆強】股價維持在 10MA 之上極度強勢，順勢而為。",
             "action_plan": "1. 設定 Stop Order 於昨日高位 $1453.05 突破買入。\n2. 跌穿 10MA 支撐即離場保利。"
         }
