@@ -2,7 +2,7 @@
     "database": [
         {
             "ticker": "AAPL",
-            "rs": 93,
+            "rs": 90,
             "price": 344.17,
             "sector": "Technology",
             "summary": "Apple Inc. designs, manufactures, and markets smartphones, personal computers, tablets, wearables, and accessories. The company...",
@@ -20,7 +20,7 @@
         },
         {
             "ticker": "LLY",
-            "rs": 98,
+            "rs": 93,
             "price": 1364.73,
             "sector": "Healthcare",
             "summary": "Eli Lilly and Company discovers, develops, manufactures, and markets human pharmaceutical products in the United States, Europe...",
