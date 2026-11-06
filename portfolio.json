@@ -1,6 +1,6 @@
 {
-    "cash": 3028.02,
-    "total_equity": 9935.71,
+    "cash": 1182.82,
+    "total_equity": 9936.06,
     "positions": [
         {
             "ticker": "AAPL",
@@ -45,18 +45,19 @@
             "current_price": 242.34,
             "unrealized_pnl": 0.0,
             "unrealized_pnl_percent": 0.0
+        },
+        {
+            "ticker": "AMZN",
+            "buy_price": 263.6,
+            "shares": 7,
+            "stop": 250.77,
+            "target_3r": 302.08,
+            "buy_date": "2026-11-06 15:49",
+            "current_price": 263.65,
+            "unrealized_pnl": 0.0,
+            "unrealized_pnl_percent": 0.0
         }
     ],
     "history": [],
-    "pending_orders": [
-        {
-            "ticker": "AMZN",
-            "order_type": "✅ 回踩 50MA (F.T.)",
-            "entry": 263.6,
-            "stop": 250.77,
-            "target_3r": 302.08,
-            "shares": 7,
-            "date_created": "2026-11-06 14:58"
-        }
-    ]
+    "pending_orders": []
 }
