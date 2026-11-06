@@ -48,5 +48,15 @@
         }
     ],
     "history": [],
-    "pending_orders": []
+    "pending_orders": [
+        {
+            "ticker": "AMZN",
+            "order_type": "✅ 回踩 50MA (F.T.)",
+            "entry": 263.6,
+            "stop": 250.77,
+            "target_3r": 302.08,
+            "shares": 7,
+            "date_created": "2026-11-06 14:58"
+        }
+    ]
 }
