@@ -9,40 +9,31 @@ from datetime import datetime
 PORTFOLIO_FILE = 'portfolio.json'
 STOCKS_FILE = 'stocks_data.json'
 INITIAL_CASH = 10000.0
-POSITION_LIMIT = 0.20
-MARKET_INDEX = "^GSPC"
+POSITION_LIMIT = 0.20 # 每隻股票最多佔總資金 20%
 
-# Gmail 發信函數
 def send_email_alert(subject, content):
     mail_user = os.environ.get('MAIL_USER')
     mail_pass = os.environ.get('MAIL_PASSWORD')
     alert_to = os.environ.get('ALERT_TO')
-    
-    if not mail_user or not mail_pass or not alert_to:
-        print("⚠️ 未設定 Gmail 密鑰，略過電郵通知。")
-        return
-
+    if not mail_user or not mail_pass or not alert_to: return
     try:
-        message = MIMEText(content, 'plain', 'utf-8')
-        message['From'] = Header(mail_user, 'utf-8')
-        message['To'] = Header(alert_to, 'utf-8')
-        message['Subject'] = Header(subject, 'utf-8')
-
+        msg = MIMEText(content, 'plain', 'utf-8')
+        msg['From'] = Header(mail_user, 'utf-8')
+        msg['To'] = Header(alert_to, 'utf-8')
+        msg['Subject'] = Header(subject, 'utf-8')
         server = smtplib.SMTP_SSL('smtp.gmail.com', 465)
         server.login(mail_user, mail_pass)
-        server.sendmail(mail_user, [alert_to], message.as_string())
+        server.sendmail(mail_user, [alert_to], msg.as_string())
         server.quit()
-        print("📧 即時電郵通知已成功發送！")
     except Exception as e:
-        print(f"⚠️ 發送電郵失敗: {e}")
+        print(f"發信失敗: {e}")
 
 def load_portfolio():
     if os.path.exists(PORTFOLIO_FILE):
         try:
             with open(PORTFOLIO_FILE, 'r', encoding='utf-8') as f:
                 return json.load(f)
-        except:
-            pass
+        except: pass
     return {"cash": INITIAL_CASH, "total_equity": INITIAL_CASH, "positions": [], "history": [], "pending_orders": []}
 
 def save_portfolio(pf):
@@ -53,6 +44,7 @@ def main():
     pf = load_portfolio()
     today_str = datetime.now().strftime("%Y-%m-%d %H:%M")
     
+    # 抓取所有持倉與掛單的最新報價
     all_tickers = list(set([p["ticker"] for p in pf["positions"]] + [o["ticker"] for o in pf["pending_orders"]]))
     market_data = {}
     
@@ -69,12 +61,57 @@ def main():
                         "close": float(hist['Close'].iloc[-1])
                     }
         except Exception as e:
-            print(f"⚠️ 抓取行情錯誤: {e}")
+            print(f"抓取行情錯誤: {e}")
 
-    # 1. 檢查掛單是否成交
-    new_pending = []
+    sold_alerts = []
     newly_bought = []
     
+    # 1. 每日更新現有持倉：計算最新盈虧，並自動執行止蝕 / 止賺
+    active_positions = []
+    for p in pf["positions"]:
+        ticker = p["ticker"]
+        if ticker in market_data:
+            today_mkt = market_data[ticker]
+            latest_close = today_mkt["close"]
+            
+            # 🔥 修復 BUG：實時更新現價與未實現盈虧
+            p["current_price"] = round(latest_close, 2)
+            p["unrealized_pnl"] = round((latest_close - p["buy_price"]) * p["shares"], 2)
+            p["unrealized_pnl_percent"] = round((latest_close - p["buy_price"]) / p["buy_price"] * 100, 2)
+            
+            # 🛡️ 檢查是否跌穿硬止蝕位 (Stop Loss)
+            if today_mkt["low"] <= p["stop"]:
+                sell_price = p["stop"] if today_mkt["open"] > p["stop"] else today_mkt["open"]
+                pnl = round((sell_price - p["buy_price"]) * p["shares"], 2)
+                pf["cash"] += (sell_price * p["shares"])
+                pf["history"].append({
+                    "ticker": ticker, "buy_date": p["buy_date"], "sell_date": today_str,
+                    "buy_price": p["buy_price"], "sell_price": round(sell_price, 2),
+                    "pnl": pnl, "pnl_percent": round((sell_price - p["buy_price"]) / p["buy_price"] * 100, 2),
+                    "reason": "🔴 跌穿支持，觸發硬止蝕"
+                })
+                sold_alerts.append(f"🔴 [{ticker}] 觸發止蝕賣出！價格: ${sell_price:.2f} \vert{} 盈虧: ${pnl:.2f}")
+                continue # 已賣出，不加入 active_positions
+                
+            # 🎯 檢查是否達到 3R 目標獲利 (Take Profit)
+            elif today_mkt["high"] >= p.get("target_3r", 99999):
+                sell_price = p["target_3r"] if today_mkt["open"] < p["target_3r"] else today_mkt["open"]
+                pnl = round((sell_price - p["buy_price"]) * p["shares"], 2)
+                pf["cash"] += (sell_price * p["shares"])
+                pf["history"].append({
+                    "ticker": ticker, "buy_date": p["buy_date"], "sell_date": today_str,
+                    "buy_price": p["buy_price"], "sell_price": round(sell_price, 2),
+                    "pnl": pnl, "pnl_percent": round((sell_price - p["buy_price"]) / p["buy_price"] * 100, 2),
+                    "reason": "🟢 達到 3R 目標自動獲利"
+                })
+                sold_alerts.append(f"🟢 [{ticker}] 達到 3R 目標獲利賣出！價格: ${sell_price:.2f} \vert{} 盈虧: ${pnl:.2f}")
+                continue
+
+        active_positions.append(p)
+    pf["positions"] = active_positions
+
+    # 2. 檢查 F.T. 掛單是否成功突破觸發
+    new_pending = []
     for order in pf["pending_orders"]:
         ticker = order["ticker"]
         if ticker not in market_data:
@@ -84,79 +121,57 @@ def main():
         today_mkt = market_data[ticker]
         buy_price = 0
         
-        if order["order_type"] == "⚠️ 條件突破單 (勿現價買)":
-            if today_mkt["high"] >= order["entry"]:
-                buy_price = today_mkt["open"] if today_mkt["open"] > order["entry"] else order["entry"]
-        else: # 現價低吸或回調單
-            if today_mkt["low"] <= order["entry"]:
-                buy_price = order["entry"]
+        # 必須高於觸發價才買入
+        if today_mkt["high"] >= order["entry"]:
+            buy_price = today_mkt["open"] if today_mkt["open"] > order["entry"] else order["entry"]
 
         if buy_price > 0:
             cost = buy_price * order["shares"]
             if pf["cash"] >= cost:
                 pf["cash"] -= cost
                 position = {
-                    "ticker": ticker,
-                    "buy_price": round(buy_price, 2),
-                    "shares": order["shares"],
-                    "stop": order["stop"],
-                    "target_3r": order["target_3r"],
-                    "buy_date": today_str,
-                    "current_price": round(today_mkt["close"], 2),
-                    "unrealized_pnl": 0.0,
-                    "unrealized_pnl_percent": 0.0
+                    "ticker": ticker, "buy_price": round(buy_price, 2), "shares": order["shares"],
+                    "stop": order["stop"], "target_3r": order.get("target_3r", buy_price*1.2),
+                    "buy_date": today_str, "current_price": round(today_mkt["close"], 2),
+                    "unrealized_pnl": round((today_mkt["close"] - buy_price) * order["shares"], 2),
+                    "unrealized_pnl_percent": round((today_mkt["close"] - buy_price) / buy_price * 100, 2)
                 }
                 pf["positions"].append(position)
-                newly_bought.append(f"股票: {ticker} | 買入價: ${buy_price:.2f} | 股數: {order['shares']}")
-                print(f"[{ticker}] 實時成交！買入於 ${buy_price:.2f}")
+                newly_bought.append(f"🟢 [{ticker}] F.T. 突破買入！價格: ${buy_price:.2f} | 股數: {order['shares']}")
             else:
-                print(f"[{ticker}] 現金不足，取消掛單。")
+                new_pending.append(order) # 現金不足，保留掛單
         else:
-            new_pending.append(order)
-            
+            # 如果未突破，而且收市價跌穿了止蝕位，這張掛單作廢
+            if today_mkt["close"] < order["stop"]:
+                pass 
+            else:
+                new_pending.append(order)
     pf["pending_orders"] = new_pending
 
-    # 如果有新成交，立刻發送 Gmail 通知
-    if newly_bought:
-        subject = "🚨 【AI 模擬交易實時通知】成功建立新倉位！"
-        content = f"系統於 {today_str} 偵測到以下股票達到買入點並已自動模擬建倉：\n\n" + "\n".join(newly_bought)
-        send_email_alert(subject, content)
+    # 3. 發送 Gmail 實時交易通知
+    alerts_text = newly_bought + sold_alerts
+    if alerts_text:
+        send_email_alert("🚨 【AI 模擬交易】倉位異動！", "系統執行了以下交易：\n\n" + "\n".join(alerts_text))
 
-    # 2. 獲取最新選股並建立掛單
+    # 4. 讀取最新掃描結果，尋找新機會掛單
     if os.path.exists(STOCKS_FILE):
         try:
             with open(STOCKS_FILE, 'r', encoding='utf-8') as f:
-                stocks_data = json.load(f).get("stocks", [])
+                sd = json.load(f)
+                # 從強勢庫、VCP 專區、潛水龍頭中匯集所有信號
+                new_signals = sd.get("database", []) + sd.get("vcp", []) + sd.get("stocks", [])
         except:
-            stocks_data = []
+            new_signals = []
             
-        held_and_pending_tickers = [p["ticker"] for p in pf["positions"]] + [o["ticker"] for o in pf["pending_orders"]]
-        pf["pending_orders"] = [] 
+        held_and_pending = [p["ticker"] for p in pf["positions"]] + [o["ticker"] for o in pf["pending_orders"]]
         
-        for s in stocks_data:
-            if s["ticker"] in held_and_pending_tickers: continue
-                
-            position_size = pf["total_equity"] * POSITION_LIMIT
-            if pf["cash"] >= position_size:
-                shares = int(position_size // s["entry"])
-                if shares > 0:
-                    pf["pending_orders"].append({
-                        "ticker": s["ticker"],
-                        "order_type": s["order_type"],
-                        "entry": s["entry"],
-                        "stop": s["stop"],
-                        "target_3r": s["target_3r"],
-                        "shares": shares,
-                        "date_created": today_str
-                    })
-
-    # 3. 計算總淨值
-    stock_value = sum(p["current_price"] * p["shares"] for p in pf["positions"])
-    pf["total_equity"] = round(pf["cash"] + stock_value, 2)
-    pf["cash"] = round(pf["cash"], 2)
-    
-    save_portfolio(pf)
-    print(f"✅ 實時監控結算完成。總淨值: ${pf['total_equity']}")
-
-if __name__ == "__main__":
-    main()
+        for s in new_signals:
+            if s["ticker"] in held_and_pending: continue
+            
+            if "order_type" in s and s.get("entry"):
+                position_size = pf["total_equity"] * POSITION_LIMIT
+                if pf["cash"] >= position_size:
+                    shares = int(position_size // s["entry"])
+                    if shares > 0:
+                        pf["pending_orders"].append({
+                            "ticker":
