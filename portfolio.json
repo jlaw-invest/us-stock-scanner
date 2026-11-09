@@ -1,6 +1,6 @@
 {
     "cash": 3023.54,
-    "total_equity": 9983.98,
+    "total_equity": 9997.2,
     "positions": [
         {
             "ticker": "AAPL",
@@ -9,9 +9,9 @@
             "stop": 315.57,
             "target_3r": 391.49,
             "buy_date": "2026-11-04 08:27",
-            "current_price": 349.76,
-            "unrealized_pnl": 76.05,
-            "unrealized_pnl_percent": 4.55
+            "current_price": 349.33,
+            "unrealized_pnl": 73.92,
+            "unrealized_pnl_percent": 4.42
         },
         {
             "ticker": "MSFT",
@@ -20,9 +20,9 @@
             "stop": 492.59,
             "target_3r": 616.19,
             "buy_date": "2026-11-04 08:27",
-            "current_price": 541.26,
-            "unrealized_pnl": 53.31,
-            "unrealized_pnl_percent": 3.39
+            "current_price": 543.76,
+            "unrealized_pnl": 60.8,
+            "unrealized_pnl_percent": 3.87
         },
         {
             "ticker": "JPM",
@@ -31,9 +31,9 @@
             "stop": 332.08,
             "target_3r": 397.2,
             "buy_date": "2026-11-04 15:53",
-            "current_price": 341.77,
-            "unrealized_pnl": -32.93,
-            "unrealized_pnl_percent": -1.89
+            "current_price": 342.77,
+            "unrealized_pnl": -27.95,
+            "unrealized_pnl_percent": -1.6
         },
         {
             "ticker": "AMZN",
@@ -42,9 +42,9 @@
             "stop": 250.77,
             "target_3r": 302.08,
             "buy_date": "2026-11-06 15:49",
-            "current_price": 268.43,
-            "unrealized_pnl": 33.84,
-            "unrealized_pnl_percent": 1.83
+            "current_price": 268.84,
+            "unrealized_pnl": 36.68,
+            "unrealized_pnl_percent": 1.99
         }
     ],
     "history": [
