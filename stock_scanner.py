@@ -4,14 +4,12 @@ import numpy as np
 import json
 import time
 import requests
+from scipy.stats import rankdata # 用於計算百分位數排名
 
 def get_all_us_tickers():
     print("🌐 正在獲取全美股市場名單...")
     tickers = set()
-    
-    # 來源 1: SEC 官方全市場名單 (最齊全)
     try:
-        # SEC 嚴格要求 User-Agent 必須包含聯絡電郵，否則會 403 Forbidden 封鎖
         headers = {"User-Agent": "JLaw-Quant-Scanner jlawquant@gmail.com"}
         res = requests.get("https://www.sec.gov/files/company_tickers.json", headers=headers, timeout=10)
         data = res.json()
@@ -21,7 +19,6 @@ def get_all_us_tickers():
     except Exception as e:
         print(f"⚠️ SEC 列表獲取失敗: {e}")
 
-    # 來源 2: 備用 S&P 1500 (防止 SEC 伺服器死機)
     if len(tickers) < 1000:
         try:
             headers = {"User-Agent": "Mozilla/5.0"}
@@ -35,7 +32,6 @@ def get_all_us_tickers():
             print(f"✅ 成功從 S&P 1500 備用庫獲取名單。")
         except: pass
         
-    # 來源 3: 終極保底名單 (保證系統絕對不會空轉)
     if not tickers:
         tickers.update(["AAPL", "MSFT", "NVDA", "AMZN", "META", "TSLA", "AVGO", "KOD", "CRWD", "PLTR", "MPWR", "GLW", "DOCN", "INTC"])
         
@@ -49,32 +45,69 @@ def format_currency(value):
 def format_percent(value):
     return f"{value * 100:.1f}%" if pd.notnull(value) else "N/A"
 
+# -----------------------------------------------------------
+# 🚀 核心升級：計算單隻股票的加權動能 (Raw Momentum)
+# -----------------------------------------------------------
+def calculate_raw_momentum(hist_data):
+    """
+    計算加權動能。要求輸入至少 252 個交易日（約一年）的數據。
+    權重分配：最近 1 季 (40%)，前 1 季 (20%)，前 2 季 (20%)，前 3 季 (20%)
+    """
+    try:
+        if len(hist_data) < 252:
+            return None
+        
+        current_close = float(hist_data['Close'].iloc[-1])
+        # 每季約 63 個交易日
+        close_q1_ago = float(hist_data['Close'].iloc[-63])
+        close_q2_ago = float(hist_data['Close'].iloc[-126])
+        close_q3_ago = float(hist_data['Close'].iloc[-189])
+        close_q4_ago = float(hist_data['Close'].iloc[-252])
+        
+        perf_q1 = (current_close - close_q1_ago) / close_q1_ago
+        perf_q2 = (close_q1_ago - close_q2_ago) / close_q2_ago
+        perf_q3 = (close_q2_ago - close_q3_ago) / close_q3_ago
+        perf_q4 = (close_q3_ago - close_q4_ago) / close_q4_ago
+        
+        weighted_momentum = (perf_q1 * 0.40) + (perf_q2 * 0.20) + (perf_q3 * 0.20) + (perf_q4 * 0.20)
+        return weighted_momentum
+    except:
+        return None
+
 def main():
     all_tickers = get_all_us_tickers()
-    out_strong, out_vcp, out_sniper = [], [], []
     
+    # 用於儲存所有股票的原始動能值，以便後續進行百分位數排名
+    momentum_scores = {}
+    
+    out_strong, out_vcp, out_sniper = [], [], []
     batch_size = 300
     candidates = []
     
     for i in range(0, len(all_tickers), batch_size):
         batch = all_tickers[i:i+batch_size]
-        print(f"🔄 正在批量下載 OHLCV 數據: 批次 {i//batch_size + 1} ({i} to {i+len(batch)})...")
+        print(f"🔄 正在批量下載與計算動能: 批次 {i//batch_size + 1} ({i} to {i+len(batch)})...")
         
         try:
+            # 下載 1 年的歷史數據，用於計算 52 週動能
             data = yf.download(batch, period="1y", group_by="ticker", threads=True, progress=False)
             
             for ticker in batch:
                 try:
                     hist = data[ticker] if len(batch) > 1 else data
-                    if hist.empty or len(hist) < 200: continue
+                    if hist.empty or len(hist) < 252: continue # 確保有足夠一年數據
                     
                     current_close = float(hist['Close'].iloc[-1])
                     avg_vol_20 = float(hist['Volume'].iloc[-20:].mean())
                     
-                    # 🔥【無敵濾網】：股價 > $30 且 每日成交額 > 1,500萬美金
-                    # 這完美取代了「市值>30億」的依賴，每日有成億港紙成交，絕對是優質中大型股！
+                    # 基礎濾網
                     if current_close < 30.0 or (current_close * avg_vol_20) < 15_000_000:
                         continue
+                        
+                    # 💡 計算並儲存原始動能值
+                    raw_mom = calculate_raw_momentum(hist)
+                    if raw_mom is not None:
+                        momentum_scores[ticker] = raw_mom
 
                     current_high = float(hist['High'].iloc[-1])
                     current_low = float(hist['Low'].iloc[-1])
@@ -86,13 +119,14 @@ def main():
                     sma_200 = float(hist['Close'].rolling(window=200).mean().iloc[-1])
                     
                     is_stage2 = (current_close > sma_150 and sma_150 > sma_200)
-                    rs_score = 90 + int(np.random.uniform(0, 9))
                     
                     def build_base_plan(order_type, entry, stop, reason, action_plan):
                         risk = entry - stop
                         if risk <= 0 or (risk / entry) < 0.02: risk = entry * 0.05; stop = round(entry * 0.95, 2)
                         return {
-                            "ticker": ticker, "rs": rs_score, "price": round(current_close, 2), 
+                            "ticker": ticker, 
+                            "rs": 0, # 先佔位，稍後填入真實 J-Score
+                            "price": round(current_close, 2), 
                             "sma_10": round(sma_10, 2), "sma_20": round(sma_20, 2), "sma_50": round(sma_50, 2),
                             "order_type": order_type, "entry": round(entry, 2), "stop": round(stop, 2),
                             "target_3r": round(entry + (risk * 3), 2), "reason": reason, "action_plan": action_plan
@@ -100,14 +134,12 @@ def main():
 
                     matched = False
                     
-                    # 💡 策略 A：長青強勢庫 (Stage 2 + 均線多頭)
                     if is_stage2 and current_close > sma_10 and sma_10 > sma_20 and sma_20 > sma_50:
                         entry = current_high + 0.05
                         stop = current_low - 0.05 if current_low < sma_10 else sma_10 * 0.99
                         candidates.append({"type": "strong", "data": build_base_plan("🚀 強勢延續單", entry, stop, "股價維持在 10MA 之上極度強勢。", "設定 Stop Order 於昨日高位突破買入。")})
                         matched = True
 
-                    # 💡 策略 B：VCP 波幅收縮 (放寬限制，捕捉 KOD 這類谷底收縮爆發)
                     pivot_high = float(hist['High'].iloc[-40:].max())
                     vol_recent = float(hist['Close'].iloc[-20:].std())
                     vol_past = float(hist['Close'].iloc[-60:-20].std())
@@ -117,7 +149,6 @@ def main():
                         candidates.append({"type": "vcp", "data": build_base_plan("📉 VCP 突破單", entry, stop, "波幅明顯收縮，準備向上突破樞軸點。", "嚴格設定 Stop Order 於樞軸點。")})
                         matched = True
 
-                    # 💡 策略 C：潛水龍頭 (回踩支撐 + C.S.P)
                     if is_stage2 and not matched:
                         dist_10 = (current_low - sma_10) / sma_10
                         dist_20 = (current_low - sma_20) / sma_20
@@ -141,24 +172,41 @@ def main():
         
         time.sleep(1)
 
+    # -----------------------------------------------------------
+    # 🚀 核心升級：生成 1 到 99 的 J-Score (相對動能排名)
+    # -----------------------------------------------------------
+    print(f"📊 正在生成 J-Score 排名引擎 (基於 {len(momentum_scores)} 隻美股數據)...")
+    ticker_to_jscore = {}
+    if momentum_scores:
+        tickers_list = list(momentum_scores.keys())
+        scores_list = list(momentum_scores.values())
+        
+        # rankdata 預設是升序排名，數字越小排名越前
+        # 將動能值取負數再排名，讓動能最大的排第 1，動能最小的排最後
+        ranks = rankdata([-s for s in scores_list], method='min')
+        total_stocks = len(scores_list)
+        
+        for t, r in zip(tickers_list, ranks):
+            # 轉換為百分位數 (1-99)
+            # 排名第 1 的百分位數最高，排名最後的最低
+            percentile = ((total_stocks - r) / (total_stocks - 1)) * 98 + 1
+            ticker_to_jscore[t] = int(round(percentile))
+            
     print(f"🔥 初步篩選完成！共尋獲 {len(candidates)} 隻圖表極佳的強勢股！準備補充基本面資料...")
 
-    # -----------------------------------------------------------
-    # 【致命 BUG 修復】：徹底解耦 yfinance.info 的不穩定性
-    # 如果 Yahoo Finance API 死機，我們依然保留股票，只填入 N/A，絕不踢走好股票！
-    # -----------------------------------------------------------
     for idx, item in enumerate(candidates):
         ticker = item["data"]["ticker"]
         
+        # 💡 將計算出的真實 J-Score 賦值回給股票
+        item["data"]["rs"] = ticker_to_jscore.get(ticker, 50) # 找不到則給予預設值 50
+        
         try:
-            # 嘗試獲取基本面
             info = yf.Ticker(ticker).info
             sector = info.get('sector', '量化精選')
             summary = info.get('longBusinessSummary', '圖表突破精選。')[:127] + "..."
             net_income = format_currency(info.get('netIncomeToCommon', 0))
             rev_growth = format_percent(info.get('revenueGrowth', 0))
         except:
-            # 如果 API 報錯 (Timeout 或 JSON 錯誤)，給予默認值，保護股票不被刪除！
             sector = "量化精選"
             summary = "強勢圖表突破，基本面資料暫時無法載入。"
             net_income = "N/A"
@@ -169,12 +217,11 @@ def main():
         item["data"]["net_income"] = net_income
         item["data"]["rev_growth"] = rev_growth
         
-        # 分配到對應的名單
         if item["type"] == "strong": out_strong.append(item["data"])
         elif item["type"] == "vcp": out_vcp.append(item["data"])
         elif item["type"] == "sniper": out_sniper.append(item["data"])
 
-    # 寫入 JSON (每個板塊最多保留 50 隻最強的，確保網頁流暢)
+    # 確保最終輸出的名單已經按照真實的 J-Score 排列
     with open("stocks_data.json", "w", encoding="utf-8") as f:
         json.dump({
             "database": sorted(out_strong, key=lambda x: x['rs'], reverse=True)[:50], 
