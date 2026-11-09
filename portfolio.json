@@ -1,6 +1,6 @@
 {
-    "cash": 1182.82,
-    "total_equity": 9936.06,
+    "cash": 3023.54,
+    "total_equity": NaN,
     "positions": [
         {
             "ticker": "AAPL",
@@ -9,9 +9,9 @@
             "stop": 315.57,
             "target_3r": 391.49,
             "buy_date": "2026-11-04 08:27",
-            "current_price": 331.9,
-            "unrealized_pnl": 0.0,
-            "unrealized_pnl_percent": 0.0
+            "current_price": NaN,
+            "unrealized_pnl": NaN,
+            "unrealized_pnl_percent": NaN
         },
         {
             "ticker": "MSFT",
@@ -20,9 +20,9 @@
             "stop": 492.59,
             "target_3r": 616.19,
             "buy_date": "2026-11-04 08:27",
-            "current_price": 520.99,
-            "unrealized_pnl": 0.0,
-            "unrealized_pnl_percent": 0.0
+            "current_price": 530.61,
+            "unrealized_pnl": 21.36,
+            "unrealized_pnl_percent": 1.36
         },
         {
             "ticker": "JPM",
@@ -31,20 +31,9 @@
             "stop": 332.08,
             "target_3r": 397.2,
             "buy_date": "2026-11-04 15:53",
-            "current_price": 349.3,
-            "unrealized_pnl": 0.0,
-            "unrealized_pnl_percent": 0.0
-        },
-        {
-            "ticker": "CRWD",
-            "buy_price": 248.37,
-            "shares": 8,
-            "stop": 230.09,
-            "target_3r": 303.21,
-            "buy_date": "2026-11-04 15:53",
-            "current_price": 242.34,
-            "unrealized_pnl": 0.0,
-            "unrealized_pnl_percent": 0.0
+            "current_price": 334.49,
+            "unrealized_pnl": -69.35,
+            "unrealized_pnl_percent": -3.98
         },
         {
             "ticker": "AMZN",
@@ -53,11 +42,22 @@
             "stop": 250.77,
             "target_3r": 302.08,
             "buy_date": "2026-11-06 15:49",
-            "current_price": 263.65,
-            "unrealized_pnl": 0.0,
-            "unrealized_pnl_percent": 0.0
+            "current_price": 259.3,
+            "unrealized_pnl": -30.1,
+            "unrealized_pnl_percent": -1.63
         }
     ],
-    "history": [],
+    "history": [
+        {
+            "ticker": "CRWD",
+            "buy_date": "2026-11-04 15:53",
+            "sell_date": "2026-11-09 09:41",
+            "buy_price": 248.37,
+            "sell_price": 230.09,
+            "pnl": -146.24,
+            "pnl_percent": -7.36,
+            "reason": "🔴 跌穿支持，觸發硬止蝕"
+        }
+    ],
     "pending_orders": []
 }
