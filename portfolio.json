@@ -1,6 +1,6 @@
 {
     "cash": 3023.54,
-    "total_equity": NaN,
+    "total_equity": 9814.77,
     "positions": [
         {
             "ticker": "AAPL",
@@ -9,9 +9,9 @@
             "stop": 315.57,
             "target_3r": 391.49,
             "buy_date": "2026-11-04 08:27",
-            "current_price": NaN,
-            "unrealized_pnl": NaN,
-            "unrealized_pnl_percent": NaN
+            "current_price": 342.37,
+            "unrealized_pnl": 39.1,
+            "unrealized_pnl_percent": 2.34
         },
         {
             "ticker": "MSFT",
