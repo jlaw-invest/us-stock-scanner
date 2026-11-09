@@ -5,20 +5,14 @@ import json
 import time
 import requests
 
-# -----------------------------------------------------------
-# 第一步：動態連接美國 SEC 數據庫，獲取全市場過萬隻股票名單
-# -----------------------------------------------------------
 def get_all_us_tickers():
     print("🌐 正在連接美國 SEC (證券交易委員會) 獲取全市場股票名單...")
     try:
-        # 使用自訂 User-Agent 避免 403 Forbidden 封鎖
         headers = {"User-Agent": "JLaw-Quant-Scanner/1.0 (Mozilla/5.0)"}
-        # 這是 SEC 官方公開的 API，包含所有美股上市公司，自動過濾了無監管的粉紅單
         res = requests.get("https://www.sec.gov/files/company_tickers.json", headers=headers, timeout=10)
         data = res.json()
         
         tickers = [v['ticker'] for v in data.values()]
-        # 移除帶有小數點的特殊代號 (例如 BRK.B 轉為 BRK-B，否則 Yahoo 會報錯)
         clean_tickers = [t.replace('.', '-') for t in tickers if isinstance(t, str)]
         
         print(f"✅ 成功獲取 {len(clean_tickers)} 隻美股代號！準備開始篩選...")
@@ -40,11 +34,6 @@ def main():
     if not all_tickers: return
 
     out_strong, out_vcp, out_sniper = [], [], []
-    
-    # -----------------------------------------------------------
-    # 第二步：第一重漏斗 (極速價格與成交量過濾)
-    # -----------------------------------------------------------
-    # 將過萬隻股票分批處理，每批 250 隻，避免被 Yahoo 封鎖 IP
     batch_size = 250
     candidates = []
     
@@ -53,7 +42,6 @@ def main():
         print(f"🔄 [第一階段] 正在批量下載日線圖: 批次 {i//batch_size + 1} ({i} to {i+len(batch)})...")
         
         try:
-            # 極速併發下載，不使用 show_errors 參數避免報錯
             data = yf.download(batch, period="1y", group_by="ticker", threads=True)
             
             for ticker in batch:
@@ -64,18 +52,16 @@ def main():
                     current_close = float(hist['Close'].iloc[-1])
                     avg_vol_20 = float(hist['Volume'].iloc[-20:].mean())
                     
-                    # 🔴 核心嚴格濾網 1：【股價 > $30】 及 【日均成交量 > 50萬股】
-                    if current_close < 30.0 or avg_vol_20 < 500000: 
+                    # 🔥 調整 1：股價 > $30 及 日均成交量 > 20萬股
+                    if current_close < 30.0 or avg_vol_20 < 200000: 
                         continue
                         
                     sma_150 = float(hist['Close'].rolling(window=150).mean().iloc[-1])
                     sma_200 = float(hist['Close'].rolling(window=200).mean().iloc[-1])
                     
-                    # 🔴 核心嚴格濾網 2：必須是長期上升趨勢 (Stage 2: 現價 > 150MA > 200MA)
                     if not (current_close > sma_150 and sma_150 > sma_200):
                         continue
                         
-                    # 通過第一重過濾，加入候選名單！
                     candidates.append({"ticker": ticker, "hist": hist})
                     
                 except Exception:
@@ -83,15 +69,10 @@ def main():
         except Exception as e:
             print(f"批次下載失敗: {e}")
         
-        # 暫停 1 秒，防止 API 請求過於頻繁
         time.sleep(1)
 
     print(f"🔥 第一階段過濾完畢！從 {len(all_tickers)} 隻股票中，篩選出 {len(candidates)} 隻【>$30 且呈上升趨勢】的強勢股！")
-    print(f"🔎 準備進入第二階段：基本面市值審查與 J Law 買入點分析...")
 
-    # -----------------------------------------------------------
-    # 第三步：第二重漏斗 (市值過濾與 J Law 九大優勢分析)
-    # -----------------------------------------------------------
     for idx, item in enumerate(candidates):
         ticker = item["ticker"]
         hist = item["hist"]
@@ -103,21 +84,26 @@ def main():
             stock = yf.Ticker(ticker)
             info = stock.info
             
-            # 🔴 核心嚴格濾網 3：【市值必須大於 30億美元 (3 Billion)】
             market_cap = info.get('marketCap', 0)
             if market_cap < 3_000_000_000:
                 continue
                 
-            # 🔴 核心嚴格濾網 4：【公司必須有正淨利潤】
+            # 🔥 調整 2：放寬基本面門檻 (有正利潤 或 營收增長 >= 20%)
             raw_net_income = info.get('netIncomeToCommon', 0)
-            if not raw_net_income or raw_net_income <= 0:
+            rev_growth = info.get('revenueGrowth', 0)
+            
+            has_profit = (raw_net_income and raw_net_income > 0)
+            has_high_growth = (rev_growth and rev_growth >= 0.20)
+            
+            if not (has_profit or has_high_growth):
                 continue
 
-            # --- 基本資料準備 ---
             sector = info.get('sector', '強勢板塊')
             summary = info.get('longBusinessSummary', '暫無簡介。')
             if len(summary) > 130: summary = summary[:127] + "..."
-            net_income = format_currency(raw_net_income)
+            
+            # 若虧損但高增長，特別標記
+            net_income = format_currency(raw_net_income) if has_profit else "虧損 (高增長)"
             
             current_close = float(hist['Close'].iloc[-1])
             current_high = float(hist['High'].iloc[-1])
@@ -127,7 +113,7 @@ def main():
             sma_20 = float(hist['Close'].rolling(window=20).mean().iloc[-1])
             sma_50 = float(hist['Close'].rolling(window=50).mean().iloc[-1])
             
-            rs_score = 90 + int(np.random.uniform(0, 9)) # 模擬 RS>90
+            rs_score = 90 + int(np.random.uniform(0, 9))
             
             def build_plan(order_type, entry, stop, reason, action_plan):
                 risk = entry - stop
@@ -141,13 +127,11 @@ def main():
                     "target_3r": round(entry + (risk * 3), 2), "reason": reason, "action_plan": action_plan
                 }
 
-            # 💡 策略 A：長青強勢庫 (> 10MA > 20MA > 50MA)
             if current_close > sma_10 and sma_10 > sma_20 and sma_20 > sma_50:
                 entry = current_high + 0.05
                 stop = current_low - 0.05 if current_low < sma_10 else sma_10 * 0.99
                 out_strong.append(build_plan("🚀 強勢延續單", entry, stop, "股價維持在 10MA 之上極度強勢。", "設定 Stop Order 於昨日高位突破買入。"))
 
-            # 💡 策略 B：VCP 波幅收縮
             pivot_high = float(hist['High'].iloc[-40:].max())
             vol_recent = float(hist['Close'].iloc[-20:].std())
             vol_past = float(hist['Close'].iloc[-60:-20].std())
@@ -156,7 +140,6 @@ def main():
                 stop = current_close * 0.95
                 out_vcp.append(build_plan("📉 VCP 突破單", entry, stop, "波幅明顯收縮，準備向上突破樞軸點。", "嚴格設定 Stop Order 於樞軸點。"))
 
-            # 💡 策略 C：潛水龍頭 (回踩支撐 + C.S.P 陰陽燭)
             dist_10 = (current_low - sma_10) / sma_10
             dist_20 = (current_low - sma_20) / sma_20
             dist_50 = (current_low - sma_50) / sma_50
@@ -174,7 +157,6 @@ def main():
         except Exception:
             pass
 
-    # 將最強的結果寫入 JSON，推送到你的戰情室網頁！
     with open("stocks_data.json", "w", encoding="utf-8") as f:
         json.dump({
             "database": sorted(out_strong, key=lambda x: x['rs'], reverse=True)[:50], 
