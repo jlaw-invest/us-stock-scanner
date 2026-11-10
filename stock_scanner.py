@@ -56,12 +56,21 @@ def calculate_raw_momentum(hist_data):
         close_q3_ago = float(hist_data['Close'].iloc[-189])
         close_q4_ago = float(hist_data['Close'].iloc[-252])
         
+        # 確保分母不為 0
+        if close_q1_ago == 0 or close_q2_ago == 0 or close_q3_ago == 0 or close_q4_ago == 0:
+            return None
+
         perf_q1 = (current_close - close_q1_ago) / close_q1_ago
         perf_q2 = (close_q1_ago - close_q2_ago) / close_q2_ago
         perf_q3 = (close_q2_ago - close_q3_ago) / close_q3_ago
         perf_q4 = (close_q3_ago - close_q4_ago) / close_q4_ago
         
         weighted_momentum = (perf_q1 * 0.40) + (perf_q2 * 0.20) + (perf_q3 * 0.20) + (perf_q4 * 0.20)
+        
+        # 過濾無效數據 (NaN 或 Infinity)
+        if pd.isna(weighted_momentum) or np.isinf(weighted_momentum):
+            return None
+            
         return weighted_momentum
     except:
         return None
@@ -157,14 +166,21 @@ def main():
     print(f"📊 正在生成 J-Score 排名引擎 (基於 {len(momentum_scores)} 隻美股數據)...")
     ticker_to_jscore = {}
     if momentum_scores:
-        tickers_list = list(momentum_scores.keys())
-        scores_list = list(momentum_scores.values())
-        ranks = rankdata([-s for s in scores_list], method='min')
-        total_stocks = len(scores_list)
+        # 🛡️ 在排名之前，過濾掉任何非數字的無效數據
+        valid_scores = {k: v for k, v in momentum_scores.items() if not pd.isna(v) and not np.isinf(v)}
         
-        for t, r in zip(tickers_list, ranks):
-            percentile = ((total_stocks - r) / (total_stocks - 1)) * 98 + 1
-            ticker_to_jscore[t] = int(round(percentile))
+        if valid_scores:
+            tickers_list = list(valid_scores.keys())
+            scores_list = list(valid_scores.values())
+            
+            ranks = rankdata([-s for s in scores_list], method='min')
+            total_stocks = len(scores_list)
+            
+            for t, r in zip(tickers_list, ranks):
+                percentile = ((total_stocks - r) / (total_stocks - 1)) * 98 + 1
+                # 🛡️ 確保最終轉換為整數前是有效數值
+                if not pd.isna(percentile) and not np.isinf(percentile):
+                    ticker_to_jscore[t] = int(round(percentile))
 
     for item in candidates:
         ticker = item["data"]["ticker"]
