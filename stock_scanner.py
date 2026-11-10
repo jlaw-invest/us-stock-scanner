@@ -4,7 +4,7 @@ import numpy as np
 import json
 import time
 import requests
-from scipy.stats import rankdata # 用於計算百分位數排名
+from scipy.stats import rankdata
 
 def get_all_us_tickers():
     print("🌐 正在獲取全美股市場名單...")
@@ -45,20 +45,12 @@ def format_currency(value):
 def format_percent(value):
     return f"{value * 100:.1f}%" if pd.notnull(value) else "N/A"
 
-# -----------------------------------------------------------
-# 🚀 核心升級：計算單隻股票的加權動能 (Raw Momentum)
-# -----------------------------------------------------------
 def calculate_raw_momentum(hist_data):
-    """
-    計算加權動能。要求輸入至少 252 個交易日（約一年）的數據。
-    權重分配：最近 1 季 (40%)，前 1 季 (20%)，前 2 季 (20%)，前 3 季 (20%)
-    """
     try:
         if len(hist_data) < 252:
             return None
         
         current_close = float(hist_data['Close'].iloc[-1])
-        # 每季約 63 個交易日
         close_q1_ago = float(hist_data['Close'].iloc[-63])
         close_q2_ago = float(hist_data['Close'].iloc[-126])
         close_q3_ago = float(hist_data['Close'].iloc[-189])
@@ -76,8 +68,6 @@ def calculate_raw_momentum(hist_data):
 
 def main():
     all_tickers = get_all_us_tickers()
-    
-    # 用於儲存所有股票的原始動能值，以便後續進行百分位數排名
     momentum_scores = {}
     
     out_strong, out_vcp, out_sniper = [], [], []
@@ -89,22 +79,19 @@ def main():
         print(f"🔄 正在批量下載與計算動能: 批次 {i//batch_size + 1} ({i} to {i+len(batch)})...")
         
         try:
-            # 下載 1 年的歷史數據，用於計算 52 週動能
             data = yf.download(batch, period="1y", group_by="ticker", threads=True, progress=False)
             
             for ticker in batch:
                 try:
                     hist = data[ticker] if len(batch) > 1 else data
-                    if hist.empty or len(hist) < 252: continue # 確保有足夠一年數據
+                    if hist.empty or len(hist) < 252: continue
                     
                     current_close = float(hist['Close'].iloc[-1])
                     avg_vol_20 = float(hist['Volume'].iloc[-20:].mean())
                     
-                    # 基礎濾網
                     if current_close < 30.0 or (current_close * avg_vol_20) < 15_000_000:
                         continue
                         
-                    # 💡 計算並儲存原始動能值
                     raw_mom = calculate_raw_momentum(hist)
                     if raw_mom is not None:
                         momentum_scores[ticker] = raw_mom
@@ -124,16 +111,13 @@ def main():
                         risk = entry - stop
                         if risk <= 0 or (risk / entry) < 0.02: risk = entry * 0.05; stop = round(entry * 0.95, 2)
                         return {
-                            "ticker": ticker, 
-                            "rs": 0, # 先佔位，稍後填入真實 J-Score
-                            "price": round(current_close, 2), 
+                            "ticker": ticker, "rs": 0, "price": round(current_close, 2), 
                             "sma_10": round(sma_10, 2), "sma_20": round(sma_20, 2), "sma_50": round(sma_50, 2),
                             "order_type": order_type, "entry": round(entry, 2), "stop": round(stop, 2),
                             "target_3r": round(entry + (risk * 3), 2), "reason": reason, "action_plan": action_plan
                         }
 
                     matched = False
-                    
                     if is_stage2 and current_close > sma_10 and sma_10 > sma_20 and sma_20 > sma_50:
                         entry = current_high + 0.05
                         stop = current_low - 0.05 if current_low < sma_10 else sma_10 * 0.99
@@ -165,40 +149,26 @@ def main():
                             sup = "10MA" if is_bounce_10 else "20MA" if is_bounce_20 else "50MA"
                             candidates.append({"type": "sniper", "data": build_base_plan(f"⏳ 回踩 {sup}", current_high + 0.05, current_low * 0.98, f"精準回踩 {sup}，C.S.P 陽燭確認。", "突破昨日高位買入，跌穿止蝕。")})
                 
-                except Exception as e:
-                    pass
-        except Exception as e:
-            pass
+                except: pass
+        except: pass
         
         time.sleep(1)
 
-    # -----------------------------------------------------------
-    # 🚀 核心升級：生成 1 到 99 的 J-Score (相對動能排名)
-    # -----------------------------------------------------------
     print(f"📊 正在生成 J-Score 排名引擎 (基於 {len(momentum_scores)} 隻美股數據)...")
     ticker_to_jscore = {}
     if momentum_scores:
         tickers_list = list(momentum_scores.keys())
         scores_list = list(momentum_scores.values())
-        
-        # rankdata 預設是升序排名，數字越小排名越前
-        # 將動能值取負數再排名，讓動能最大的排第 1，動能最小的排最後
         ranks = rankdata([-s for s in scores_list], method='min')
         total_stocks = len(scores_list)
         
         for t, r in zip(tickers_list, ranks):
-            # 轉換為百分位數 (1-99)
-            # 排名第 1 的百分位數最高，排名最後的最低
             percentile = ((total_stocks - r) / (total_stocks - 1)) * 98 + 1
             ticker_to_jscore[t] = int(round(percentile))
-            
-    print(f"🔥 初步篩選完成！共尋獲 {len(candidates)} 隻圖表極佳的強勢股！準備補充基本面資料...")
 
-    for idx, item in enumerate(candidates):
+    for item in candidates:
         ticker = item["data"]["ticker"]
-        
-        # 💡 將計算出的真實 J-Score 賦值回給股票
-        item["data"]["rs"] = ticker_to_jscore.get(ticker, 50) # 找不到則給予預設值 50
+        item["data"]["rs"] = ticker_to_jscore.get(ticker, 50)
         
         try:
             info = yf.Ticker(ticker).info
@@ -221,15 +191,20 @@ def main():
         elif item["type"] == "vcp": out_vcp.append(item["data"])
         elif item["type"] == "sniper": out_sniper.append(item["data"])
 
-    # 確保最終輸出的名單已經按照真實的 J-Score 排列
+    total_found = len(out_strong) + len(out_vcp) + len(out_sniper)
+    print(f"🎯 掃描完畢！強勢庫:{len(out_strong)} | VCP形態:{len(out_vcp)} | 狙擊回調:{len(out_sniper)} | 總計:{total_found}")
+
+    if total_found < 3:
+        print("⚠️ 警告：本次掃描到的股票數量過少（可能因盤前未開市或數據異常），為防止數據被清空，系統放棄寫入！")
+        return
+
     with open("stocks_data.json", "w", encoding="utf-8") as f:
         json.dump({
             "database": sorted(out_strong, key=lambda x: x['rs'], reverse=True)[:50], 
             "vcp": sorted(out_vcp, key=lambda x: x['rs'], reverse=True)[:50], 
             "stocks": sorted(out_sniper, key=lambda x: x['rs'], reverse=True)[:50]
         }, f, ensure_ascii=False, indent=4)
-        
-    print(f"🎯 終極量化掃描完畢！強勢庫:{len(out_strong)} | VCP形態:{len(out_vcp)} | 狙擊回調:{len(out_sniper)}")
+    print("✅ 數據已成功安全寫入 stocks_data.json！")
 
 if __name__ == "__main__":
     main()
