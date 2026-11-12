@@ -1,6 +1,6 @@
 {
     "cash": 267.88,
-    "total_equity": 10060.53,
+    "total_equity": 9933.98,
     "positions": [
         {
             "ticker": "AAPL",
@@ -9,9 +9,9 @@
             "stop": 315.57,
             "target_3r": 391.49,
             "buy_date": "2026-11-04 08:27",
-            "current_price": 351.91,
-            "unrealized_pnl": 86.81,
-            "unrealized_pnl_percent": 5.19
+            "current_price": 357.21,
+            "unrealized_pnl": 113.32,
+            "unrealized_pnl_percent": 6.77
         },
         {
             "ticker": "MSFT",
@@ -20,9 +20,9 @@
             "stop": 492.59,
             "target_3r": 616.19,
             "buy_date": "2026-11-04 08:27",
-            "current_price": 547.33,
-            "unrealized_pnl": 71.51,
-            "unrealized_pnl_percent": 4.55
+            "current_price": 527.98,
+            "unrealized_pnl": 13.47,
+            "unrealized_pnl_percent": 0.86
         },
         {
             "ticker": "JPM",
@@ -31,9 +31,9 @@
             "stop": 332.08,
             "target_3r": 397.2,
             "buy_date": "2026-11-04 15:53",
-            "current_price": 343.11,
-            "unrealized_pnl": -26.23,
-            "unrealized_pnl_percent": -1.51
+            "current_price": 344.28,
+            "unrealized_pnl": -20.4,
+            "unrealized_pnl_percent": -1.17
         },
         {
             "ticker": "AMZN",
@@ -42,9 +42,9 @@
             "stop": 250.77,
             "target_3r": 302.08,
             "buy_date": "2026-11-06 15:49",
-            "current_price": 268.9,
-            "unrealized_pnl": 37.1,
-            "unrealized_pnl_percent": 2.01
+            "current_price": 270.15,
+            "unrealized_pnl": 45.85,
+            "unrealized_pnl_percent": 2.48
         },
         {
             "ticker": "TMO",
@@ -53,9 +53,9 @@
             "stop": 692.34,
             "target_3r": 755.86,
             "buy_date": "2026-11-09 19:39",
-            "current_price": 716.02,
-            "unrealized_pnl": 15.6,
-            "unrealized_pnl_percent": 1.1
+            "current_price": 705.75,
+            "unrealized_pnl": -4.94,
+            "unrealized_pnl_percent": -0.35
         },
         {
             "ticker": "CVCO",
@@ -64,9 +64,9 @@
             "stop": 611.66,
             "target_3r": 843.45,
             "buy_date": "2026-11-09 19:39",
-            "current_price": 680.61,
-            "unrealized_pnl": 22.0,
-            "unrealized_pnl_percent": 1.64
+            "current_price": 636.08,
+            "unrealized_pnl": -67.06,
+            "unrealized_pnl_percent": -5.01
         }
     ],
     "history": [
@@ -89,15 +89,6 @@
             "stop": 417.64,
             "target_3r": 453.12,
             "shares": 4,
-            "date_created": "2026-11-09 17:48"
-        },
-        {
-            "ticker": "CDNA",
-            "order_type": "🚀 強勢延續單",
-            "entry": 85.79,
-            "stop": 79.95,
-            "target_3r": 103.31,
-            "shares": 23,
             "date_created": "2026-11-09 17:48"
         },
         {
@@ -218,15 +209,6 @@
             "date_created": "2026-11-09 17:48"
         },
         {
-            "ticker": "WSM",
-            "order_type": "🚀 強勢延續單",
-            "entry": 261.76,
-            "stop": 256.5,
-            "target_3r": 277.54,
-            "shares": 7,
-            "date_created": "2026-11-09 17:48"
-        },
-        {
             "ticker": "KO",
             "order_type": "🚀 強勢延續單",
             "entry": 96.02,
@@ -242,15 +224,6 @@
             "stop": 249.0,
             "target_3r": 288.01,
             "shares": 7,
-            "date_created": "2026-11-09 17:48"
-        },
-        {
-            "ticker": "BLLN",
-            "order_type": "🚀 強勢延續單",
-            "entry": 118.02,
-            "stop": 112.35,
-            "target_3r": 135.03,
-            "shares": 16,
             "date_created": "2026-11-09 17:48"
         },
         {
@@ -278,15 +251,6 @@
             "stop": 74.15,
             "target_3r": 92.5,
             "shares": 25,
-            "date_created": "2026-11-09 17:48"
-        },
-        {
-            "ticker": "W",
-            "order_type": "🚀 強勢延續單",
-            "entry": 119.01,
-            "stop": 115.13,
-            "target_3r": 130.66,
-            "shares": 16,
             "date_created": "2026-11-09 17:48"
         },
         {
@@ -605,15 +569,6 @@
             "date_created": "2026-11-09 17:48"
         },
         {
-            "ticker": "SDGR",
-            "order_type": "📉 VCP 突破單",
-            "entry": 33.83,
-            "stop": 30.92,
-            "target_3r": 42.55,
-            "shares": 59,
-            "date_created": "2026-11-09 17:48"
-        },
-        {
             "ticker": "VAC",
             "order_type": "📉 VCP 突破單",
             "entry": 120.04,
@@ -668,15 +623,6 @@
             "date_created": "2026-11-09 17:48"
         },
         {
-            "ticker": "BLLN",
-            "order_type": "📉 VCP 突破單",
-            "entry": 127.76,
-            "stop": 110.39,
-            "target_3r": 179.89,
-            "shares": 15,
-            "date_created": "2026-11-09 17:48"
-        },
-        {
             "ticker": "FIVE",
             "order_type": "📉 VCP 突破單",
             "entry": 258.71,
@@ -713,15 +659,6 @@
             "date_created": "2026-11-09 17:48"
         },
         {
-            "ticker": "GFI",
-            "order_type": "📉 VCP 突破單",
-            "entry": 43.89,
-            "stop": 38.55,
-            "target_3r": 59.91,
-            "shares": 45,
-            "date_created": "2026-11-09 17:48"
-        },
-        {
             "ticker": "HIG",
             "order_type": "📉 VCP 突破單",
             "entry": 141.38,
@@ -746,15 +683,6 @@
             "stop": 104.37,
             "target_3r": 137.34,
             "shares": 17,
-            "date_created": "2026-11-09 17:48"
-        },
-        {
-            "ticker": "OMCL",
-            "order_type": "📉 VCP 突破單",
-            "entry": 40.15,
-            "stop": 35.73,
-            "target_3r": 53.41,
-            "shares": 49,
             "date_created": "2026-11-09 17:48"
         },
         {
@@ -791,15 +719,6 @@
             "stop": 83.92,
             "target_3r": 104.91,
             "shares": 22,
-            "date_created": "2026-11-09 17:48"
-        },
-        {
-            "ticker": "FNV",
-            "order_type": "📉 VCP 突破單",
-            "entry": 269.15,
-            "stop": 249.71,
-            "target_3r": 327.48,
-            "shares": 7,
             "date_created": "2026-11-09 17:48"
         },
         {
@@ -920,30 +839,12 @@
             "date_created": "2026-11-09 17:48"
         },
         {
-            "ticker": "OXM",
-            "order_type": "📉 VCP 突破單",
-            "entry": 31.39,
-            "stop": 28.58,
-            "target_3r": 39.83,
-            "shares": 63,
-            "date_created": "2026-11-09 17:48"
-        },
-        {
             "ticker": "RBLX",
             "order_type": "📉 VCP 突破單",
             "entry": 56.13,
             "stop": 49.23,
             "target_3r": 76.83,
             "shares": 35,
-            "date_created": "2026-11-09 17:48"
-        },
-        {
-            "ticker": "SRRK",
-            "order_type": "📉 VCP 突破單",
-            "entry": 51.79,
-            "stop": 47.32,
-            "target_3r": 65.18,
-            "shares": 38,
             "date_created": "2026-11-09 17:48"
         },
         {
@@ -1208,15 +1109,6 @@
             "date_created": "2026-11-09 18:37"
         },
         {
-            "ticker": "A",
-            "order_type": "🚀 強勢延續單",
-            "entry": 179.57,
-            "stop": 174.88,
-            "target_3r": 193.64,
-            "shares": 11,
-            "date_created": "2026-11-09 18:37"
-        },
-        {
             "ticker": "EQH",
             "order_type": "🚀 強勢延續單",
             "entry": 56.0,
@@ -1241,15 +1133,6 @@
             "stop": 1388.73,
             "target_3r": 1707.13,
             "shares": 1,
-            "date_created": "2026-11-09 18:37"
-        },
-        {
-            "ticker": "GMAB",
-            "order_type": "🚀 強勢延續單",
-            "entry": 55.4,
-            "stop": 53.28,
-            "target_3r": 61.78,
-            "shares": 36,
             "date_created": "2026-11-09 18:37"
         },
         {
@@ -1433,15 +1316,6 @@
             "date_created": "2026-11-09 18:37"
         },
         {
-            "ticker": "HRB",
-            "order_type": "🚀 強勢延續單",
-            "entry": 53.46,
-            "stop": 51.22,
-            "target_3r": 60.18,
-            "shares": 37,
-            "date_created": "2026-11-09 18:37"
-        },
-        {
             "ticker": "RGR",
             "order_type": "🚀 強勢延續單",
             "entry": 52.35,
@@ -1493,15 +1367,6 @@
             "stop": 114.09,
             "target_3r": 185.94,
             "shares": 15,
-            "date_created": "2026-11-09 18:37"
-        },
-        {
-            "ticker": "CIGI",
-            "order_type": "📉 VCP 突破單",
-            "entry": 106.78,
-            "stop": 91.52,
-            "target_3r": 152.57,
-            "shares": 18,
             "date_created": "2026-11-09 18:37"
         },
         {
@@ -1601,15 +1466,6 @@
             "stop": 47.6,
             "target_3r": 62.2,
             "shares": 39,
-            "date_created": "2026-11-09 18:37"
-        },
-        {
-            "ticker": "RVMD",
-            "order_type": "📉 VCP 突破單",
-            "entry": 211.56,
-            "stop": 188.75,
-            "target_3r": 279.99,
-            "shares": 9,
             "date_created": "2026-11-09 18:37"
         },
         {
@@ -1820,15 +1676,6 @@
             "date_created": "2026-11-09 18:37"
         },
         {
-            "ticker": "PFSI",
-            "order_type": "📉 VCP 突破單",
-            "entry": 69.25,
-            "stop": 63.42,
-            "target_3r": 86.75,
-            "shares": 28,
-            "date_created": "2026-11-09 18:37"
-        },
-        {
             "ticker": "NVS",
             "order_type": "📉 VCP 突破單",
             "entry": 166.01,
@@ -1844,24 +1691,6 @@
             "stop": 347.05,
             "target_3r": 449.8,
             "shares": 5,
-            "date_created": "2026-11-09 18:37"
-        },
-        {
-            "ticker": "TEM",
-            "order_type": "📉 VCP 突破單",
-            "entry": 89.14,
-            "stop": 78.7,
-            "target_3r": 120.47,
-            "shares": 22,
-            "date_created": "2026-11-09 18:37"
-        },
-        {
-            "ticker": "AS",
-            "order_type": "📉 VCP 突破單",
-            "entry": 32.98,
-            "stop": 30.86,
-            "target_3r": 39.34,
-            "shares": 60,
             "date_created": "2026-11-09 18:37"
         },
         {
@@ -1997,24 +1826,6 @@
             "stop": 220.22,
             "target_3r": 257.55,
             "shares": 8,
-            "date_created": "2026-11-09 18:37"
-        },
-        {
-            "ticker": "QLYS",
-            "order_type": "⏳ 回踩 50MA",
-            "entry": 204.8,
-            "stop": 186.89,
-            "target_3r": 258.54,
-            "shares": 9,
-            "date_created": "2026-11-09 18:37"
-        },
-        {
-            "ticker": "AUGO",
-            "order_type": "⏳ 回踩 50MA",
-            "entry": 85.46,
-            "stop": 79.7,
-            "target_3r": 102.73,
-            "shares": 23,
             "date_created": "2026-11-09 18:37"
         },
         {
