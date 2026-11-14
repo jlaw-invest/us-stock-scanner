@@ -2,18 +2,18 @@
 <html lang="zh-Hant">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>J-QUANT PRO | 頂級量化動能終端機</title>
     <script type="text/javascript" src="https://s3.tradingview.com/tv.js"></script>
     <style>
         /* 🌌 終極商業化暗黑主題 */
         :root { 
             --bg-base: #030508; 
-            --bg-glass: rgba(13, 17, 26, 0.7);
-            --bg-glass-hover: rgba(22, 29, 43, 0.9);
-            --border-glass: rgba(255, 255, 255, 0.06);
+            --bg-glass: rgba(13, 17, 26, 0.78);
+            --bg-glass-hover: rgba(22, 29, 43, 0.92);
+            --border-glass: rgba(255, 255, 255, 0.08);
             --text-main: #f0f4f8; 
-            --text-muted: #6b7c96; 
+            --text-muted: #7a8ba6; 
             --neon-green: #00ff88; 
             --neon-red: #ff2a55; 
             --neon-blue: #00e5ff; 
@@ -23,167 +23,269 @@
         }
         
         * { box-sizing: border-box; }
+        
+        html, body {
+            width: 100%;
+            max-width: 100vw;
+            overflow-x: hidden; /* 🛡️ 徹底杜絕右邊出現黑邊溢出的問題 */
+            margin: 0;
+            padding: 0;
+        }
+
         body { 
             background-color: var(--bg-base); 
             background-image: 
                 radial-gradient(circle at 10% 20%, rgba(0, 229, 255, 0.04), transparent 30%),
                 radial-gradient(circle at 90% 80%, rgba(249, 195, 44, 0.04), transparent 30%),
-                linear-gradient(rgba(255,255,255,0.01) 1px, transparent 1px),
-                linear-gradient(90deg, rgba(255,255,255,0.01) 1px, transparent 1px);
+                linear-gradient(rgba(255,255,255,0.015) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255,255,255,0.015) 1px, transparent 1px);
             background-size: 100% 100%, 100% 100%, 30px 30px, 30px 30px;
             color: var(--text-main); 
             font-family: var(--font-family); 
-            margin: 0; padding: 15px 25px; min-height: 100vh;
+            padding: 15px 25px; 
+            min-height: 100vh;
         }
 
-        /* 💎 頂部導航列 (SaaS 商業化設計) */
+        /* 💎 頂部導航列 (桌面 + 手機自適應) */
         .top-navbar {
-            display: flex; justify-content: space-between; align-items: center;
-            margin-bottom: 25px; padding: 15px 25px;
-            background: var(--bg-glass); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
-            border: 1px solid var(--border-glass); border-radius: 16px;
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-bottom: 20px; 
+            padding: 15px 22px;
+            background: var(--bg-glass); 
+            backdrop-filter: blur(20px); 
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid var(--border-glass); 
+            border-radius: 16px;
             box-shadow: 0 10px 40px rgba(0, 0, 0, 0.4);
+            width: 100%;
         }
 
         /* 🎨 原創 SVG LOGO */
-        .brand-container { display: flex; align-items: center; gap: 15px; }
-        .logo-svg { width: 42px; height: 42px; filter: drop-shadow(0 0 8px rgba(0, 229, 255, 0.4)); }
+        .brand-container { display: flex; align-items: center; gap: 12px; }
+        .logo-svg { width: 40px; height: 40px; flex-shrink: 0; filter: drop-shadow(0 0 8px rgba(0, 229, 255, 0.4)); }
         .brand-text { display: flex; flex-direction: column; }
-        .brand-name { font-size: 24px; font-weight: 900; letter-spacing: 2px; margin: 0; line-height: 1; background: linear-gradient(90deg, #ffffff, #a2b4ce); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-        .brand-sub { font-size: 10px; color: var(--gold-premium); letter-spacing: 3px; font-weight: bold; text-transform: uppercase; margin-top: 4px;}
+        .brand-name { font-size: 22px; font-weight: 900; letter-spacing: 2px; margin: 0; line-height: 1.1; background: linear-gradient(90deg, #ffffff, #a2b4ce); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .brand-sub { font-size: 10px; color: var(--gold-premium); letter-spacing: 2.5px; font-weight: bold; text-transform: uppercase; margin-top: 3px;}
 
-        /* 🧭 大市晴雨表 (Market Compass - 收費點) */
-        .market-compass { display: flex; gap: 20px; background: rgba(0,0,0,0.4); padding: 8px 20px; border-radius: 12px; border: 1px solid var(--border-glass);}
-        .compass-item { display: flex; flex-direction: column; font-size: 11px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px;}
-        .compass-val { font-size: 14px; font-weight: 800; color: #fff; margin-top: 2px; display: flex; align-items: center; gap: 6px;}
-        .pulse-dot { width: 8px; height: 8px; background-color: var(--neon-green); border-radius: 50%; box-shadow: 0 0 10px var(--neon-green); animation: pulse 2s infinite; }
+        /* 🧭 大市晴雨表 (Market Compass) */
+        .market-compass { 
+            display: flex; 
+            align-items: center;
+            gap: 18px; 
+            background: rgba(0,0,0,0.45); 
+            padding: 10px 18px; 
+            border-radius: 12px; 
+            border: 1px solid var(--border-glass);
+        }
+        .compass-divider { width: 1px; height: 28px; background: rgba(255,255,255,0.12); }
+        .compass-item { display: flex; flex-direction: column; font-size: 11px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px;}
+        .compass-val { font-size: 13px; font-weight: 800; color: #fff; margin-top: 3px; display: flex; align-items: center; gap: 6px;}
+        .pulse-dot { width: 8px; height: 8px; flex-shrink: 0; background-color: var(--neon-green); border-radius: 50%; box-shadow: 0 0 10px var(--neon-green); animation: pulse 2s infinite; }
 
         /* 👑 用戶面板 */
-        .user-profile { display: flex; align-items: center; gap: 12px; }
-        .pro-badge { background: var(--gradient-pro); color: #000; font-size: 11px; font-weight: 900; padding: 4px 10px; border-radius: 6px; box-shadow: 0 0 15px rgba(249, 195, 44, 0.3);}
-        .user-avatar { width: 36px; height: 36px; border-radius: 50%; background: #2a3441; border: 2px solid var(--border-glass); display: flex; justify-content: center; align-items: center; color: #fff; font-weight: bold;}
+        .user-profile { display: flex; align-items: center; gap: 10px; }
+        .pro-badge { background: var(--gradient-pro); color: #000; font-size: 11px; font-weight: 900; padding: 4px 10px; border-radius: 6px; box-shadow: 0 0 15px rgba(249, 195, 44, 0.3); white-space: nowrap;}
+        .user-avatar { width: 34px; height: 34px; flex-shrink: 0; border-radius: 50%; background: #2a3441; border: 2px solid var(--border-glass); display: flex; justify-content: center; align-items: center; color: #fff; font-size: 13px; font-weight: bold;}
 
         @keyframes pulse { 0% { opacity: 1; box-shadow: 0 0 10px var(--neon-green); } 50% { opacity: 0.4; box-shadow: 0 0 2px var(--neon-green); } 100% { opacity: 1; box-shadow: 0 0 10px var(--neon-green); } }
 
-        /* 導航分頁 (科技感) */
-        .nav-tabs { display: flex; gap: 15px; margin-bottom: 25px; overflow-x: auto; padding-bottom: 5px; scrollbar-width: none;}
+        /* 導航分頁 (原生橫向滑動，絕不折行壓扁) */
+        .nav-tabs { 
+            display: flex; 
+            gap: 10px; 
+            margin-bottom: 20px; 
+            overflow-x: auto; 
+            padding-bottom: 6px; 
+            -webkit-overflow-scrolling: touch;
+            scrollbar-width: none;
+            width: 100%;
+        }
         .nav-tabs::-webkit-scrollbar { display: none; }
         .tab-btn { 
-            background: var(--bg-glass); border: 1px solid var(--border-glass); 
-            color: var(--text-muted); font-size: 14px; font-weight: 600; 
-            cursor: pointer; padding: 12px 25px; border-radius: 12px; 
-            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            display: flex; align-items: center; gap: 8px;
+            background: var(--bg-glass); 
+            border: 1px solid var(--border-glass); 
+            color: var(--text-muted); 
+            font-size: 13px; 
+            font-weight: 700; 
+            cursor: pointer; 
+            padding: 11px 18px; 
+            border-radius: 12px; 
+            transition: all 0.3s ease;
+            display: inline-flex; 
+            align-items: center; 
+            gap: 6px;
+            white-space: nowrap; /* 🛡️ 強制單行顯示，不准壓扁折行 */
+            flex-shrink: 0;      /* 🛡️ 防止在手機上被擠壓變形 */
         }
-        .tab-btn:hover { color: #fff; background: var(--bg-glass-hover); transform: translateY(-3px) scale(1.02); box-shadow: 0 5px 15px rgba(0,0,0,0.3);}
+        .tab-btn:hover { color: #fff; background: var(--bg-glass-hover); }
         .tab-btn.active { 
-            color: #000; background: var(--gradient-pro); 
-            border-color: transparent; box-shadow: 0 8px 20px rgba(249, 195, 44, 0.25);
+            color: #000; 
+            background: var(--gradient-pro); 
+            border-color: transparent; 
+            box-shadow: 0 6px 18px rgba(249, 195, 44, 0.25);
         }
 
         /* 視圖動畫 */
-        .view-section { display: none; animation: slideUpFade 0.5s ease-out; }
+        .view-section { display: none; animation: slideUpFade 0.4s ease-out; width: 100%; }
         .view-section.active { display: block; }
-        @keyframes slideUpFade { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes slideUpFade { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
 
-        /* 主體網格佈局 */
-        .container { display: grid; grid-template-columns: 450px 1fr; gap: 25px; }
-        @media (max-width: 1200px) { .container { grid-template-columns: 1fr; } }
-        .left-column { display: flex; flex-direction: column; gap: 25px; }
+        /* 主體網格佈局 (使用 minmax(0, ...) 防止 Grid 子元素撐爆螢幕) */
+        .container { 
+            display: grid; 
+            grid-template-columns: minmax(0, 430px) minmax(0, 1fr); 
+            gap: 20px; 
+            width: 100%;
+        }
+        .left-column, .main-content { min-width: 0; width: 100%; }
+        .left-column { display: flex; flex-direction: column; gap: 20px; }
         
         /* 玻璃態卡片通用樣式 */
         .glass-panel {
-            background: var(--bg-glass); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
-            border: 1px solid var(--border-glass); border-radius: 18px; padding: 22px;
+            background: var(--bg-glass); 
+            backdrop-filter: blur(20px); 
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid var(--border-glass); 
+            border-radius: 18px; 
+            padding: 20px;
             box-shadow: 0 15px 35px 0 rgba(0, 0, 0, 0.3);
+            width: 100%;
         }
 
         /* 股票清單特效 */
-        .list-container { max-height: 520px; overflow-y: auto; padding-right: 8px;}
-        .list-container::-webkit-scrollbar { width: 6px; }
+        .list-container { max-height: 460px; overflow-y: auto; padding-right: 4px; -webkit-overflow-scrolling: touch; }
+        .list-container::-webkit-scrollbar { width: 5px; }
         .list-container::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.15); border-radius: 10px; }
         
         .stock-item { 
-            background: linear-gradient(180deg, rgba(255,255,255,0.03) 0%, rgba(255,255,255,0.01) 100%); 
+            background: linear-gradient(180deg, rgba(255,255,255,0.035) 0%, rgba(255,255,255,0.01) 100%); 
             border: 1px solid var(--border-glass); 
-            padding: 16px; border-radius: 14px; margin-bottom: 15px; cursor: pointer; 
-            transition: all 0.3s ease; position: relative; overflow: hidden;
+            padding: 14px 16px; 
+            border-radius: 14px; 
+            margin-bottom: 12px; 
+            cursor: pointer; 
+            transition: all 0.25s ease; 
+            position: relative; 
+            overflow: hidden;
         }
         .stock-item::before { content: ''; position: absolute; top: 0; left: 0; width: 4px; height: 100%; background: transparent; transition: 0.3s; }
-        .stock-item:hover { transform: translateX(8px); background: rgba(255,255,255,0.06); border-color: rgba(255,255,255,0.15);}
+        .stock-item:hover { background: rgba(255,255,255,0.06); border-color: rgba(255,255,255,0.15); }
         .stock-item.active { 
-            background: linear-gradient(135deg, rgba(249, 195, 44, 0.1), rgba(249, 195, 44, 0.02));
-            border-color: rgba(249, 195, 44, 0.4); 
-            box-shadow: 0 5px 20px rgba(0,0,0,0.2);
+            background: linear-gradient(135deg, rgba(249, 195, 44, 0.12), rgba(249, 195, 44, 0.02));
+            border-color: rgba(249, 195, 44, 0.45); 
+            box-shadow: 0 5px 20px rgba(0,0,0,0.25);
         }
-        .stock-item.active::before { background: var(--gold-premium); box-shadow: 0 0 10px var(--gold-premium);}
+        .stock-item.active::before { background: var(--gold-premium); box-shadow: 0 0 10px var(--gold-premium); }
         
-        .stock-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
-        .ticker { font-size: 24px; font-weight: 900; letter-spacing: 1px; color: #fff;}
+        .stock-header { display: flex; justify-content: space-between; align-items: center; gap: 8px; margin-bottom: 10px; }
+        .ticker { font-size: 21px; font-weight: 900; letter-spacing: 0.5px; color: #fff; display: flex; align-items: baseline; flex-wrap: wrap; gap: 6px; }
+        .sector-tag { font-size: 11px; font-weight: normal; color: var(--text-muted); letter-spacing: 0; }
         .j-score { 
-            background: rgba(0, 229, 255, 0.1); color: var(--neon-blue); 
-            padding: 6px 12px; border-radius: 8px; font-size: 12px; font-weight: 900; 
-            letter-spacing: 1px; border: 1px solid rgba(0, 229, 255, 0.3);
-            box-shadow: inset 0 0 10px rgba(0, 229, 255, 0.1);
+            background: rgba(0, 229, 255, 0.12); color: var(--neon-blue); 
+            padding: 5px 10px; border-radius: 8px; font-size: 11px; font-weight: 900; 
+            letter-spacing: 0.5px; border: 1px solid rgba(0, 229, 255, 0.3);
+            white-space: nowrap; flex-shrink: 0;
         }
         
-        .stock-meta { font-size: 13px; display: flex; justify-content: space-between; color: var(--text-muted); align-items: center;}
-        .val-trigger { color: var(--gold-premium); font-size: 15px; font-weight: 800; font-family: monospace; background: rgba(249, 195, 44, 0.1); padding: 4px 10px; border-radius: 6px;}
+        .stock-meta { font-size: 13px; display: flex; justify-content: space-between; color: var(--text-muted); align-items: center; gap: 8px; }
+        .val-trigger { color: var(--gold-premium); font-size: 14px; font-weight: 800; font-family: monospace; background: rgba(249, 195, 44, 0.1); padding: 4px 9px; border-radius: 6px; }
 
         /* 圖表區塊 */
-        .chart-card h2 { margin: 0 0 15px 0; font-size: 18px; display: flex; justify-content: space-between; align-items: center;}
-        .chart-badge { font-size: 11px; background: rgba(255,255,255,0.1); padding: 4px 10px; border-radius: 20px; font-weight: normal; color: var(--text-muted);}
-        #tradingview_widget { height: 520px; width: 100%; border-radius: 12px; overflow: hidden; border: 1px solid var(--border-glass); }
+        .chart-card h2 { margin: 0 0 15px 0; font-size: 18px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px; }
+        .chart-badge { font-size: 11px; background: rgba(255,255,255,0.08); padding: 4px 10px; border-radius: 20px; font-weight: 600; color: var(--text-muted); }
+        #tradingview_widget { height: 560px; width: 100%; border-radius: 12px; overflow: hidden; border: 1px solid var(--border-glass); }
         
-        /* ⚔️ 動能狙擊系統面板 (機構級設計) */
+        /* ⚔️ 動能狙擊系統面板 */
         .strategy-panel { position: relative; overflow: hidden; }
-        .panel-header { display: flex; justify-content: space-between; margin-bottom: 20px; align-items: center; border-bottom: 1px solid var(--border-glass); padding-bottom: 15px;}
-        .panel-title { color: #fff; font-weight: 900; font-size: 16px; letter-spacing: 1px; display: flex; align-items: center; gap: 8px;}
-        .panel-title i { color: var(--gold-premium); }
-        .order-type-badge { background: var(--gradient-pro); color: #000; padding: 5px 12px; border-radius: 8px; font-size: 12px; font-weight: bold; box-shadow: 0 0 15px rgba(249, 195, 44, 0.4);}
+        .panel-header { display: flex; justify-content: space-between; margin-bottom: 18px; align-items: center; flex-wrap: wrap; gap: 8px; border-bottom: 1px solid var(--border-glass); padding-bottom: 12px; }
+        .panel-title { color: #fff; font-weight: 900; font-size: 15px; letter-spacing: 0.5px; display: flex; align-items: center; gap: 6px; }
+        .order-type-badge { background: var(--gradient-pro); color: #000; padding: 4px 10px; border-radius: 8px; font-size: 11px; font-weight: 800; }
         
-        .trade-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; margin-bottom: 20px;}
+        .trade-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; margin-bottom: 18px; }
         .trade-box { 
-            background: rgba(0, 0, 0, 0.5); padding: 18px 15px; border-radius: 12px; 
-            border: 1px solid rgba(255,255,255,0.04); display: flex; flex-direction: column; align-items: center; justify-content: center;
+            background: rgba(0, 0, 0, 0.5); padding: 14px 10px; border-radius: 12px; 
+            border: 1px solid rgba(255,255,255,0.05); display: flex; flex-direction: column; align-items: center; justify-content: center;
             position: relative; overflow: hidden;
         }
-        .box-trigger::after { content: ''; position: absolute; bottom: 0; left: 0; width: 100%; height: 3px; background: var(--neon-green); box-shadow: 0 -2px 10px rgba(0,255,136,0.3);}
-        .box-stop::after { content: ''; position: absolute; bottom: 0; left: 0; width: 100%; height: 3px; background: var(--neon-red); box-shadow: 0 -2px 10px rgba(255,42,85,0.3);}
-        .trade-label { font-size: 11px; color: var(--text-muted); margin-bottom: 8px; text-transform: uppercase; letter-spacing: 1px;}
-        .trade-val { font-size: 22px; font-weight: 900; font-family: monospace; letter-spacing: -0.5px;}
+        .box-trigger::after { content: ''; position: absolute; bottom: 0; left: 0; width: 100%; height: 3px; background: var(--neon-green); }
+        .box-stop::after { content: ''; position: absolute; bottom: 0; left: 0; width: 100%; height: 3px; background: var(--neon-red); }
+        .trade-label { font-size: 10px; color: var(--text-muted); margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.5px; text-align: center; }
+        .trade-val { font-size: 20px; font-weight: 900; font-family: monospace; }
         
-        /* 🔥 新增：盈虧比視覺化橫條 */
-        .rr-bar-container { width: 100%; height: 6px; background: rgba(255,255,255,0.1); border-radius: 3px; margin: 20px 0; display: flex; overflow: hidden;}
+        /* 盈虧比視覺化橫條 */
+        .rr-bar-container { width: 100%; height: 6px; background: rgba(255,255,255,0.1); border-radius: 3px; margin: 8px 0 18px 0; display: flex; overflow: hidden; }
         .rr-risk { width: 25%; background: var(--neon-red); height: 100%; }
         .rr-reward { width: 75%; background: var(--neon-green); height: 100%; }
-        .rr-labels { display: flex; justify-content: space-between; font-size: 11px; color: var(--text-muted); font-weight: bold;}
+        .rr-labels { display: flex; justify-content: space-between; font-size: 11px; color: var(--text-muted); font-weight: bold; }
 
-        .logic-box { background: rgba(255,255,255,0.02); padding: 16px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.05); font-size: 13px; color: #a9b4c2; line-height: 1.6; margin-bottom: 12px;}
-        .logic-box h4 { margin: 0 0 10px 0; color: #fff; font-size: 12px; text-transform: uppercase; letter-spacing: 1.5px; opacity: 0.8;}
+        .logic-box { background: rgba(255,255,255,0.025); padding: 14px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.05); font-size: 13px; color: #b8c4d6; line-height: 1.6; margin-bottom: 12px; }
+        .logic-box h4 { margin: 0 0 8px 0; color: #fff; font-size: 11px; text-transform: uppercase; letter-spacing: 1px; opacity: 0.85; }
 
         /* 模擬基金表格 & 現金面板 */
-        .metric-cards { display: flex; gap: 25px; margin-bottom: 30px; flex-wrap: wrap;}
+        .metric-cards { display: grid; grid-template-columns: repeat(2, 1fr); gap: 18px; margin-bottom: 25px; }
         .metric-card { 
-            background: linear-gradient(135deg, rgba(20,25,35,0.8) 0%, rgba(10,14,20,0.9) 100%);
-            border: 1px solid var(--border-glass); padding: 30px; border-radius: 20px; text-align: center; flex: 1;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.5); min-width: 250px; position: relative; overflow: hidden;
+            background: linear-gradient(135deg, rgba(20,25,35,0.85) 0%, rgba(10,14,20,0.95) 100%);
+            border: 1px solid var(--border-glass); padding: 24px 18px; border-radius: 18px; text-align: center;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.4); position: relative; overflow: hidden;
         }
-        .metric-card::before { content:''; position:absolute; top:0; left:0; width:100%; height:2px; background: var(--gradient-pro);}
-        .metric-title { color: var(--text-muted); font-size: 12px; margin-bottom: 12px; font-weight: 800; text-transform: uppercase; letter-spacing: 2px;}
-        .metric-value { font-size: 38px; font-weight: 900; color: #fff; font-family: monospace; text-shadow: 0 2px 15px rgba(255,255,255,0.15);}
+        .metric-card::before { content:''; position:absolute; top:0; left:0; width:100%; height:2px; background: var(--gradient-pro); }
+        .metric-title { color: var(--text-muted); font-size: 11px; margin-bottom: 10px; font-weight: 800; text-transform: uppercase; letter-spacing: 1.5px; }
+        .metric-value { font-size: 30px; font-weight: 900; color: #fff; font-family: monospace; }
         
-        .table-responsive { overflow-x: auto; margin-bottom: 35px; border-radius: 14px; border: 1px solid var(--border-glass); box-shadow: 0 10px 30px rgba(0,0,0,0.2);}
-        table { width: 100%; border-collapse: collapse; min-width: 700px; font-size: 13px; background: rgba(0,0,0,0.3);}
-        th { text-align: left; padding: 18px; background: rgba(255,255,255,0.02); color: #fff; font-weight: 700; text-transform: uppercase; font-size: 11px; letter-spacing: 1.5px;}
-        td { padding: 18px; border-top: 1px solid var(--border-glass); color: #e2e8f0; font-family: monospace; font-size: 15px;}
-        .profit { color: var(--neon-green); font-weight: bold; text-shadow: 0 0 10px rgba(0,255,136,0.2);}
-        .loss { color: var(--neon-red); font-weight: bold; text-shadow: 0 0 10px rgba(255,42,85,0.2);}
+        .table-responsive { overflow-x: auto; margin-bottom: 30px; border-radius: 14px; border: 1px solid var(--border-glass); -webkit-overflow-scrolling: touch; }
+        table { width: 100%; border-collapse: collapse; min-width: 580px; font-size: 13px; background: rgba(0,0,0,0.3); }
+        th { text-align: left; padding: 14px 16px; background: rgba(255,255,255,0.03); color: #fff; font-weight: 700; text-transform: uppercase; font-size: 11px; letter-spacing: 1px; }
+        td { padding: 14px 16px; border-top: 1px solid var(--border-glass); color: #e2e8f0; font-family: monospace; font-size: 14px; }
+        .profit { color: var(--neon-green); font-weight: bold; }
+        .loss { color: var(--neon-red); font-weight: bold; }
         
         /* ⚖️ 專業免責聲明 Footer */
         .disclaimer-footer {
-            margin-top: 50px; padding: 25px; border-top: 1px solid rgba(255,255,255,0.05);
-            text-align: center; font-size: 11px; color: #4a5975; line-height: 1.8; letter-spacing: 0.5px;
+            margin-top: 35px; padding: 20px 15px; border-top: 1px solid rgba(255,255,255,0.06);
+            text-align: center; font-size: 11px; color: #566685; line-height: 1.7;
+        }
+
+        /* =========================================================
+           📱 手機與平板專屬響應式適配 (徹底解決右邊黑邊與走位問題)
+           ========================================================= */
+        @media (max-width: 1100px) {
+            .container { grid-template-columns: minmax(0, 1fr); }
+        }
+
+        @media (max-width: 768px) {
+            body { padding: 10px 12px; }
+            
+            .top-navbar { padding: 12px 14px; gap: 12px; }
+            .brand-container { order: 1; }
+            .user-profile { order: 2; margin-left: auto; }
+            .brand-name { font-size: 19px; }
+            .logo-svg { width: 34px; height: 34px; }
+            
+            /* 手機端大市羅盤自動佔滿第二行，左右平分，絕不撐爆螢幕 */
+            .market-compass { 
+                order: 3; 
+                width: 100%; 
+                display: grid; 
+                grid-template-columns: 1fr 1fr; 
+                gap: 10px; 
+                padding: 10px 12px; 
+            }
+            .compass-divider { display: none; }
+            .compass-item { font-size: 10px; }
+            .compass-val { font-size: 12px; }
+
+            .glass-panel { padding: 15px; border-radius: 14px; }
+            .list-container { max-height: 360px; }
+            .ticker { font-size: 19px; }
+            .trade-val { font-size: 18px; }
+            #tradingview_widget { height: 430px; }
+
+            .metric-cards { grid-template-columns: 1fr; gap: 12px; }
+            .metric-value { font-size: 26px; }
         }
     </style>
 </head>
@@ -192,7 +294,6 @@
     <!-- 💎 頂部導航列 (SaaS UI) -->
     <div class="top-navbar">
         <div class="brand-container">
-            <!-- 原創發光 SVG LOGO -->
             <svg class="logo-svg" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
                 <defs>
                     <linearGradient id="logoGlow" x1="0%" y1="0%" x2="100%" y2="100%">
@@ -204,26 +305,26 @@
                         <stop offset="100%" stop-color="#ff8c00" />
                     </linearGradient>
                 </defs>
-                <rect width="100" height="100" rx="25" fill="#0d111a" stroke="rgba(255,255,255,0.1)" stroke-width="2"/>
+                <rect width="100" height="100" rx="25" fill="#0d111a" stroke="rgba(255,255,255,0.12)" stroke-width="2"/>
                 <path d="M 25 65 L 45 40 L 60 55 L 80 25" fill="none" stroke="url(#logoGlow)" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
                 <circle cx="80" cy="25" r="6" fill="url(#logoGold)"/>
             </svg>
             <div class="brand-text">
                 <h1 class="brand-name">J-QUANT</h1>
-                <div class="brand-sub">Professional Terminal</div>
+                <div class="brand-sub">Pro Terminal</div>
             </div>
         </div>
 
         <!-- 大市羅盤 -->
         <div class="market-compass">
             <div class="compass-item">
-                市場狀態 (Market Trend)
-                <div class="compass-val"><div class="pulse-dot"></div> 確定上升趨勢 (Uptrend)</div>
+                市場狀態 (Trend)
+                <div class="compass-val"><div class="pulse-dot"></div> 確定上升趨勢</div>
             </div>
-            <div style="width: 1px; background: rgba(255,255,255,0.1); margin: 0 15px;"></div>
+            <div class="compass-divider"></div>
             <div class="compass-item">
-                建議系統倉位 (Exposure)
-                <div class="compass-val" style="color:var(--gold-premium);">80% - 100% (Aggressive)</div>
+                建議倉位 (Exposure)
+                <div class="compass-val" style="color:var(--gold-premium);">80% - 100%</div>
             </div>
         </div>
 
@@ -234,29 +335,29 @@
         </div>
     </div>
 
-    <!-- 選單 Tabs -->
+    <!-- 選單 Tabs (支援手機順滑左右滑動) -->
     <div class="nav-tabs">
         <button id="btn-database" class="tab-btn active" onclick="switchTab('database')">🔥 J-SCORE 90+ 強勢庫</button>
         <button id="btn-vcp" class="tab-btn" onclick="switchTab('vcp')">📉 波幅收縮 (VCP) 模型</button>
         <button id="btn-scanner" class="tab-btn" onclick="switchTab('scanner')">🎯 量化右側突破 (回調)</button>
-        <button id="btn-portfolio" class="tab-btn" onclick="switchTab('portfolio')">💼 演算法自動持倉 (Fund)</button>
+        <button id="btn-portfolio" class="tab-btn" onclick="switchTab('portfolio')">💼 演算法自動持倉</button>
     </div>
 
     <!-- 動態主體框架 -->
     <div id="master-view" class="container" style="display: none;">
         <div class="left-column">
             <div class="glass-panel list-container">
-                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px; padding-bottom:12px; border-bottom:1px solid var(--border-glass);">
-                    <h3 id="list-title" style="margin:0; font-size: 15px; color: #fff; letter-spacing: 1px;">--</h3>
-                    <span style="font-size:11px; color:var(--text-muted); font-family:monospace; background:rgba(0,0,0,0.5); padding:4px 10px; border-radius:20px;" id="stock-count">0 TICKERS</span>
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px; padding-bottom:10px; border-bottom:1px solid var(--border-glass);">
+                    <h3 id="list-title" style="margin:0; font-size: 14px; color: #fff; letter-spacing: 0.5px;">--</h3>
+                    <span style="font-size:11px; color:var(--text-muted); font-family:monospace; background:rgba(0,0,0,0.5); padding:4px 10px; border-radius:20px; white-space:nowrap;" id="stock-count">0 TICKERS</span>
                 </div>
-                <div id="dynamic-list"><div style="text-align:center; padding:40px; color:#5a6b8c;">正在連接納斯達克數據...</div></div>
+                <div id="dynamic-list"><div style="text-align:center; padding:35px; color:#5a6b8c;">正在連接納斯達克數據...</div></div>
             </div>
 
             <!-- 策略面板 -->
             <div class="glass-panel strategy-panel" id="strategyPanel" style="display: none;">
                 <div class="panel-header">
-                    <div class="panel-title">⚙️ 量化決策引擎 (AI Decision)</div>
+                    <div class="panel-title">⚙️ 量化決策引擎</div>
                     <div id="valOrderType" class="order-type-badge">--</div>
                 </div>
                 <div class="trade-grid">
@@ -265,7 +366,7 @@
                         <div class="trade-val" style="color:var(--neon-green);" id="valEntry">--</div>
                     </div>
                     <div class="trade-box box-stop">
-                        <div class="trade-label">嚴格止蝕 (STOP LOSS)</div>
+                        <div class="trade-label">嚴格止蝕 (STOP)</div>
                         <div class="trade-val" style="color:var(--neon-red);" id="valStop">--</div>
                     </div>
                     <div class="trade-box">
@@ -273,13 +374,13 @@
                         <div class="trade-val" style="color:var(--neon-blue);" id="val3R">--</div>
                     </div>
                     <div class="trade-box">
-                        <div class="trade-label">每股風險 (RISK 1R)</div>
+                        <div class="trade-label">每股風險 (1R)</div>
                         <div class="trade-val" style="color:#fff;" id="valRisk">--</div>
                     </div>
                 </div>
 
                 <!-- 專業化盈虧比進度條 -->
-                <div style="margin-bottom: 15px;">
+                <div>
                     <div class="rr-labels"><span>RISK (1R)</span><span>REWARD (3R)</span></div>
                     <div class="rr-bar-container">
                         <div class="rr-risk"></div>
@@ -289,11 +390,11 @@
 
                 <div class="logic-box">
                     <h4>🧠 系統觸發邏輯 (ALGO LOGIC)</h4>
-                    <p id="valReason" style="margin:0; font-size: 14px;">--</p>
+                    <p id="valReason" style="margin:0;">--</p>
                 </div>
-                <div class="logic-box" style="border-color: rgba(249, 195, 44, 0.3); background: rgba(249, 195, 44, 0.03);">
+                <div class="logic-box" style="border-color: rgba(249, 195, 44, 0.3); background: rgba(249, 195, 44, 0.04); margin-bottom:0;">
                     <h4 style="color: var(--gold-premium);">⚡ 操盤指令 (EXECUTION)</h4>
-                    <p id="valPlan" style="margin:0; color:#fff; font-size: 14px;">--</p>
+                    <p id="valPlan" style="margin:0; color:#fff;">--</p>
                 </div>
             </div>
         </div>
@@ -308,13 +409,13 @@
 
     <!-- 模擬基金視圖 -->
     <div id="view-portfolio" class="view-section">
-        <div class="glass-panel" style="padding: 35px;">
+        <div class="glass-panel">
             <div class="metric-cards">
                 <div class="metric-card"><div class="metric-title">演算法總淨值 (Net Asset Value)</div><div class="metric-value" id="pf-equity">--</div></div>
                 <div class="metric-card"><div class="metric-title">可用流動現金 (Cash Balance)</div><div class="metric-value" id="pf-cash">--</div></div>
             </div>
             
-            <h3 style="color: var(--gold-premium); font-size: 14px; letter-spacing: 2px; margin-bottom: 15px; border-bottom: 1px solid var(--border-glass); padding-bottom: 10px;">⏳ 條件觸發掛單中 (PENDING ORDERS)</h3>
+            <h3 style="color: var(--gold-premium); font-size: 13px; letter-spacing: 1.5px; margin-bottom: 12px; border-bottom: 1px solid var(--border-glass); padding-bottom: 8px;">⏳ 條件觸發掛單中 (PENDING ORDERS)</h3>
             <div class="table-responsive">
                 <table>
                     <thead><tr><th>Ticker</th><th>建立時間</th><th>分配股數</th><th>觸發買入價</th><th>防守止蝕位</th></tr></thead>
@@ -322,7 +423,7 @@
                 </table>
             </div>
             
-            <h3 style="color: var(--neon-blue); font-size: 14px; letter-spacing: 2px; margin-bottom: 15px; border-bottom: 1px solid var(--border-glass); padding-bottom: 10px; margin-top: 40px;">📈 演算法實時持倉 (ACTIVE POSITIONS)</h3>
+            <h3 style="color: var(--neon-blue); font-size: 13px; letter-spacing: 1.5px; margin-bottom: 12px; border-bottom: 1px solid var(--border-glass); padding-bottom: 8px; margin-top: 25px;">📈 演算法實時持倉 (ACTIVE POSITIONS)</h3>
             <div class="table-responsive">
                 <table>
                     <thead><tr><th>Ticker</th><th>進場時間</th><th>持有股數</th><th>建倉均價</th><th>實時現價</th><th>未實現盈虧 (PNL)</th></tr></thead>
@@ -364,7 +465,7 @@
                 allData = await response.json();
                 switchTab('database'); 
             } catch (error) {
-                document.getElementById('dynamic-list').innerHTML = `<div style="text-align:center; padding:40px; color:#5a6b8c;">系統資料庫同步中，請稍候...</div>`;
+                document.getElementById('dynamic-list').innerHTML = `<div style="text-align:center; padding:35px; color:#5a6b8c;">系統資料庫同步中，請稍候...</div>`;
             }
             loadPortfolio();
         }
@@ -377,7 +478,7 @@
             
             const listEl = document.getElementById('dynamic-list');
             if (listData.length === 0) {
-                listEl.innerHTML = '<div style="text-align:center; padding:40px; color:#5a6b8c;">今日市場無符合嚴格條件之標的。</div>';
+                listEl.innerHTML = '<div style="text-align:center; padding:35px; color:#5a6b8c;">今日市場無符合嚴格條件之標的。</div>';
                 document.getElementById('strategyPanel').style.display = 'none';
                 return;
             }
@@ -387,7 +488,7 @@
                 html += `
                     <div class="stock-item" onclick="selectStock('${s.ticker}')" data-ticker="${s.ticker}">
                         <div class="stock-header">
-                            <span class="ticker">${s.ticker} <span style="font-size:11px; font-weight:normal; color:#6b7c96; letter-spacing:0; margin-left: 6px;">${s.sector || '量化精選'}</span></span>
+                            <span class="ticker">${s.ticker} <span class="sector-tag">${s.sector || '量化精選'}</span></span>
                             <span class="j-score">J-SCORE ${s.rs || '--'}</span>
                         </div>
                         <div class="stock-meta">
@@ -408,7 +509,7 @@
                 el.classList.toggle('active', el.getAttribute('data-ticker') === ticker); 
             });
             
-            document.getElementById('chartTitle').innerHTML = `<span style="color:var(--gold-premium); font-size: 22px; font-weight: 900;">${stock.ticker}</span> <span class="chart-badge">LIVE CHART (DAILY)</span>`;
+            document.getElementById('chartTitle').innerHTML = `<span style="color:var(--gold-premium); font-size: 20px; font-weight: 900;">${stock.ticker}</span> <span class="chart-badge">LIVE CHART (DAILY)</span>`;
             document.getElementById('strategyPanel').style.display = 'block';
             
             document.getElementById('valOrderType').innerText = stock.order_type;
@@ -419,13 +520,32 @@
             document.getElementById('valReason').innerHTML = stock.reason;
             document.getElementById('valPlan').innerHTML = stock.action_plan;
             
+            // 📱 根據螢幕闊度智能調整 TradingView Pro 工具列
+            const isDesktop = window.innerWidth > 900;
+            const chartHeight = isDesktop ? 580 : 430;
+            
             document.getElementById('tradingview_widget').innerHTML = '';
             if (typeof TradingView !== 'undefined') {
                 tvWidget = new TradingView.widget({
-                    "width": "100%", "height": 520, "symbol": stock.ticker, "interval": "D", "timezone": "Etc/UTC", 
-                    "theme": "dark", "style": "1", "locale": "en", "toolbar_bg": "#030508", 
-                    "backgroundColor": "rgba(3, 5, 8, 1)", "gridColor": "rgba(255, 255, 255, 0.03)",
-                    "enable_publishing": false, "allow_symbol_change": false, "container_id": "tradingview_widget", 
+                    "width": "100%", 
+                    "height": chartHeight, 
+                    "symbol": stock.ticker, 
+                    "interval": "D", 
+                    "timezone": "Etc/UTC", 
+                    "theme": "dark", 
+                    "style": "1", 
+                    "locale": "zh_TW", 
+                    "toolbar_bg": "#030508", 
+                    "backgroundColor": "rgba(3, 5, 8, 1)", 
+                    "gridColor": "rgba(255, 255, 255, 0.04)",
+                    "enable_publishing": false, 
+                    "allow_symbol_change": true,
+                    "hide_side_toolbar": !isDesktop, // 電腦版開啟完整左側畫圖工具箱，手機版保留最大K線視野
+                    "hide_top_toolbar": false,       // 開啟日/週/月線及技術指標切換列
+                    "withdateranges": isDesktop,
+                    "save_image": false,
+                    "details": isDesktop,            // 電腦版開啟右側詳細報價面板
+                    "container_id": "tradingview_widget", 
                     "studies": ["Volume@tv-basicstudies", "SMA@tv-basicstudies"]
                 });
             }
@@ -440,17 +560,17 @@
                 document.getElementById('pf-cash').innerText = `$${(pf.cash || 10000).toLocaleString(undefined, {minimumFractionDigits: 2})}`;
 
                 let pendHtml = '';
-                (pf.pending_orders||[]).forEach(o => pendHtml += `<tr><td><b style="color:#fff; font-size:16px;">${o.ticker}</b></td><td>${o.date_created||'--'}</td><td>${o.shares}</td><td style="color:var(--gold-premium); font-size:16px;">$${o.entry.toFixed(2)}</td><td style="color:var(--neon-red); font-size:16px;">$${o.stop.toFixed(2)}</td></tr>`);
-                document.getElementById('pf-pending').innerHTML = pendHtml || '<tr><td colspan="5" style="text-align:center; padding:30px; color:#5a6b8c;">系統當前無條件掛單</td></tr>';
+                (pf.pending_orders||[]).forEach(o => pendHtml += `<tr><td><b style="color:#fff;">${o.ticker}</b></td><td>${o.date_created||'--'}</td><td>${o.shares}</td><td style="color:var(--gold-premium);">$${o.entry.toFixed(2)}</td><td style="color:var(--neon-red);">$${o.stop.toFixed(2)}</td></tr>`);
+                document.getElementById('pf-pending').innerHTML = pendHtml || '<tr><td colspan="5" style="text-align:center; padding:25px; color:#5a6b8c;">系統當前無條件掛單</td></tr>';
                 
                 let posHtml = '';
                 (pf.positions||[]).forEach(p => {
                     const isProfit = p.unrealized_pnl >= 0;
                     const pnlClass = isProfit ? 'profit' : 'loss';
                     const sign = isProfit ? '+' : '';
-                    posHtml += `<tr><td><b style="color:#fff; font-size:16px;">${p.ticker}</b></td><td>${p.buy_date}</td><td>${p.shares}</td><td>$${p.buy_price.toFixed(2)}</td><td>$${p.current_price.toFixed(2)}</td><td class="${pnlClass}" style="font-size:16px;">${sign}$${p.unrealized_pnl.toFixed(2)} (${sign}${p.unrealized_pnl_percent}%)</td></tr>`;
+                    posHtml += `<tr><td><b style="color:#fff;">${p.ticker}</b></td><td>${p.buy_date}</td><td>${p.shares}</td><td>$${p.buy_price.toFixed(2)}</td><td>$${p.current_price.toFixed(2)}</td><td class="${pnlClass}">${sign}$${p.unrealized_pnl.toFixed(2)} (${sign}${p.unrealized_pnl_percent}%)</td></tr>`;
                 });
-                document.getElementById('pf-positions').innerHTML = posHtml || '<tr><td colspan="6" style="text-align:center; padding:30px; color:#5a6b8c;">系統當前無持倉</td></tr>';
+                document.getElementById('pf-positions').innerHTML = posHtml || '<tr><td colspan="6" style="text-align:center; padding:25px; color:#5a6b8c;">系統當前無持倉</td></tr>';
             } catch (e) {}
         }
 
