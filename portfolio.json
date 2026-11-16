@@ -1,6 +1,6 @@
 {
     "cash": 267.88,
-    "total_equity": 9933.98,
+    "total_equity": NaN,
     "positions": [
         {
             "ticker": "AAPL",
@@ -9,9 +9,9 @@
             "stop": 315.57,
             "target_3r": 391.49,
             "buy_date": "2026-11-04 08:27",
-            "current_price": 357.21,
-            "unrealized_pnl": 113.32,
-            "unrealized_pnl_percent": 6.77
+            "current_price": NaN,
+            "unrealized_pnl": NaN,
+            "unrealized_pnl_percent": NaN
         },
         {
             "ticker": "MSFT",
@@ -20,9 +20,9 @@
             "stop": 492.59,
             "target_3r": 616.19,
             "buy_date": "2026-11-04 08:27",
-            "current_price": 527.98,
-            "unrealized_pnl": 13.47,
-            "unrealized_pnl_percent": 0.86
+            "current_price": NaN,
+            "unrealized_pnl": NaN,
+            "unrealized_pnl_percent": NaN
         },
         {
             "ticker": "JPM",
@@ -31,9 +31,9 @@
             "stop": 332.08,
             "target_3r": 397.2,
             "buy_date": "2026-11-04 15:53",
-            "current_price": 344.28,
-            "unrealized_pnl": -20.4,
-            "unrealized_pnl_percent": -1.17
+            "current_price": NaN,
+            "unrealized_pnl": NaN,
+            "unrealized_pnl_percent": NaN
         },
         {
             "ticker": "AMZN",
@@ -42,9 +42,9 @@
             "stop": 250.77,
             "target_3r": 302.08,
             "buy_date": "2026-11-06 15:49",
-            "current_price": 270.15,
-            "unrealized_pnl": 45.85,
-            "unrealized_pnl_percent": 2.48
+            "current_price": NaN,
+            "unrealized_pnl": NaN,
+            "unrealized_pnl_percent": NaN
         },
         {
             "ticker": "TMO",
@@ -53,9 +53,9 @@
             "stop": 692.34,
             "target_3r": 755.86,
             "buy_date": "2026-11-09 19:39",
-            "current_price": 705.75,
-            "unrealized_pnl": -4.94,
-            "unrealized_pnl_percent": -0.35
+            "current_price": NaN,
+            "unrealized_pnl": NaN,
+            "unrealized_pnl_percent": NaN
         },
         {
             "ticker": "CVCO",
@@ -64,9 +64,9 @@
             "stop": 611.66,
             "target_3r": 843.45,
             "buy_date": "2026-11-09 19:39",
-            "current_price": 636.08,
-            "unrealized_pnl": -67.06,
-            "unrealized_pnl_percent": -5.01
+            "current_price": NaN,
+            "unrealized_pnl": NaN,
+            "unrealized_pnl_percent": NaN
         }
     ],
     "history": [
