@@ -3,575 +3,920 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>J-QUANT PRO | 頂級量化動能終端機</title>
+    <title>ALPHA PULSE | 美股量化動能數據終端</title>
     <script type="text/javascript" src="https://s3.tradingview.com/tv.js"></script>
     <style>
-        /* 🌌 終極商業化暗黑主題 */
         :root { 
-            --bg-base: #030508; 
-            --bg-glass: rgba(13, 17, 26, 0.78);
-            --bg-glass-hover: rgba(22, 29, 43, 0.92);
+            --bg-base: #04060b; 
+            --bg-glass: rgba(14, 19, 30, 0.85);
+            --bg-glass-hover: rgba(24, 32, 48, 0.95);
             --border-glass: rgba(255, 255, 255, 0.08);
-            --text-main: #f0f4f8; 
-            --text-muted: #7a8ba6; 
-            --neon-green: #00ff88; 
-            --neon-red: #ff2a55; 
-            --neon-blue: #00e5ff; 
-            --gold-premium: #f9c32c;
-            --gradient-pro: linear-gradient(135deg, #f9c32c 0%, #ff8c00 100%);
+            --text-main: #f1f5f9; 
+            --text-muted: #7c8ea8; 
+            --neon-green: #00e676; 
+            --neon-red: #ff3b6b; 
+            --neon-blue: #00d4ff; 
+            --gold-premium: #f5b82e;
+            --gradient-pro: linear-gradient(135deg, #f5b82e 0%, #ff8f00 100%);
             --font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
         }
         
         * { box-sizing: border-box; }
-        
-        html, body {
-            width: 100%;
-            max-width: 100vw;
-            overflow-x: hidden; /* 🛡️ 徹底杜絕右邊出現黑邊溢出的問題 */
-            margin: 0;
-            padding: 0;
-        }
-
+        html, body { width: 100%; max-width: 100vw; overflow-x: hidden; margin: 0; padding: 0; }
         body { 
             background-color: var(--bg-base); 
             background-image: 
-                radial-gradient(circle at 10% 20%, rgba(0, 229, 255, 0.04), transparent 30%),
-                radial-gradient(circle at 90% 80%, rgba(249, 195, 44, 0.04), transparent 30%),
-                linear-gradient(rgba(255,255,255,0.015) 1px, transparent 1px),
-                linear-gradient(90deg, rgba(255,255,255,0.015) 1px, transparent 1px);
-            background-size: 100% 100%, 100% 100%, 30px 30px, 30px 30px;
-            color: var(--text-main); 
-            font-family: var(--font-family); 
-            padding: 15px 25px; 
-            min-height: 100vh;
+                radial-gradient(circle at 12% 18%, rgba(0, 212, 255, 0.05), transparent 32%),
+                radial-gradient(circle at 88% 82%, rgba(245, 184, 46, 0.04), transparent 32%),
+                linear-gradient(rgba(255,255,255,0.012) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255,255,255,0.012) 1px, transparent 1px);
+            background-size: 100% 100%, 100% 100%, 32px 32px, 32px 32px;
+            color: var(--text-main); font-family: var(--font-family); padding: 14px 20px; min-height: 100vh;
         }
 
-        /* 💎 頂部導航列 (桌面 + 手機自適應) */
+        /* 頂部導航列 */
         .top-navbar {
-            display: flex; 
-            justify-content: space-between; 
-            align-items: center;
-            flex-wrap: wrap;
-            gap: 15px;
-            margin-bottom: 20px; 
-            padding: 15px 22px;
-            background: var(--bg-glass); 
-            backdrop-filter: blur(20px); 
-            -webkit-backdrop-filter: blur(20px);
-            border: 1px solid var(--border-glass); 
-            border-radius: 16px;
-            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.4);
-            width: 100%;
+            display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 14px;
+            margin-bottom: 18px; padding: 14px 20px; background: var(--bg-glass);
+            backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+            border: 1px solid var(--border-glass); border-radius: 16px; width: 100%;
         }
 
-        /* 🎨 原創 SVG LOGO */
-        .brand-container { display: flex; align-items: center; gap: 12px; }
-        .logo-svg { width: 40px; height: 40px; flex-shrink: 0; filter: drop-shadow(0 0 8px rgba(0, 229, 255, 0.4)); }
-        .brand-text { display: flex; flex-direction: column; }
-        .brand-name { font-size: 22px; font-weight: 900; letter-spacing: 2px; margin: 0; line-height: 1.1; background: linear-gradient(90deg, #ffffff, #a2b4ce); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-        .brand-sub { font-size: 10px; color: var(--gold-premium); letter-spacing: 2.5px; font-weight: bold; text-transform: uppercase; margin-top: 3px;}
+        .brand-container { display: flex; align-items: center; gap: 12px; cursor: pointer; }
+        .logo-svg { width: 38px; height: 38px; flex-shrink: 0; }
+        .brand-name { font-size: 21px; font-weight: 900; letter-spacing: 1.5px; margin: 0; background: linear-gradient(90deg, #fff, #94a3b8); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .brand-sub { font-size: 10px; color: var(--neon-blue); letter-spacing: 2px; font-weight: 700; text-transform: uppercase; }
 
-        /* 🧭 大市晴雨表 (Market Compass) */
-        .market-compass { 
-            display: flex; 
-            align-items: center;
-            gap: 18px; 
-            background: rgba(0,0,0,0.45); 
-            padding: 10px 18px; 
-            border-radius: 12px; 
-            border: 1px solid var(--border-glass);
-        }
-        .compass-divider { width: 1px; height: 28px; background: rgba(255,255,255,0.12); }
-        .compass-item { display: flex; flex-direction: column; font-size: 11px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px;}
-        .compass-val { font-size: 13px; font-weight: 800; color: #fff; margin-top: 3px; display: flex; align-items: center; gap: 6px;}
-        .pulse-dot { width: 8px; height: 8px; flex-shrink: 0; background-color: var(--neon-green); border-radius: 50%; box-shadow: 0 0 10px var(--neon-green); animation: pulse 2s infinite; }
+        /* 客觀市場指標狀態條 (合規：純客觀指數狀態，無任何倉位建議) */
+        .market-compass { display: flex; align-items: center; gap: 16px; background: rgba(0,0,0,0.45); padding: 8px 16px; border-radius: 12px; border: 1px solid var(--border-glass); }
+        .compass-divider { width: 1px; height: 26px; background: rgba(255,255,255,0.1); }
+        .compass-item { display: flex; flex-direction: column; font-size: 10px; color: var(--text-muted); text-transform: uppercase; }
+        .compass-val { font-size: 13px; font-weight: 800; color: #fff; margin-top: 2px; display: flex; align-items: center; gap: 6px; }
+        .pulse-dot { width: 8px; height: 8px; background-color: var(--neon-green); border-radius: 50%; box-shadow: 0 0 8px var(--neon-green); animation: pulse 2s infinite; }
+        @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.35; } }
 
-        /* 👑 用戶面板 */
-        .user-profile { display: flex; align-items: center; gap: 10px; }
-        .pro-badge { background: var(--gradient-pro); color: #000; font-size: 11px; font-weight: 900; padding: 4px 10px; border-radius: 6px; box-shadow: 0 0 15px rgba(249, 195, 44, 0.3); white-space: nowrap;}
-        .user-avatar { width: 34px; height: 34px; flex-shrink: 0; border-radius: 50%; background: #2a3441; border: 2px solid var(--border-glass); display: flex; justify-content: center; align-items: center; color: #fff; font-size: 13px; font-weight: bold;}
+        /* 用戶與會員按鈕區 */
+        .nav-actions { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+        .btn { border: none; border-radius: 10px; padding: 8px 14px; font-size: 12px; font-weight: 700; cursor: pointer; transition: 0.25s; display: inline-flex; align-items: center; gap: 6px; white-space: nowrap; }
+        .btn-gold { background: var(--gradient-pro); color: #000; box-shadow: 0 4px 15px rgba(245, 184, 46, 0.25); }
+        .btn-gold:hover { transform: translateY(-1px); filter: brightness(1.08); }
+        .btn-outline { background: rgba(255,255,255,0.05); color: #fff; border: 1px solid var(--border-glass); }
+        .btn-outline:hover { background: rgba(255,255,255,0.12); }
+        .btn-admin { background: rgba(0, 212, 255, 0.14); color: var(--neon-blue); border: 1px solid rgba(0, 212, 255, 0.35); }
+        .btn-danger { background: rgba(255, 59, 107, 0.15); color: var(--neon-red); border: 1px solid rgba(255, 59, 107, 0.35); }
+        .btn-success { background: rgba(0, 230, 118, 0.15); color: var(--neon-green); border: 1px solid rgba(0, 230, 118, 0.35); }
 
-        @keyframes pulse { 0% { opacity: 1; box-shadow: 0 0 10px var(--neon-green); } 50% { opacity: 0.4; box-shadow: 0 0 2px var(--neon-green); } 100% { opacity: 1; box-shadow: 0 0 10px var(--neon-green); } }
+        .member-pill { display: inline-flex; align-items: center; gap: 8px; background: rgba(255,255,255,0.04); border: 1px solid var(--border-glass); padding: 5px 12px; border-radius: 20px; font-size: 12px; }
+        .badge-pro { background: var(--gradient-pro); color: #000; font-size: 10px; font-weight: 900; padding: 2px 7px; border-radius: 5px; }
+        .badge-free { background: rgba(255,255,255,0.12); color: #cbd5e1; font-size: 10px; font-weight: 800; padding: 2px 7px; border-radius: 5px; }
 
-        /* 導航分頁 (原生橫向滑動，絕不折行壓扁) */
-        .nav-tabs { 
-            display: flex; 
-            gap: 10px; 
-            margin-bottom: 20px; 
-            overflow-x: auto; 
-            padding-bottom: 6px; 
-            -webkit-overflow-scrolling: touch;
-            scrollbar-width: none;
-            width: 100%;
-        }
+        /* 導航分頁 */
+        .nav-tabs { display: flex; gap: 10px; margin-bottom: 18px; overflow-x: auto; padding-bottom: 6px; -webkit-overflow-scrolling: touch; scrollbar-width: none; width: 100%; }
         .nav-tabs::-webkit-scrollbar { display: none; }
-        .tab-btn { 
-            background: var(--bg-glass); 
-            border: 1px solid var(--border-glass); 
-            color: var(--text-muted); 
-            font-size: 13px; 
-            font-weight: 700; 
-            cursor: pointer; 
-            padding: 11px 18px; 
-            border-radius: 12px; 
-            transition: all 0.3s ease;
-            display: inline-flex; 
-            align-items: center; 
-            gap: 6px;
-            white-space: nowrap; /* 🛡️ 強制單行顯示，不准壓扁折行 */
-            flex-shrink: 0;      /* 🛡️ 防止在手機上被擠壓變形 */
-        }
+        .tab-btn { background: var(--bg-glass); border: 1px solid var(--border-glass); color: var(--text-muted); font-size: 13px; font-weight: 700; cursor: pointer; padding: 11px 18px; border-radius: 12px; transition: 0.25s; display: inline-flex; align-items: center; gap: 6px; white-space: nowrap; flex-shrink: 0; }
         .tab-btn:hover { color: #fff; background: var(--bg-glass-hover); }
-        .tab-btn.active { 
-            color: #000; 
-            background: var(--gradient-pro); 
-            border-color: transparent; 
-            box-shadow: 0 6px 18px rgba(249, 195, 44, 0.25);
-        }
+        .tab-btn.active { color: #000; background: var(--gradient-pro); border-color: transparent; }
 
-        /* 視圖動畫 */
-        .view-section { display: none; animation: slideUpFade 0.4s ease-out; width: 100%; }
-        .view-section.active { display: block; }
-        @keyframes slideUpFade { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
-
-        /* 主體網格佈局 (使用 minmax(0, ...) 防止 Grid 子元素撐爆螢幕) */
-        .container { 
-            display: grid; 
-            grid-template-columns: minmax(0, 430px) minmax(0, 1fr); 
-            gap: 20px; 
-            width: 100%;
-        }
+        /* 主體網格 */
+        .container { display: grid; grid-template-columns: minmax(0, 420px) minmax(0, 1fr); gap: 20px; width: 100%; }
         .left-column, .main-content { min-width: 0; width: 100%; }
-        .left-column { display: flex; flex-direction: column; gap: 20px; }
-        
-        /* 玻璃態卡片通用樣式 */
-        .glass-panel {
-            background: var(--bg-glass); 
-            backdrop-filter: blur(20px); 
-            -webkit-backdrop-filter: blur(20px);
-            border: 1px solid var(--border-glass); 
-            border-radius: 18px; 
-            padding: 20px;
-            box-shadow: 0 15px 35px 0 rgba(0, 0, 0, 0.3);
-            width: 100%;
-        }
+        .left-column { display: flex; flex-direction: column; gap: 18px; }
+        .glass-panel { background: var(--bg-glass); backdrop-filter: blur(20px); border: 1px solid var(--border-glass); border-radius: 16px; padding: 18px; width: 100%; }
 
-        /* 股票清單特效 */
-        .list-container { max-height: 460px; overflow-y: auto; padding-right: 4px; -webkit-overflow-scrolling: touch; }
-        .list-container::-webkit-scrollbar { width: 5px; }
-        .list-container::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.15); border-radius: 10px; }
-        
-        .stock-item { 
-            background: linear-gradient(180deg, rgba(255,255,255,0.035) 0%, rgba(255,255,255,0.01) 100%); 
-            border: 1px solid var(--border-glass); 
-            padding: 14px 16px; 
-            border-radius: 14px; 
-            margin-bottom: 12px; 
-            cursor: pointer; 
-            transition: all 0.25s ease; 
-            position: relative; 
-            overflow: hidden;
-        }
-        .stock-item::before { content: ''; position: absolute; top: 0; left: 0; width: 4px; height: 100%; background: transparent; transition: 0.3s; }
-        .stock-item:hover { background: rgba(255,255,255,0.06); border-color: rgba(255,255,255,0.15); }
-        .stock-item.active { 
-            background: linear-gradient(135deg, rgba(249, 195, 44, 0.12), rgba(249, 195, 44, 0.02));
-            border-color: rgba(249, 195, 44, 0.45); 
-            box-shadow: 0 5px 20px rgba(0,0,0,0.25);
-        }
-        .stock-item.active::before { background: var(--gold-premium); box-shadow: 0 0 10px var(--gold-premium); }
-        
-        .stock-header { display: flex; justify-content: space-between; align-items: center; gap: 8px; margin-bottom: 10px; }
-        .ticker { font-size: 21px; font-weight: 900; letter-spacing: 0.5px; color: #fff; display: flex; align-items: baseline; flex-wrap: wrap; gap: 6px; }
-        .sector-tag { font-size: 11px; font-weight: normal; color: var(--text-muted); letter-spacing: 0; }
-        .j-score { 
-            background: rgba(0, 229, 255, 0.12); color: var(--neon-blue); 
-            padding: 5px 10px; border-radius: 8px; font-size: 11px; font-weight: 900; 
-            letter-spacing: 0.5px; border: 1px solid rgba(0, 229, 255, 0.3);
-            white-space: nowrap; flex-shrink: 0;
-        }
-        
-        .stock-meta { font-size: 13px; display: flex; justify-content: space-between; color: var(--text-muted); align-items: center; gap: 8px; }
-        .val-trigger { color: var(--gold-premium); font-size: 14px; font-weight: 800; font-family: monospace; background: rgba(249, 195, 44, 0.1); padding: 4px 9px; border-radius: 6px; }
+        /* 股票清單 */
+        .list-container { max-height: 450px; overflow-y: auto; padding-right: 4px; }
+        .stock-item { background: rgba(255,255,255,0.025); border: 1px solid var(--border-glass); padding: 14px; border-radius: 12px; margin-bottom: 10px; cursor: pointer; transition: 0.2s; position: relative; }
+        .stock-item:hover { background: rgba(255,255,255,0.06); }
+        .stock-item.active { background: linear-gradient(135deg, rgba(245, 184, 46, 0.12), rgba(245, 184, 46, 0.02)); border-color: rgba(245, 184, 46, 0.5); }
+        .stock-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; gap: 8px; }
+        .ticker { font-size: 20px; font-weight: 900; color: #fff; display: flex; align-items: baseline; gap: 6px; flex-wrap: wrap; }
+        .sector-tag { font-size: 11px; font-weight: 500; color: var(--text-muted); }
+        .m-rank { background: rgba(0, 212, 255, 0.12); color: var(--neon-blue); padding: 4px 9px; border-radius: 6px; font-size: 11px; font-weight: 800; border: 1px solid rgba(0, 212, 255, 0.3); white-space: nowrap; }
+        .stock-meta { font-size: 13px; display: flex; justify-content: space-between; color: var(--text-muted); align-items: center; }
 
-        /* 圖表區塊 */
-        .chart-card h2 { margin: 0 0 15px 0; font-size: 18px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px; }
-        .chart-badge { font-size: 11px; background: rgba(255,255,255,0.08); padding: 4px 10px; border-radius: 20px; font-weight: 600; color: var(--text-muted); }
-        #tradingview_widget { height: 560px; width: 100%; border-radius: 12px; overflow: hidden; border: 1px solid var(--border-glass); }
-        
-        /* ⚔️ 動能狙擊系統面板 */
-        .strategy-panel { position: relative; overflow: hidden; }
-        .panel-header { display: flex; justify-content: space-between; margin-bottom: 18px; align-items: center; flex-wrap: wrap; gap: 8px; border-bottom: 1px solid var(--border-glass); padding-bottom: 12px; }
-        .panel-title { color: #fff; font-weight: 900; font-size: 15px; letter-spacing: 0.5px; display: flex; align-items: center; gap: 6px; }
-        .order-type-badge { background: var(--gradient-pro); color: #000; padding: 4px 10px; border-radius: 8px; font-size: 11px; font-weight: 800; }
-        
-        .trade-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; margin-bottom: 18px; }
-        .trade-box { 
-            background: rgba(0, 0, 0, 0.5); padding: 14px 10px; border-radius: 12px; 
-            border: 1px solid rgba(255,255,255,0.05); display: flex; flex-direction: column; align-items: center; justify-content: center;
-            position: relative; overflow: hidden;
-        }
-        .box-trigger::after { content: ''; position: absolute; bottom: 0; left: 0; width: 100%; height: 3px; background: var(--neon-green); }
-        .box-stop::after { content: ''; position: absolute; bottom: 0; left: 0; width: 100%; height: 3px; background: var(--neon-red); }
-        .trade-label { font-size: 10px; color: var(--text-muted); margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.5px; text-align: center; }
-        .trade-val { font-size: 20px; font-weight: 900; font-family: monospace; }
-        
-        /* 盈虧比視覺化橫條 */
-        .rr-bar-container { width: 100%; height: 6px; background: rgba(255,255,255,0.1); border-radius: 3px; margin: 8px 0 18px 0; display: flex; overflow: hidden; }
-        .rr-risk { width: 25%; background: var(--neon-red); height: 100%; }
-        .rr-reward { width: 75%; background: var(--neon-green); height: 100%; }
-        .rr-labels { display: flex; justify-content: space-between; font-size: 11px; color: var(--text-muted); font-weight: bold; }
+        /* 付費解鎖遮罩卡片 */
+        .locked-card { background: rgba(255,255,255,0.015); border: 1px dashed rgba(245, 184, 46, 0.4); padding: 16px; border-radius: 12px; margin-bottom: 10px; text-align: center; cursor: pointer; transition: 0.25s; }
+        .locked-card:hover { background: rgba(245, 184, 46, 0.06); }
 
-        .logic-box { background: rgba(255,255,255,0.025); padding: 14px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.05); font-size: 13px; color: #b8c4d6; line-height: 1.6; margin-bottom: 12px; }
-        .logic-box h4 { margin: 0 0 8px 0; color: #fff; font-size: 11px; text-transform: uppercase; letter-spacing: 1px; opacity: 0.85; }
+        /* 客觀技術指標數據面板 (無任何買入/止蝕建議) */
+        .metrics-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-bottom: 14px; }
+        .metric-box { background: rgba(0, 0, 0, 0.45); padding: 12px 10px; border-radius: 10px; border: 1px solid rgba(255,255,255,0.05); text-align: center; }
+        .metric-lbl { font-size: 10px; color: var(--text-muted); text-transform: uppercase; margin-bottom: 5px; }
+        .metric-num { font-size: 17px; font-weight: 800; font-family: monospace; color: #fff; }
+        .logic-box { background: rgba(255,255,255,0.025); padding: 13px; border-radius: 10px; border: 1px solid rgba(255,255,255,0.05); font-size: 13px; color: #cbd5e1; line-height: 1.6; }
 
-        /* 模擬基金表格 & 現金面板 */
-        .metric-cards { display: grid; grid-template-columns: repeat(2, 1fr); gap: 18px; margin-bottom: 25px; }
-        .metric-card { 
-            background: linear-gradient(135deg, rgba(20,25,35,0.85) 0%, rgba(10,14,20,0.95) 100%);
-            border: 1px solid var(--border-glass); padding: 24px 18px; border-radius: 18px; text-align: center;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.4); position: relative; overflow: hidden;
-        }
-        .metric-card::before { content:''; position:absolute; top:0; left:0; width:100%; height:2px; background: var(--gradient-pro); }
-        .metric-title { color: var(--text-muted); font-size: 11px; margin-bottom: 10px; font-weight: 800; text-transform: uppercase; letter-spacing: 1.5px; }
-        .metric-value { font-size: 30px; font-weight: 900; color: #fff; font-family: monospace; }
-        
-        .table-responsive { overflow-x: auto; margin-bottom: 30px; border-radius: 14px; border: 1px solid var(--border-glass); -webkit-overflow-scrolling: touch; }
-        table { width: 100%; border-collapse: collapse; min-width: 580px; font-size: 13px; background: rgba(0,0,0,0.3); }
-        th { text-align: left; padding: 14px 16px; background: rgba(255,255,255,0.03); color: #fff; font-weight: 700; text-transform: uppercase; font-size: 11px; letter-spacing: 1px; }
-        td { padding: 14px 16px; border-top: 1px solid var(--border-glass); color: #e2e8f0; font-family: monospace; font-size: 14px; }
-        .profit { color: var(--neon-green); font-weight: bold; }
-        .loss { color: var(--neon-red); font-weight: bold; }
-        
-        /* ⚖️ 專業免責聲明 Footer */
-        .disclaimer-footer {
-            margin-top: 35px; padding: 20px 15px; border-top: 1px solid rgba(255,255,255,0.06);
-            text-align: center; font-size: 11px; color: #566685; line-height: 1.7;
-        }
+        #tradingview_widget { height: 550px; width: 100%; border-radius: 12px; overflow: hidden; border: 1px solid var(--border-glass); }
 
-        /* =========================================================
-           📱 手機與平板專屬響應式適配 (徹底解決右邊黑邊與走位問題)
-           ========================================================= */
-        @media (max-width: 1100px) {
+        /* 彈窗 Modal 系統 (登入/註冊、訂閱結算、私隱條款) */
+        .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(2, 4, 8, 0.85); backdrop-filter: blur(8px); z-index: 9999; justify-content: center; align-items: center; padding: 15px; overflow-y: auto; }
+        .modal-overlay.open { display: flex; }
+        .modal-box { background: #0e1420; border: 1px solid rgba(255,255,255,0.12); border-radius: 18px; width: 100%; max-width: 540px; padding: 24px; position: relative; max-height: 90vh; overflow-y: auto; box-shadow: 0 25px 60px rgba(0,0,0,0.7); }
+        .modal-close { position: absolute; top: 16px; right: 18px; background: none; border: none; color: var(--text-muted); font-size: 22px; cursor: pointer; }
+        .form-group { margin-bottom: 14px; }
+        .form-label { display: block; font-size: 12px; color: #cbd5e1; margin-bottom: 6px; font-weight: 600; }
+        .form-input, .form-select { width: 100%; padding: 11px 14px; border-radius: 10px; border: 1px solid rgba(255,255,255,0.12); background: rgba(0,0,0,0.45); color: #fff; font-size: 14px; }
+
+        /* 訂閱方案卡片 */
+        .plan-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 18px; }
+        .plan-card { background: rgba(255,255,255,0.03); border: 1px solid var(--border-glass); border-radius: 12px; padding: 14px 10px; text-align: center; cursor: pointer; transition: 0.2s; position: relative; }
+        .plan-card.selected { border-color: var(--gold-premium); background: rgba(245, 184, 46, 0.1); }
+        .plan-tag { position: absolute; top: -9px; left: 50%; transform: translateX(-50%); background: var(--gradient-pro); color: #000; font-size: 9px; font-weight: 900; padding: 2px 8px; border-radius: 10px; white-space: nowrap; }
+        .plan-price { font-size: 20px; font-weight: 900; color: #fff; font-family: monospace; margin: 6px 0 2px; }
+
+        /* 支付方式選擇器 */
+        .pay-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-bottom: 18px; }
+        .pay-option { background: rgba(255,255,255,0.03); border: 1px solid var(--border-glass); border-radius: 10px; padding: 12px; display: flex; align-items: center; gap: 10px; cursor: pointer; font-size: 13px; font-weight: 700; }
+        .pay-option.selected { border-color: var(--neon-blue); background: rgba(0, 212, 255, 0.1); }
+
+        /* 🛡️ 管理員後台專區 */
+        #admin-view { display: none; width: 100%; }
+        #admin-view.active { display: block; }
+        .admin-kpis { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; margin-bottom: 20px; }
+        .kpi-card { background: rgba(0,0,0,0.45); border: 1px solid var(--border-glass); border-radius: 14px; padding: 16px; }
+        .kpi-title { font-size: 11px; color: var(--text-muted); text-transform: uppercase; margin-bottom: 6px; }
+        .kpi-num { font-size: 24px; font-weight: 900; font-family: monospace; color: #fff; }
+        .table-wrap { overflow-x: auto; border-radius: 12px; border: 1px solid var(--border-glass); margin-bottom: 24px; }
+        table { width: 100%; border-collapse: collapse; min-width: 720px; font-size: 13px; background: rgba(0,0,0,0.35); }
+        th { text-align: left; padding: 12px 14px; background: rgba(255,255,255,0.04); color: var(--text-muted); font-size: 11px; text-transform: uppercase; }
+        td { padding: 12px 14px; border-top: 1px solid var(--border-glass); color: #e2e8f0; }
+
+        /* 合規頁尾 */
+        .disclaimer-footer { margin-top: 35px; padding: 20px 14px; border-top: 1px solid var(--border-glass); text-align: center; font-size: 11px; color: #64748b; line-height: 1.75; }
+        .footer-links { margin-bottom: 10px; display: flex; justify-content: center; gap: 18px; flex-wrap: wrap; }
+        .footer-links a { color: var(--neon-blue); text-decoration: none; cursor: pointer; }
+
+        @media (max-width: 1050px) {
             .container { grid-template-columns: minmax(0, 1fr); }
+            .admin-kpis { grid-template-columns: repeat(2, 1fr); }
         }
-
         @media (max-width: 768px) {
             body { padding: 10px 12px; }
-            
-            .top-navbar { padding: 12px 14px; gap: 12px; }
-            .brand-container { order: 1; }
-            .user-profile { order: 2; margin-left: auto; }
-            .brand-name { font-size: 19px; }
-            .logo-svg { width: 34px; height: 34px; }
-            
-            /* 手機端大市羅盤自動佔滿第二行，左右平分，絕不撐爆螢幕 */
-            .market-compass { 
-                order: 3; 
-                width: 100%; 
-                display: grid; 
-                grid-template-columns: 1fr 1fr; 
-                gap: 10px; 
-                padding: 10px 12px; 
-            }
+            .top-navbar { padding: 12px 14px; }
+            .market-compass { order: 3; width: 100%; display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
             .compass-divider { display: none; }
-            .compass-item { font-size: 10px; }
-            .compass-val { font-size: 12px; }
-
-            .glass-panel { padding: 15px; border-radius: 14px; }
-            .list-container { max-height: 360px; }
-            .ticker { font-size: 19px; }
-            .trade-val { font-size: 18px; }
-            #tradingview_widget { height: 430px; }
-
-            .metric-cards { grid-template-columns: 1fr; gap: 12px; }
-            .metric-value { font-size: 26px; }
+            .plan-grid { grid-template-columns: 1fr; }
+            .admin-kpis { grid-template-columns: 1fr; }
+            #tradingview_widget { height: 420px; }
         }
     </style>
 </head>
 <body>
-    
-    <!-- 💎 頂部導航列 (SaaS UI) -->
+
+    <!-- 頂部商業導航列 -->
     <div class="top-navbar">
-        <div class="brand-container">
+        <div class="brand-container" onclick="showMainView()">
             <svg class="logo-svg" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
                 <defs>
-                    <linearGradient id="logoGlow" x1="0%" y1="0%" x2="100%" y2="100%">
-                        <stop offset="0%" stop-color="#00e5ff" />
-                        <stop offset="100%" stop-color="#0077ff" />
-                    </linearGradient>
-                    <linearGradient id="logoGold" x1="0%" y1="0%" x2="100%" y2="100%">
-                        <stop offset="0%" stop-color="#f9c32c" />
-                        <stop offset="100%" stop-color="#ff8c00" />
-                    </linearGradient>
+                    <linearGradient id="gBlue" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#00d4ff"/><stop offset="100%" stop-color="#0066ff"/></linearGradient>
+                    <linearGradient id="gGold" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#f5b82e"/><stop offset="100%" stop-color="#ff8f00"/></linearGradient>
                 </defs>
-                <rect width="100" height="100" rx="25" fill="#0d111a" stroke="rgba(255,255,255,0.12)" stroke-width="2"/>
-                <path d="M 25 65 L 45 40 L 60 55 L 80 25" fill="none" stroke="url(#logoGlow)" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
-                <circle cx="80" cy="25" r="6" fill="url(#logoGold)"/>
+                <rect width="100" height="100" rx="24" fill="#0b101b" stroke="rgba(255,255,255,0.12)" stroke-width="2"/>
+                <path d="M 22 68 L 44 42 L 60 56 L 78 24" fill="none" stroke="url(#gBlue)" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+                <circle cx="78" cy="24" r="6" fill="url(#gGold)"/>
             </svg>
-            <div class="brand-text">
-                <h1 class="brand-name">J-QUANT</h1>
-                <div class="brand-sub">Pro Terminal</div>
+            <div>
+                <h1 class="brand-name">ALPHA PULSE</h1>
+                <div class="brand-sub">Quantitative Market Analytics</div>
             </div>
         </div>
 
-        <!-- 大市羅盤 -->
+        <!-- 客觀市場指標狀態 (無任何投資倉位建議) -->
         <div class="market-compass">
             <div class="compass-item">
-                市場狀態 (Trend)
-                <div class="compass-val"><div class="pulse-dot"></div> 確定上升趨勢</div>
+                標普 500 均線結構
+                <div class="compass-val"><div class="pulse-dot"></div> <span id="sys-market-status">站穩 50MA / 200MA 之上</span></div>
             </div>
             <div class="compass-divider"></div>
             <div class="compass-item">
-                建議倉位 (Exposure)
-                <div class="compass-val" style="color:var(--gold-premium);">80% - 100%</div>
+                數據更新頻率
+                <div class="compass-val" style="color:var(--neon-blue);">美股收市後全市場量化掃描</div>
             </div>
         </div>
 
-        <!-- SaaS 會員介面 -->
-        <div class="user-profile">
-            <div class="pro-badge">PRO MEMBER</div>
-            <div class="user-avatar">JL</div>
-        </div>
+        <!-- 會員與後台操作區 -->
+        <div class="nav-actions" id="nav-actions-area"></div>
     </div>
 
-    <!-- 選單 Tabs (支援手機順滑左右滑動) -->
-    <div class="nav-tabs">
-        <button id="btn-database" class="tab-btn active" onclick="switchTab('database')">🔥 J-SCORE 90+ 強勢庫</button>
-        <button id="btn-vcp" class="tab-btn" onclick="switchTab('vcp')">📉 波幅收縮 (VCP) 模型</button>
-        <button id="btn-scanner" class="tab-btn" onclick="switchTab('scanner')">🎯 量化右側突破 (回調)</button>
-        <button id="btn-portfolio" class="tab-btn" onclick="switchTab('portfolio')">💼 演算法自動持倉</button>
+    <!-- 主選單分頁 -->
+    <div id="main-tabs-bar" class="nav-tabs">
+        <button id="btn-database" class="tab-btn active" onclick="switchTab('database')">🔥 動能 90+ 強勢庫</button>
+        <button id="btn-vcp" class="tab-btn" onclick="switchTab('vcp')">📉 波幅收斂形態觀察</button>
+        <button id="btn-stocks" class="tab-btn" onclick="switchTab('stocks')">🎯 均線支撐回測掃描</button>
     </div>
 
-    <!-- 動態主體框架 -->
-    <div id="master-view" class="container" style="display: none;">
+    <!-- 主數據視圖 -->
+    <div id="master-view" class="container">
         <div class="left-column">
             <div class="glass-panel list-container">
-                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px; padding-bottom:10px; border-bottom:1px solid var(--border-glass);">
-                    <h3 id="list-title" style="margin:0; font-size: 14px; color: #fff; letter-spacing: 0.5px;">--</h3>
-                    <span style="font-size:11px; color:var(--text-muted); font-family:monospace; background:rgba(0,0,0,0.5); padding:4px 10px; border-radius:20px; white-space:nowrap;" id="stock-count">0 TICKERS</span>
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:14px; padding-bottom:10px; border-bottom:1px solid var(--border-glass);">
+                    <h3 id="list-title" style="margin:0; font-size:14px; color:#fff;">--</h3>
+                    <span id="stock-count" style="font-size:11px; color:var(--text-muted); font-family:monospace; background:rgba(0,0,0,0.45); padding:4px 10px; border-radius:20px;">0 TICKERS</span>
                 </div>
-                <div id="dynamic-list"><div style="text-align:center; padding:35px; color:#5a6b8c;">正在連接納斯達克數據...</div></div>
+                <div id="dynamic-list"><div style="text-align:center; padding:35px; color:var(--text-muted);">正在讀取美股量化數據庫...</div></div>
             </div>
 
-            <!-- 策略面板 -->
-            <div class="glass-panel strategy-panel" id="strategyPanel" style="display: none;">
-                <div class="panel-header">
-                    <div class="panel-title">⚙️ 量化決策引擎</div>
-                    <div id="valOrderType" class="order-type-badge">--</div>
+            <!-- 純客觀技術數據摘要面板 (已移除所有買入/止蝕/目標價) -->
+            <div class="glass-panel" id="detailPanel" style="display: none;">
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:14px; border-bottom:1px solid var(--border-glass); padding-bottom:10px;">
+                    <span style="font-weight:800; font-size:14px; color:#fff;">📊 客觀技術指標摘要</span>
+                    <span id="valPatternTag" style="background:rgba(0,212,255,0.12); color:var(--neon-blue); padding:3px 9px; border-radius:6px; font-size:11px; font-weight:700;">--</span>
                 </div>
-                <div class="trade-grid">
-                    <div class="trade-box box-trigger">
-                        <div class="trade-label">突破買入價 (ENTRY)</div>
-                        <div class="trade-val" style="color:var(--neon-green);" id="valEntry">--</div>
-                    </div>
-                    <div class="trade-box box-stop">
-                        <div class="trade-label">嚴格止蝕 (STOP)</div>
-                        <div class="trade-val" style="color:var(--neon-red);" id="valStop">--</div>
-                    </div>
-                    <div class="trade-box">
-                        <div class="trade-label">3R 目標 (TARGET)</div>
-                        <div class="trade-val" style="color:var(--neon-blue);" id="val3R">--</div>
-                    </div>
-                    <div class="trade-box">
-                        <div class="trade-label">每股風險 (1R)</div>
-                        <div class="trade-val" style="color:#fff;" id="valRisk">--</div>
-                    </div>
+                <div class="metrics-grid">
+                    <div class="metric-box"><div class="metric-lbl">最新收市價 (Close)</div><div class="metric-num" id="valPrice">--</div></div>
+                    <div class="metric-box"><div class="metric-lbl">40日區間高點 (40D High)</div><div class="metric-num" style="color:var(--gold-premium);" id="valHigh40">--</div></div>
+                    <div class="metric-box"><div class="metric-lbl">10MA / 20MA 均線</div><div class="metric-num" style="font-size:14px;" id="valMA1020">--</div></div>
+                    <div class="metric-box"><div class="metric-lbl">50MA / 14日ATR波幅</div><div class="metric-num" style="font-size:14px;" id="valMA50ATR">--</div></div>
                 </div>
-
-                <!-- 專業化盈虧比進度條 -->
-                <div>
-                    <div class="rr-labels"><span>RISK (1R)</span><span>REWARD (3R)</span></div>
-                    <div class="rr-bar-container">
-                        <div class="rr-risk"></div>
-                        <div class="rr-reward"></div>
-                    </div>
-                </div>
-
                 <div class="logic-box">
-                    <h4>🧠 系統觸發邏輯 (ALGO LOGIC)</h4>
-                    <p id="valReason" style="margin:0;">--</p>
-                </div>
-                <div class="logic-box" style="border-color: rgba(249, 195, 44, 0.3); background: rgba(249, 195, 44, 0.04); margin-bottom:0;">
-                    <h4 style="color: var(--gold-premium);">⚡ 操盤指令 (EXECUTION)</h4>
-                    <p id="valPlan" style="margin:0; color:#fff;">--</p>
+                    <h4>📐 技術結構客觀描述（非投資建議）</h4>
+                    <p id="valTechSummary" style="margin:0;">--</p>
                 </div>
             </div>
         </div>
         
         <div class="main-content">
-            <div class="glass-panel chart-card">
-                <h2 id="chartTitle">等待選擇目標 <span class="chart-badge">LIVE CHART</span></h2>
+            <div class="glass-panel">
+                <h2 id="chartTitle" style="margin:0 0 14px 0; font-size:18px; display:flex; justify-content:space-between; align-items:center;">
+                    <span>等待選擇股票</span>
+                    <span style="font-size:11px; color:var(--text-muted); background:rgba(255,255,255,0.06); padding:4px 10px; border-radius:20px;">INTERACTIVE CHART</span>
+                </h2>
                 <div id="tradingview_widget"></div>
             </div>
         </div>
     </div>
 
-    <!-- 模擬基金視圖 -->
-    <div id="view-portfolio" class="view-section">
+    <!-- 🛡️ 管理員後台視圖 (Member Database + Transaction Ledger + System Settings) -->
+    <div id="admin-view">
         <div class="glass-panel">
-            <div class="metric-cards">
-                <div class="metric-card"><div class="metric-title">演算法總淨值 (Net Asset Value)</div><div class="metric-value" id="pf-equity">--</div></div>
-                <div class="metric-card"><div class="metric-title">可用流動現金 (Cash Balance)</div><div class="metric-value" id="pf-cash">--</div></div>
+            <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px; margin-bottom:20px; border-bottom:1px solid var(--border-glass); padding-bottom:14px;">
+                <div>
+                    <h2 style="margin:0; font-size:20px; color:var(--neon-blue);">🛡️ ALPHA PULSE 管理員營運後台</h2>
+                    <div style="font-size:12px; color:var(--text-muted); margin-top:4px;">管理會員權限、翻查全站收款交易紀錄及系統參數設定</div>
+                </div>
+                <div style="display:flex; gap:10px; flex-wrap:wrap;">
+                    <button class="btn btn-outline" onclick="exportTransactionsCSV()">📥 匯出交易紀錄 CSV</button>
+                    <button class="btn btn-gold" onclick="showMainView()">← 返回前台數據終端</button>
+                </div>
             </div>
-            
-            <h3 style="color: var(--gold-premium); font-size: 13px; letter-spacing: 1.5px; margin-bottom: 12px; border-bottom: 1px solid var(--border-glass); padding-bottom: 8px;">⏳ 條件觸發掛單中 (PENDING ORDERS)</h3>
-            <div class="table-responsive">
+
+            <!-- 營運 KPI -->
+            <div class="admin-kpis">
+                <div class="kpi-card"><div class="kpi-title">總註冊會員數</div><div class="kpi-num" id="kpi-total-users">0</div></div>
+                <div class="kpi-card"><div class="kpi-title">有效 PRO 訂閱會員</div><div class="kpi-num" style="color:var(--gold-premium);" id="kpi-pro-users">0</div></div>
+                <div class="kpi-card"><div class="kpi-title">累計實收交易額 (USD)</div><div class="kpi-num" style="color:var(--neon-green);" id="kpi-total-rev">$0.00</div></div>
+                <div class="kpi-card"><div class="kpi-title">封鎖 / 異常帳號數</div><div class="kpi-num" style="color:var(--neon-red);" id="kpi-banned-users">0</div></div>
+            </div>
+
+            <!-- 系統參數設置 -->
+            <div style="background:rgba(255,255,255,0.02); border:1px solid var(--border-glass); border-radius:12px; padding:16px; margin-bottom:24px;">
+                <h3 style="margin:0 0 12px 0; font-size:14px; color:#fff;">⚙️ 全站參數與免費預覽設定</h3>
+                <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap:12px; align-items:end;">
+                    <div>
+                        <label class="form-label">頂部市場狀態公告文字</label>
+                        <input type="text" id="admin-market-input" class="form-input" value="站穩 50MA / 200MA 之上">
+                    </div>
+                    <div>
+                        <label class="form-label">免費用戶可預覽股票數量（每分類）</label>
+                        <input type="number" id="admin-free-limit" class="form-input" value="3" min="0" max="50">
+                    </div>
+                    <div>
+                        <button class="btn btn-success" style="width:100%; justify-content:center; padding:11px;" onclick="saveSystemSettings()">💾 儲存全站設定</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 會員資料庫 (Member Database) -->
+            <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px; margin-bottom:12px;">
+                <h3 style="margin:0; font-size:15px; color:var(--gold-premium);">👥 會員資料庫（開通會員 / 延長會籍 / 封鎖管理）</h3>
+                <input type="text" id="member-search" class="form-input" style="max-width:260px; padding:8px 12px;" placeholder="搜尋會員電郵或姓名..." oninput="renderAdminTables()">
+            </div>
+            <div class="table-wrap">
                 <table>
-                    <thead><tr><th>Ticker</th><th>建立時間</th><th>分配股數</th><th>觸發買入價</th><th>防守止蝕位</th></tr></thead>
-                    <tbody id="pf-pending"></tbody>
+                    <thead>
+                        <tr>
+                            <th>會員姓名 / 電郵</th>
+                            <th>註冊日期</th>
+                            <th>會員等級</th>
+                            <th>到期日</th>
+                            <th>帳號狀態</th>
+                            <th>管理員操作</th>
+                        </tr>
+                    </thead>
+                    <tbody id="admin-members-tbody"></tbody>
                 </table>
             </div>
-            
-            <h3 style="color: var(--neon-blue); font-size: 13px; letter-spacing: 1.5px; margin-bottom: 12px; border-bottom: 1px solid var(--border-glass); padding-bottom: 8px; margin-top: 25px;">📈 演算法實時持倉 (ACTIVE POSITIONS)</h3>
-            <div class="table-responsive">
+
+            <!-- 全站交易紀錄總表 (Transaction Ledger) -->
+            <h3 style="margin:0 0 12px 0; font-size:15px; color:var(--neon-green);">💳 全站訂閱交易紀錄總表（信用卡 / PayPal / WeChat Pay / Alipay）</h3>
+            <div class="table-wrap">
                 <table>
-                    <thead><tr><th>Ticker</th><th>進場時間</th><th>持有股數</th><th>建倉均價</th><th>實時現價</th><th>未實現盈虧 (PNL)</th></tr></thead>
-                    <tbody id="pf-positions"></tbody>
+                    <thead>
+                        <tr>
+                            <th>訂單編號</th>
+                            <th>交易時間</th>
+                            <th>會員電郵</th>
+                            <th>訂閱方案</th>
+                            <th>折扣優惠</th>
+                            <th>實收金額 (USD)</th>
+                            <th>支付方式</th>
+                            <th>狀態</th>
+                        </tr>
+                    </thead>
+                    <tbody id="admin-tx-tbody"></tbody>
                 </table>
             </div>
         </div>
     </div>
-    
-    <!-- ⚖️ 專業合規免責聲明 -->
+
+    <!-- 頁尾免責聲明與合規條款 -->
     <div class="disclaimer-footer">
-        <strong>LEGAL DISCLAIMER & TERMS OF USE (免責聲明)：</strong><br>
-        本終端系統 (J-QUANT PRO) 所提供之所有 J-Score 動能評分、圖表掃描分析、系統觸發價位及量化投資模型，全數由電腦演算法基於公開歷史數據自動生成。系統內呈現之內容僅供量化回測、學術研究、及金融數據可視化參考，<strong>絕不構成任何形式的投資建議、證券買賣邀約或理財顧問意見。</strong> 金融衍生品及股票市場具有高度不確定性及風險，過往演算法之歷史表現不代表未來實質回報。使用者於進行任何真實資金交易前，應自行進行獨立查證，或諮詢所屬司法管轄區之持牌財務顧問。本公司及系統開發者對使用者因依賴本平台數據而產生的任何直接或間接交易損失，概不承擔任何法律責任。
+        <div class="footer-links">
+            <a onclick="openLegalModal('privacy')">私隱政策 (Privacy Policy)</a>
+            <a onclick="openLegalModal('terms')">服務條款 (Terms of Service)</a>
+            <a onclick="openLegalModal('disclaimer')">金融數據免責聲明 (Disclaimer)</a>
+        </div>
+        <strong>重要合規與免責聲明：</strong><br>
+        ALPHA PULSE 為純金融數據分析及技術指標篩選軟體工具。本網站展示之動能百分位（M-Rank）、均線數據、波幅指標及圖表，均由電腦程式基於公開歷史市場數據自動運算生成，<strong>僅供資訊參考及學術研究，絕不構成任何證券買賣建議、投資邀約、目標價預測或理財顧問意見。</strong> 本平台不持有香港證監會（SFC）或美國 SEC 投資顧問牌照，亦不提供任何買入位、止蝕位或倉位配置指令。過往數據表現不代表未來回報，用戶須自行承擔一切投資決策風險。
+    </div>
+
+    <!-- Modal 1: 會員登入 / 註冊 -->
+    <div class="modal-overlay" id="authModal">
+        <div class="modal-box">
+            <button class="modal-close" onclick="closeModal('authModal')">&times;</button>
+            <div style="display:flex; gap:10px; margin-bottom:18px;">
+                <button id="tab-login" class="btn btn-gold" style="flex:1; justify-content:center;" onclick="switchAuthMode('login')">會員登入</button>
+                <button id="tab-register" class="btn btn-outline" style="flex:1; justify-content:center;" onclick="switchAuthMode('register')">免費註冊新帳號</button>
+            </div>
+
+            <form id="authForm" onsubmit="handleAuthSubmit(event)">
+                <div class="form-group" id="reg-name-group" style="display:none;">
+                    <label class="form-label">顯示名稱</label>
+                    <input type="text" id="auth-name" class="form-input" placeholder="例如：Alex Chan">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">電子郵件 (Email)</label>
+                    <input type="email" id="auth-email" class="form-input" required placeholder="name@example.com">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">密碼</label>
+                    <input type="password" id="auth-password" class="form-input" required placeholder="請輸入密碼（至少 6 位字元）" minlength="6">
+                </div>
+                <div id="reg-agree-group" style="display:none; margin-bottom:16px; font-size:12px; color:#cbd5e1;">
+                    <label style="display:flex; align-items:flex-start; gap:8px; cursor:pointer;">
+                        <input type="checkbox" id="agree-terms" style="margin-top:3px;">
+                        <span>我已閱讀並同意 <a style="color:var(--neon-blue); text-decoration:underline;" onclick="openLegalModal('privacy')">《私隱政策》</a>、<a style="color:var(--neon-blue); text-decoration:underline;" onclick="openLegalModal('terms')">《服務條款》</a>，並知悉本網站僅提供客觀數據工具而非投資建議。</span>
+                    </label>
+                </div>
+                <button type="submit" id="auth-submit-btn" class="btn btn-gold" style="width:100%; justify-content:center; padding:12px; font-size:14px;">立即登入</button>
+            </form>
+            <div style="margin-top:14px; padding-top:12px; border-top:1px solid var(--border-glass); font-size:11px; color:var(--text-muted); text-align:center;">
+                測試提示：可使用管理員帳號 <b style="color:#fff;">admin@alphapulse.com</b>（密碼任意6位）登入以體驗管理員後台。
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal 2: PRO 會員訂閱與多渠道支付 -->
+    <div class="modal-overlay" id="subscribeModal">
+        <div class="modal-box" style="max-width:600px;">
+            <button class="modal-close" onclick="closeModal('subscribeModal')">&times;</button>
+            <h3 style="margin:0 0 6px 0; font-size:19px; color:#fff;">👑 升級 ALPHA PULSE PRO 數據會員</h3>
+            <p style="margin:0 0 18px 0; font-size:12px; color:var(--text-muted);">解鎖全美股動能 90+ 強勢庫、波幅收斂及均線回測完整名單</p>
+
+            <label class="form-label">1. 選擇訂閱週期（美元 USD 計價）</label>
+            <div class="plan-grid">
+                <div class="plan-card selected" id="plan-monthly" onclick="selectPlan('monthly')">
+                    <div style="font-size:13px; font-weight:700; color:#cbd5e1;">月費計畫</div>
+                    <div class="plan-price">$20.00</div>
+                    <div style="font-size:11px; color:var(--text-muted);">每月自動續訂</div>
+                </div>
+                <div class="plan-card" id="plan-semiannual" onclick="selectPlan('semiannual')">
+                    <div class="plan-tag">享 2% 折扣</div>
+                    <div style="font-size:13px; font-weight:700; color:#cbd5e1;">半年計畫 (6個月)</div>
+                    <div class="plan-price">$117.60</div>
+                    <div style="font-size:11px; color:var(--neon-green);">原價 $120 (折合 $19.60/月)</div>
+                </div>
+                <div class="plan-card" id="plan-annual" onclick="selectPlan('annual')">
+                    <div class="plan-tag">最划算 · 享 5% 折扣</div>
+                    <div style="font-size:13px; font-weight:700; color:#cbd5e1;">年費計畫 (12個月)</div>
+                    <div class="plan-price">$228.00</div>
+                    <div style="font-size:11px; color:var(--neon-green);">原價 $240 (折合 $19.00/月)</div>
+                </div>
+            </div>
+
+            <label class="form-label">2. 選擇支付方式（支援國際及中港主流支付）</label>
+            <div class="pay-grid">
+                <div class="pay-option selected" id="pay-card" onclick="selectPay('Credit Card (Visa/MC)')">💳 信用卡 (Visa / Mastercard)</div>
+                <div class="pay-option" id="pay-paypal" onclick="selectPay('PayPal')">🅿️ PayPal 國際支付</div>
+                <div class="pay-option" id="pay-wechat" onclick="selectPay('WeChat Pay')">💬 WeChat Pay (微信支付)</div>
+                <div class="pay-option" id="pay-alipay" onclick="selectPay('Alipay')">🟦 Alipay (支付寶)</div>
+            </div>
+
+            <div style="background:rgba(0,0,0,0.45); border:1px solid var(--border-glass); border-radius:12px; padding:14px; margin-bottom:16px; font-size:13px;">
+                <div style="display:flex; justify-content:space-between; margin-bottom:6px;">
+                    <span style="color:var(--text-muted);">已選方案：</span>
+                    <span id="checkout-plan-name" style="font-weight:700;">月費計畫 (1個月)</span>
+                </div>
+                <div style="display:flex; justify-content:space-between; margin-bottom:6px;">
+                    <span style="color:var(--text-muted);">折扣減免：</span>
+                    <span id="checkout-discount" style="color:var(--neon-green);">-$0.00 (0%)</span>
+                </div>
+                <div style="display:flex; justify-content:space-between; border-top:1px solid var(--border-glass); padding-top:8px; font-size:16px; font-weight:900;">
+                    <span>應付總額：</span>
+                    <span id="checkout-total" style="color:var(--gold-premium); font-family:monospace;">$20.00 USD</span>
+                </div>
+            </div>
+
+            <button class="btn btn-gold" style="width:100%; justify-content:center; padding:13px; font-size:14px;" onclick="processSubscriptionPayment()">🔒 確認並安全付款開通 PRO</button>
+        </div>
+    </div>
+
+    <!-- Modal 3: 私隱條款 / 服務條款 / 免責聲明 -->
+    <div class="modal-overlay" id="legalModal">
+        <div class="modal-box" style="max-width:640px;">
+            <button class="modal-close" onclick="closeModal('legalModal')">&times;</button>
+            <h3 id="legal-modal-title" style="margin:0 0 12px 0; color:var(--neon-blue);">私隱政策</h3>
+            <div id="legal-modal-body" style="font-size:13px; color:#cbd5e1; line-height:1.75;"></div>
+        </div>
     </div>
 
     <script>
-        let allData = { database: [], vcp: [], stocks: [] };
-        let currentTab = 'database';
-        let tvWidget = null;
+        // =========================================================
+        // 1. 商業會員資料庫、交易紀錄與系統設定引擎 (支援 LocalStorage 持久化)
+        // =========================================================
+        const DEFAULT_MEMBERS = [
+            { id: 'USR-1001', name: 'System Admin', email: 'admin@alphapulse.com', role: 'admin', tier: 'PRO', expiry: '2099-12-31', status: 'active', joined: '2026-01-01' },
+            { id: 'USR-1002', name: 'David Wong', email: 'david.wong@example.com', role: 'user', tier: 'PRO', expiry: '2027-11-15', status: 'active', joined: '2026-10-12' },
+            { id: 'USR-1003', name: 'Sarah Chen', email: 'sarah.c@example.com', role: 'user', tier: 'PRO', expiry: '2027-05-01', status: 'active', joined: '2026-11-01' },
+            { id: 'USR-1004', name: 'Kevin Lau', email: 'kevin.lau@example.com', role: 'user', tier: 'FREE', expiry: '-', status: 'active', joined: '2026-11-10' }
+        ];
 
-        function switchTab(tabId) {
-            document.querySelectorAll('.tab-btn, .view-section').forEach(el => el.classList.remove('active'));
-            document.getElementById('btn-' + tabId).classList.add('active');
-            
-            if (tabId === 'portfolio') {
-                document.getElementById('master-view').style.display = 'none';
-                document.getElementById('view-portfolio').classList.add('active');
+        const DEFAULT_TRANSACTIONS = [
+            { orderId: 'ORD-20261115-881', date: '2026-11-15 14:22', email: 'david.wong@example.com', plan: '年費計畫 (12個月)', discount: '5% (-$12.00)', amount: 228.00, method: 'Credit Card (Visa/MC)', status: '已完成' },
+            { orderId: 'ORD-20261101-642', date: '2026-11-01 09:45', email: 'sarah.c@example.com', plan: '半年計畫 (6個月)', discount: '2% (-$2.40)', amount: 117.60, method: 'Alipay', status: '已完成' },
+            { orderId: 'ORD-20261028-519', date: '2026-10-28 21:10', email: 'michael.t@example.com', plan: '月費計畫 (1個月)', discount: '0% ($0.00)', amount: 20.00, method: 'WeChat Pay', status: '已完成' }
+        ];
+
+        let membersDB = JSON.parse(localStorage.getItem('ap_members')) || DEFAULT_MEMBERS;
+        let txDB = JSON.parse(localStorage.getItem('ap_transactions')) || DEFAULT_TRANSACTIONS;
+        let sysSettings = JSON.parse(localStorage.getItem('ap_settings')) || { marketStatus: '站穩 50MA / 200MA 之上', freeLimit: 3 };
+        let currentUser = JSON.parse(localStorage.getItem('ap_current_user')) || null;
+
+        function saveDB() {
+            localStorage.setItem('ap_members', JSON.stringify(membersDB));
+            localStorage.setItem('ap_transactions', JSON.stringify(txDB));
+            localStorage.setItem('ap_settings', JSON.stringify(sysSettings));
+            if (currentUser) {
+                const fresh = membersDB.find(m => m.email === currentUser.email);
+                if (fresh) {
+                    if (fresh.status === 'banned') {
+                        alert('您的帳號已被管理員停權封鎖，如有疑問請聯絡客服。');
+                        logoutUser();
+                        return;
+                    }
+                    currentUser = fresh;
+                    localStorage.setItem('ap_current_user', JSON.stringify(currentUser));
+                }
+            }
+        }
+
+        function isUserPro() {
+            if (!currentUser) return false;
+            if (currentUser.role === 'admin') return true;
+            if (currentUser.tier !== 'PRO') return false;
+            return new Date(currentUser.expiry) >= new Date(new Date().toISOString().split('T')[0]);
+        }
+
+        function renderNavbar() {
+            document.getElementById('sys-market-status').innerText = sysSettings.marketStatus;
+            const area = document.getElementById('nav-actions-area');
+            if (!currentUser) {
+                area.innerHTML = `
+                    <button class="btn btn-outline" onclick="openAuthModal('login')">登入 / 註冊</button>
+                    <button class="btn btn-gold" onclick="openSubscribeModal()">👑 升級 PRO ($20/月)</button>
+                `;
             } else {
-                document.getElementById('view-portfolio').classList.remove('active');
-                document.getElementById('master-view').style.display = 'grid';
-                currentTab = tabId;
+                const proActive = isUserPro();
+                area.innerHTML = `
+                    <div class="member-pill">
+                        <span>${currentUser.name}</span>
+                        ${proActive ? `<span class="badge-pro">PRO · 至 ${currentUser.expiry}</span>` : `<span class="badge-free">免費版</span>`}
+                    </div>
+                    ${!proActive ? `<button class="btn btn-gold" onclick="openSubscribeModal()">👑 升級 PRO</button>` : ''}
+                    ${currentUser.role === 'admin' ? `<button class="btn btn-admin" onclick="showAdminView()">🛡️ 管理後台</button>` : ''}
+                    <button class="btn btn-outline" onclick="logoutUser()">登出</button>
+                `;
+            }
+        }
+
+        // =========================================================
+        // 2. 登入 / 註冊邏輯
+        // =========================================================
+        let authMode = 'login';
+        function openAuthModal(mode) {
+            switchAuthMode(mode);
+            document.getElementById('authModal').classList.add('open');
+        }
+        function closeModal(id) { document.getElementById(id).classList.remove('open'); }
+
+        function switchAuthMode(mode) {
+            authMode = mode;
+            document.getElementById('tab-login').className = mode === 'login' ? 'btn btn-gold' : 'btn btn-outline';
+            document.getElementById('tab-register').className = mode === 'register' ? 'btn btn-gold' : 'btn btn-outline';
+            document.getElementById('reg-name-group').style.display = mode === 'register' ? 'block' : 'none';
+            document.getElementById('reg-agree-group').style.display = mode === 'register' ? 'block' : 'none';
+            document.getElementById('auth-submit-btn').innerText = mode === 'login' ? '立即登入' : '完成註冊並建立帳號';
+        }
+
+        function handleAuthSubmit(e) {
+            e.preventDefault();
+            const email = document.getElementById('auth-email').value.trim().toLowerCase();
+            const name = document.getElementById('auth-name').value.trim() || email.split('@')[0];
+
+            if (authMode === 'register') {
+                if (!document.getElementById('agree-terms').checked) {
+                    alert('請先勾選同意《私隱政策》及《服務條款》！');
+                    return;
+                }
+                if (membersDB.some(m => m.email === email)) {
+                    alert('此電子郵件已註冊，請直接登入。');
+                    switchAuthMode('login');
+                    return;
+                }
+                const newUser = {
+                    id: 'USR-' + Math.floor(1000 + Math.random() * 9000),
+                    name: name,
+                    email: email,
+                    role: email === 'admin@alphapulse.com' ? 'admin' : 'user',
+                    tier: 'FREE',
+                    expiry: '-',
+                    status: 'active',
+                    joined: new Date().toISOString().split('T')[0]
+                };
+                membersDB.unshift(newUser);
+                currentUser = newUser;
+                saveDB();
+                closeModal('authModal');
+                renderNavbar();
+                renderList();
+                alert('註冊成功！歡迎加入 ALPHA PULSE。您目前可免費預覽部分數據，隨時可升級 PRO 解鎖全市場名單。');
+            } else {
+                let user = membersDB.find(m => m.email === email);
+                if (!user) {
+                    alert('找不到此帳號，請先點擊上方「免費註冊新帳號」。');
+                    return;
+                }
+                if (user.status === 'banned') {
+                    alert('此帳號已被管理員封鎖，無法登入。');
+                    return;
+                }
+                currentUser = user;
+                localStorage.setItem('ap_current_user', JSON.stringify(currentUser));
+                closeModal('authModal');
+                renderNavbar();
                 renderList();
             }
         }
 
+        function logoutUser() {
+            currentUser = null;
+            localStorage.removeItem('ap_current_user');
+            showMainView();
+            renderNavbar();
+            renderList();
+        }
+
+        // =========================================================
+        // 3. 訂閱結算系統 ($20/月, 半年2%折, 一年5%折, 多渠道支付)
+        // =========================================================
+        const PLANS = {
+            monthly: { name: '月費計畫 (1個月)', months: 1, original: 20.00, discountPct: 0, discountAmt: 0.00, final: 20.00 },
+            semiannual: { name: '半年計畫 (6個月)', months: 6, original: 120.00, discountPct: 2, discountAmt: 2.40, final: 117.60 },
+            annual: { name: '年費計畫 (12個月)', months: 12, original: 240.00, discountPct: 5, discountAmt: 12.00, final: 228.00 }
+        };
+        let selectedPlanKey = 'monthly';
+        let selectedPayMethod = 'Credit Card (Visa/MC)';
+
+        function openSubscribeModal() {
+            if (!currentUser) {
+                alert('請先登入或免費註冊會員帳號，再進行訂閱付款！');
+                openAuthModal('register');
+                return;
+            }
+            selectPlan('monthly');
+            document.getElementById('subscribeModal').classList.add('open');
+        }
+
+        function selectPlan(key) {
+            selectedPlanKey = key;
+            ['monthly', 'semiannual', 'annual'].forEach(k => {
+                document.getElementById('plan-' + k).classList.toggle('selected', k === key);
+            });
+            const p = PLANS[key];
+            document.getElementById('checkout-plan-name').innerText = p.name;
+            document.getElementById('checkout-discount').innerText = `-$${p.discountAmt.toFixed(2)} (${p.discountPct}% OFF)`;
+            document.getElementById('checkout-total').innerText = `$${p.final.toFixed(2)} USD`;
+        }
+
+        function selectPay(method) {
+            selectedPayMethod = method;
+            document.querySelectorAll('.pay-option').forEach(el => el.classList.remove('selected'));
+            event.currentTarget.classList.add('selected');
+        }
+
+        function processSubscriptionPayment() {
+            const p = PLANS[selectedPlanKey];
+            const now = new Date();
+            const baseDate = (isUserPro() && currentUser.expiry !== '-' && currentUser.expiry !== '2099-12-31')
+                ? new Date(currentUser.expiry) : now;
+            baseDate.setMonth(baseDate.getMonth() + p.months);
+            const newExpiry = baseDate.toISOString().split('T')[0];
+
+            // 更新會員資料
+            const idx = membersDB.findIndex(m => m.email === currentUser.email);
+            if (idx !== -1) {
+                membersDB[idx].tier = 'PRO';
+                membersDB[idx].expiry = newExpiry;
+            }
+
+            // 寫入交易紀錄
+            const orderId = 'ORD-' + now.toISOString().slice(0,10).replace(/-/g,'') + '-' + Math.floor(100 + Math.random() * 900);
+            txDB.unshift({
+                orderId: orderId,
+                date: now.toISOString().replace('T', ' ').substring(0, 16),
+                email: currentUser.email,
+                plan: p.name,
+                discount: `${p.discountPct}% (-$${p.discountAmt.toFixed(2)})`,
+                amount: p.final,
+                method: selectedPayMethod,
+                status: '已完成'
+            });
+
+            saveDB();
+            closeModal('subscribeModal');
+            renderNavbar();
+            renderList();
+            alert(`✅ 付款成功（訂單編號：${orderId}）！\n支付方式：${selectedPayMethod}\n實付金額：$${p.final.toFixed(2)} USD\n您的 PRO 會員已即時開通，有效期至 ${newExpiry}。`);
+        }
+
+        // =========================================================
+        // 4. 管理員後台功能 (開通/封鎖會員、交易紀錄、匯出 CSV)
+        // =========================================================
+        function showAdminView() {
+            if (!currentUser || currentUser.role !== 'admin') return;
+            document.getElementById('main-tabs-bar').style.display = 'none';
+            document.getElementById('master-view').style.display = 'none';
+            document.getElementById('admin-view').classList.add('active');
+            document.getElementById('admin-market-input').value = sysSettings.marketStatus;
+            document.getElementById('admin-free-limit').value = sysSettings.freeLimit;
+            renderAdminTables();
+        }
+
+        function showMainView() {
+            document.getElementById('admin-view').classList.remove('active');
+            document.getElementById('main-tabs-bar').style.display = 'flex';
+            document.getElementById('master-view').style.display = 'grid';
+            renderList();
+        }
+
+        function saveSystemSettings() {
+            sysSettings.marketStatus = document.getElementById('admin-market-input').value.trim() || '正常運行中';
+            sysSettings.freeLimit = parseInt(document.getElementById('admin-free-limit').value) || 3;
+            saveDB();
+            renderNavbar();
+            alert('✅ 全站系統參數已更新！');
+        }
+
+        function adminActivatePro(email) {
+            const idx = membersDB.findIndex(m => m.email === email);
+            if (idx === -1) return;
+            const d = (membersDB[idx].tier === 'PRO' && membersDB[idx].expiry !== '-' && membersDB[idx].expiry !== '2099-12-31')
+                ? new Date(membersDB[idx].expiry) : new Date();
+            d.setMonth(d.getMonth() + 1);
+            membersDB[idx].tier = 'PRO';
+            membersDB[idx].expiry = d.toISOString().split('T')[0];
+            membersDB[idx].status = 'active';
+            saveDB();
+            renderAdminTables();
+            alert(`✅ 已手動為 ${email} 開通/延長 1 個月 PRO 會籍至 ${membersDB[idx].expiry}`);
+        }
+
+        function adminToggleBan(email) {
+            if (email === 'admin@alphapulse.com') { alert('無法封鎖系統主管理員帳號'); return; }
+            const idx = membersDB.findIndex(m => m.email === email);
+            if (idx === -1) return;
+            membersDB[idx].status = membersDB[idx].status === 'banned' ? 'active' : 'banned';
+            saveDB();
+            renderAdminTables();
+        }
+
+        function renderAdminTables() {
+            const query = (document.getElementById('member-search').value || '').toLowerCase();
+            const proCount = membersDB.filter(m => m.tier === 'PRO' && m.status === 'active').length;
+            const bannedCount = membersDB.filter(m => m.status === 'banned').length;
+            const totalRev = txDB.reduce((sum, t) => sum + Number(t.amount || 0), 0);
+
+            document.getElementById('kpi-total-users').innerText = membersDB.length;
+            document.getElementById('kpi-pro-users').innerText = proCount;
+            document.getElementById('kpi-total-rev').innerText = `$${totalRev.toFixed(2)}`;
+            document.getElementById('kpi-banned-users').innerText = bannedCount;
+
+            const filteredMembers = membersDB.filter(m => m.email.toLowerCase().includes(query) || m.name.toLowerCase().includes(query));
+            document.getElementById('admin-members-tbody').innerHTML = filteredMembers.map(m => `
+                <tr>
+                    <td><b>${m.name}</b><br><span style="font-size:11px; color:var(--text-muted);">${m.email}</span></td>
+                    <td>${m.joined}</td>
+                    <td>${m.tier === 'PRO' ? '<span class="badge-pro">PRO 付費</span>' : '<span class="badge-free">免費版</span>'}</td>
+                    <td style="font-family:monospace;">${m.expiry}</td>
+                    <td>${m.status === 'banned' ? '<span style="color:var(--neon-red); font-weight:bold;">已封鎖</span>' : '<span style="color:var(--neon-green); font-weight:bold;">正常</span>'}</td>
+                    <td>
+                        <div style="display:flex; gap:6px; flex-wrap:wrap;">
+                            <button class="btn btn-success" style="padding:5px 9px; font-size:11px;" onclick="adminActivatePro('${m.email}')">+1月 PRO</button>
+                            <button class="btn ${m.status === 'banned' ? 'btn-outline' : 'btn-danger'}" style="padding:5px 9px; font-size:11px;" onclick="adminToggleBan('${m.email}')">${m.status === 'banned' ? '解封' : '封鎖'}</button>
+                        </div>
+                    </td>
+                </tr>
+            `).join('');
+
+            document.getElementById('admin-tx-tbody').innerHTML = txDB.map(t => `
+                <tr>
+                    <td style="font-family:monospace; color:var(--neon-blue);">${t.orderId}</td>
+                    <td>${t.date}</td>
+                    <td>${t.email}</td>
+                    <td>${t.plan}</td>
+                    <td style="color:var(--neon-green);">${t.discount}</td>
+                    <td style="font-family:monospace; font-weight:bold; color:var(--gold-premium);">$${Number(t.amount).toFixed(2)}</td>
+                    <td>${t.method}</td>
+                    <td><span style="color:var(--neon-green); font-weight:bold;">${t.status}</span></td>
+                </tr>
+            `).join('');
+        }
+
+        function exportTransactionsCSV() {
+            const headers = ['OrderID,Date,Email,Plan,Discount,AmountUSD,Method,Status'];
+            const rows = txDB.map(t => `${t.orderId},"${t.date}",${t.email},"${t.plan}","${t.discount}",${t.amount},"${t.method}",${t.status}`);
+            const blob = new Blob(["\uFEFF" + headers.concat(rows).join('\n')], { type: 'text/csv;charset=utf-8;' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `alphapulse_transactions_${new Date().toISOString().slice(0,10)}.csv`;
+            a.click();
+        }
+
+        // =========================================================
+        // 5. 私隱條款與法律聲明內容
+        // =========================================================
+        function openLegalModal(type) {
+            const titleEl = document.getElementById('legal-modal-title');
+            const bodyEl = document.getElementById('legal-modal-body');
+            if (type === 'privacy') {
+                titleEl.innerText = '私隱政策 (Privacy Policy)';
+                bodyEl.innerHTML = `
+                    <p><b>1. 資料收集目的：</b>本平台（ALPHA PULSE）僅收集會員註冊及訂閱所需的必要資料（包括電子郵件地址、顯示名稱及訂單交易編號），用於帳號驗證、會籍權限管理及客戶支援。</p>
+                    <p><b>2. 支付安全保障：</b>本平台絕不直接儲存用戶的完整信用卡號碼或支付密碼。所有信用卡、PayPal、WeChat Pay 及 Alipay 交易均透過符合 PCI-DSS 國際安全標準的持牌第三方支付機構加密處理。</p>
+                    <p><b>3. 個人資料保護：</b>我們嚴格遵守香港《個人資料（私隱）條例》（第486章）及國際數據保護規範，絕不向任何第三方出售或出租會員個人資料。</p>
+                `;
+            } else if (type === 'terms') {
+                titleEl.innerText = '服務條款 (Terms of Service)';
+                bodyEl.innerHTML = `
+                    <p><b>1. 服務性質：</b>ALPHA PULSE 提供基於公開市場數據的技術指標運算、動能排名及圖表視覺化工具，屬於資訊科技軟體服務（SaaS）。</p>
+                    <p><b>2. 訂閱與收費：</b>PRO 會員標準月費為 $20.00 USD；半年訂閱享 2% 折扣（$117.60 USD）；年費訂閱享 5% 折扣（$228.00 USD）。開通數位數據權限後，除系統技術故障外，已啟用週期之費用恕不退還。</p>
+                    <p><b>3. 帳號使用規範：</b>每個會員帳號僅限本人使用，嚴禁透過爬蟲程式批量抓取本平台數據或轉售帳號，違者管理員有權永久封鎖帳號。</p>
+                `;
+            } else {
+                titleEl.innerText = '金融數據免責聲明 (Disclaimer)';
+                bodyEl.innerHTML = `
+                    <p>本網站不持有香港證監會（SFC）第4類（就證券提供意見）或第9類（提供資產管理）牌照，亦非美國 SEC 註冊投資顧問。</p>
+                    <p>網站內所有數據、動能評分及技術形態分類均由演算法自動生成，<b>不構成任何買賣建議、目標價預測或投資邀約</b>。任何交易決定及盈虧均由用戶自行承擔。</p>
+                `;
+            }
+            document.getElementById('legalModal').classList.add('open');
+        }
+
+        // =========================================================
+        // 6. 股票客觀數據渲染與 TradingView 圖表引擎
+        // =========================================================
+        let allData = { database: [], vcp: [], stocks: [] };
+        let currentTab = 'database';
+
+        function switchTab(tabId) {
+            document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
+            document.getElementById('btn-' + tabId).classList.add('active');
+            currentTab = tabId;
+            renderList();
+        }
+
         async function loadData() {
             try {
-                const response = await fetch('stocks_data.json?t=' + Date.now());
-                allData = await response.json();
-                switchTab('database'); 
-            } catch (error) {
-                document.getElementById('dynamic-list').innerHTML = `<div style="text-align:center; padding:35px; color:#5a6b8c;">系統資料庫同步中，請稍候...</div>`;
+                const res = await fetch('stocks_data.json?t=' + Date.now());
+                allData = await res.json();
+            } catch (e) {
+                console.warn('無法載入 stocks_data.json');
             }
-            loadPortfolio();
+            renderNavbar();
+            renderList();
         }
 
         function renderList() {
             const listData = allData[currentTab] || [];
-            const titles = { 'database': 'J-SCORE 90+ 頂級強勢股', 'vcp': '波幅收縮 (VCP) 突破模型', 'scanner': '量化右側突破 (支撐反彈)' };
+            const titles = {
+                'database': '動能百分位 90+ 強勢庫',
+                'vcp': '波幅收斂形態觀察清單',
+                'stocks': '均線支撐回測掃描清單'
+            };
             document.getElementById('list-title').innerText = titles[currentTab];
             document.getElementById('stock-count').innerText = `${listData.length} TICKERS`;
-            
+
             const listEl = document.getElementById('dynamic-list');
             if (listData.length === 0) {
-                listEl.innerHTML = '<div style="text-align:center; padding:35px; color:#5a6b8c;">今日市場無符合嚴格條件之標的。</div>';
-                document.getElementById('strategyPanel').style.display = 'none';
+                listEl.innerHTML = '<div style="text-align:center; padding:35px; color:var(--text-muted);">目前暫無符合條件之數據。</div>';
+                document.getElementById('detailPanel').style.display = 'none';
                 return;
             }
 
+            const pro = isUserPro();
+            const freeCap = pro ? listData.length : Math.min(sysSettings.freeLimit, listData.length);
             let html = '';
-            listData.forEach(s => {
+
+            listData.slice(0, freeCap).forEach(s => {
+                const rankVal = s.m_rank || s.rs || '--';
+                const chg = s.change_pct !== undefined ? `${s.change_pct >= 0 ? '+' : ''}${s.change_pct}%` : '';
+                const chgColor = (s.change_pct || 0) >= 0 ? 'var(--neon-green)' : 'var(--neon-red)';
                 html += `
                     <div class="stock-item" onclick="selectStock('${s.ticker}')" data-ticker="${s.ticker}">
                         <div class="stock-header">
-                            <span class="ticker">${s.ticker} <span class="sector-tag">${s.sector || '量化精選'}</span></span>
-                            <span class="j-score">J-SCORE ${s.rs || '--'}</span>
+                            <span class="ticker">${s.ticker} <span class="sector-tag">${s.sector || '美股市場'}</span></span>
+                            <span class="m-rank">動能值 ${rankVal}</span>
                         </div>
                         <div class="stock-meta">
-                            <span>MKT: $${s.price}</span>
-                            <span class="val-trigger">ENTRY: $${s.entry}</span>
+                            <span>收市價: <b style="color:#fff;">$${s.price}</b> <span style="color:${chgColor}; font-size:12px;">${chg}</span></span>
+                            <span style="font-size:11px; color:var(--neon-blue);">${s.pattern_tag || '技術形態觀察'}</span>
                         </div>
-                    </div>`;
+                    </div>
+                `;
             });
+
+            if (!pro && listData.length > freeCap) {
+                const hiddenCount = listData.length - freeCap;
+                html += `
+                    <div class="locked-card" onclick="openSubscribeModal()">
+                        <div style="font-size:15px; font-weight:800; color:var(--gold-premium); margin-bottom:6px;">🔒 尚有 ${hiddenCount} 隻高動能標的已鎖定</div>
+                        <div style="font-size:12px; color:#cbd5e1; margin-bottom:10px;">升級 PRO 會員（$20/月起）立即解鎖完整全市場掃描名單</div>
+                        <span class="btn btn-gold">立即解鎖全部名單</span>
+                    </div>
+                `;
+            }
+
             listEl.innerHTML = html;
             selectStock(listData[0].ticker);
         }
 
         function selectStock(ticker) {
-            const stock = allData[currentTab].find(s => s.ticker === ticker);
-            if(!stock) return;
-            
-            document.querySelectorAll('.stock-item').forEach(el => { 
-                el.classList.toggle('active', el.getAttribute('data-ticker') === ticker); 
+            const s = (allData[currentTab] || []).find(item => item.ticker === ticker);
+            if (!s) return;
+
+            document.querySelectorAll('.stock-item').forEach(el => {
+                el.classList.toggle('active', el.getAttribute('data-ticker') === ticker);
             });
-            
-            document.getElementById('chartTitle').innerHTML = `<span style="color:var(--gold-premium); font-size: 20px; font-weight: 900;">${stock.ticker}</span> <span class="chart-badge">LIVE CHART (DAILY)</span>`;
-            document.getElementById('strategyPanel').style.display = 'block';
-            
-            document.getElementById('valOrderType').innerText = stock.order_type;
-            document.getElementById('valEntry').innerText = `$${stock.entry.toFixed(2)}`;
-            document.getElementById('valStop').innerText = `$${stock.stop.toFixed(2)}`;
-            document.getElementById('val3R').innerText = `$${stock.target_3r.toFixed(2)}`;
-            document.getElementById('valRisk').innerText = `$${(stock.entry - stock.stop).toFixed(2)}`;
-            document.getElementById('valReason').innerHTML = stock.reason;
-            document.getElementById('valPlan').innerHTML = stock.action_plan;
-            
-            // 📱 根據螢幕闊度智能調整 TradingView Pro 工具列
+
+            document.getElementById('detailPanel').style.display = 'block';
+            document.getElementById('valPatternTag').innerText = s.pattern_tag || '客觀技術分析';
+            document.getElementById('valPrice').innerText = `$${Number(s.price).toFixed(2)}`;
+            document.getElementById('valHigh40').innerText = s.high_40d ? `$${Number(s.high_40d).toFixed(2)}` : 'N/A';
+            document.getElementById('valMA1020').innerText = `$${s.sma_10 || '--'} / $${s.sma_20 || '--'}`;
+            document.getElementById('valMA50ATR').innerText = `$${s.sma_50 || '--'} / $${s.atr_14 || '--'}`;
+            document.getElementById('valTechSummary').innerText = s.tech_summary || s.reason || '均線與成交額符合量化篩選條件。';
+
+            document.getElementById('chartTitle').innerHTML = `
+                <span><b style="color:var(--gold-premium);">${s.ticker}</b> <span style="font-size:13px; color:var(--text-muted); font-weight:500;">· 互動K線與技術指標圖表</span></span>
+                <span style="font-size:11px; color:var(--text-muted); background:rgba(255,255,255,0.06); padding:4px 10px; border-radius:20px;">DAILY / WEEKLY</span>
+            `;
+
             const isDesktop = window.innerWidth > 900;
-            const chartHeight = isDesktop ? 580 : 430;
-            
             document.getElementById('tradingview_widget').innerHTML = '';
             if (typeof TradingView !== 'undefined') {
-                tvWidget = new TradingView.widget({
-                    "width": "100%", 
-                    "height": chartHeight, 
-                    "symbol": stock.ticker, 
-                    "interval": "D", 
-                    "timezone": "Etc/UTC", 
-                    "theme": "dark", 
-                    "style": "1", 
-                    "locale": "zh_TW", 
-                    "toolbar_bg": "#030508", 
-                    "backgroundColor": "rgba(3, 5, 8, 1)", 
+                new TradingView.widget({
+                    "width": "100%",
+                    "height": isDesktop ? 550 : 420,
+                    "symbol": s.ticker,
+                    "interval": "D",
+                    "timezone": "Etc/UTC",
+                    "theme": "dark",
+                    "style": "1",
+                    "locale": "zh_TW",
+                    "toolbar_bg": "#04060b",
+                    "backgroundColor": "rgba(4, 6, 11, 1)",
                     "gridColor": "rgba(255, 255, 255, 0.04)",
-                    "enable_publishing": false, 
+                    "enable_publishing": false,
                     "allow_symbol_change": true,
-                    "hide_side_toolbar": !isDesktop, // 電腦版開啟完整左側畫圖工具箱，手機版保留最大K線視野
-                    "hide_top_toolbar": false,       // 開啟日/週/月線及技術指標切換列
+                    "hide_side_toolbar": !isDesktop,
+                    "hide_top_toolbar": false,
                     "withdateranges": isDesktop,
                     "save_image": false,
-                    "details": isDesktop,            // 電腦版開啟右側詳細報價面板
-                    "container_id": "tradingview_widget", 
+                    "details": isDesktop,
+                    "container_id": "tradingview_widget",
                     "studies": ["Volume@tv-basicstudies", "SMA@tv-basicstudies"]
                 });
             }
-        }
-
-        async function loadPortfolio() {
-            try {
-                const res = await fetch('portfolio.json?t=' + Date.now());
-                const pf = await res.json();
-                
-                document.getElementById('pf-equity').innerText = `$${(pf.total_equity || 10000).toLocaleString(undefined, {minimumFractionDigits: 2})}`;
-                document.getElementById('pf-cash').innerText = `$${(pf.cash || 10000).toLocaleString(undefined, {minimumFractionDigits: 2})}`;
-
-                let pendHtml = '';
-                (pf.pending_orders||[]).forEach(o => pendHtml += `<tr><td><b style="color:#fff;">${o.ticker}</b></td><td>${o.date_created||'--'}</td><td>${o.shares}</td><td style="color:var(--gold-premium);">$${o.entry.toFixed(2)}</td><td style="color:var(--neon-red);">$${o.stop.toFixed(2)}</td></tr>`);
-                document.getElementById('pf-pending').innerHTML = pendHtml || '<tr><td colspan="5" style="text-align:center; padding:25px; color:#5a6b8c;">系統當前無條件掛單</td></tr>';
-                
-                let posHtml = '';
-                (pf.positions||[]).forEach(p => {
-                    const isProfit = p.unrealized_pnl >= 0;
-                    const pnlClass = isProfit ? 'profit' : 'loss';
-                    const sign = isProfit ? '+' : '';
-                    posHtml += `<tr><td><b style="color:#fff;">${p.ticker}</b></td><td>${p.buy_date}</td><td>${p.shares}</td><td>$${p.buy_price.toFixed(2)}</td><td>$${p.current_price.toFixed(2)}</td><td class="${pnlClass}">${sign}$${p.unrealized_pnl.toFixed(2)} (${sign}${p.unrealized_pnl_percent}%)</td></tr>`;
-                });
-                document.getElementById('pf-positions').innerHTML = posHtml || '<tr><td colspan="6" style="text-align:center; padding:25px; color:#5a6b8c;">系統當前無持倉</td></tr>';
-            } catch (e) {}
         }
 
         loadData();
