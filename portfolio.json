@@ -1,6 +1,6 @@
 {
     "cash": 79.78,
-    "total_equity": 9757.66,
+    "total_equity": NaN,
     "positions": [
         {
             "ticker": "AAPL",
@@ -9,9 +9,9 @@
             "stop": 315.57,
             "target_3r": 391.49,
             "buy_date": "2026-11-04 08:27",
-            "current_price": 349.7,
-            "unrealized_pnl": 75.77,
-            "unrealized_pnl_percent": 4.53
+            "current_price": NaN,
+            "unrealized_pnl": NaN,
+            "unrealized_pnl_percent": NaN
         },
         {
             "ticker": "MSFT",
@@ -20,9 +20,9 @@
             "stop": 492.59,
             "target_3r": 616.19,
             "buy_date": "2026-11-04 08:27",
-            "current_price": 518.83,
-            "unrealized_pnl": -13.98,
-            "unrealized_pnl_percent": -0.89
+            "current_price": NaN,
+            "unrealized_pnl": NaN,
+            "unrealized_pnl_percent": NaN
         },
         {
             "ticker": "AMZN",
@@ -31,9 +31,9 @@
             "stop": 250.77,
             "target_3r": 302.08,
             "buy_date": "2026-11-06 15:49",
-            "current_price": 268.52,
-            "unrealized_pnl": 34.44,
-            "unrealized_pnl_percent": 1.87
+            "current_price": NaN,
+            "unrealized_pnl": NaN,
+            "unrealized_pnl_percent": NaN
         },
         {
             "ticker": "TMO",
@@ -42,9 +42,9 @@
             "stop": 692.34,
             "target_3r": 755.86,
             "buy_date": "2026-11-09 19:39",
-            "current_price": 695.08,
-            "unrealized_pnl": -26.29,
-            "unrealized_pnl_percent": -1.86
+            "current_price": NaN,
+            "unrealized_pnl": NaN,
+            "unrealized_pnl_percent": NaN
         },
         {
             "ticker": "CVCO",
@@ -53,9 +53,9 @@
             "stop": 611.66,
             "target_3r": 843.45,
             "buy_date": "2026-11-09 19:39",
-            "current_price": 645.57,
-            "unrealized_pnl": -48.08,
-            "unrealized_pnl_percent": -3.59
+            "current_price": NaN,
+            "unrealized_pnl": NaN,
+            "unrealized_pnl_percent": NaN
         },
         {
             "ticker": "DGX",
@@ -64,9 +64,9 @@
             "stop": 249.0,
             "target_3r": 288.01,
             "buy_date": "2026-11-19 15:59",
-            "current_price": 258.85,
-            "unrealized_pnl": -8.05,
-            "unrealized_pnl_percent": -0.44
+            "current_price": NaN,
+            "unrealized_pnl": NaN,
+            "unrealized_pnl_percent": NaN
         }
     ],
     "history": [
@@ -792,15 +792,6 @@
             "stop": 249.91,
             "target_3r": 285.17,
             "shares": 7,
-            "date_created": "2026-11-09 18:37"
-        },
-        {
-            "ticker": "CNK",
-            "order_type": "🚀 強勢延續單",
-            "entry": 40.79,
-            "stop": 39.3,
-            "target_3r": 45.28,
-            "shares": 49,
             "date_created": "2026-11-09 18:37"
         },
         {
